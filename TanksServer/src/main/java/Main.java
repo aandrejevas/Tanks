@@ -2,6 +2,7 @@
 import java.nio.ByteBuffer;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.ToIntFunction;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
@@ -10,6 +11,7 @@ import processing.net.Server;
 public class Main extends PApplet {
 
 	public static final ByteBuffer buffer_1bytes = ByteBuffer.allocate(1),
+		buffer_4bytes = ByteBuffer.allocate(4),
 		buffer_5bytes = ByteBuffer.allocate(5),
 		buffer_9bytes = ByteBuffer.allocate(9),
 		buffer_13bytes = ByteBuffer.allocate(13);
@@ -35,7 +37,21 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		while ((available_client = this_server.available()) != null) {
+			switch (available_client.read()) {
+				case 1:
+					handleMove((byte)4, (final Tank tank) -> tank.x += buffer_4bytes.getInt(0));
+					break;
+				case 2:
+					handleMove((byte)5, (final Tank tank) -> tank.y += buffer_4bytes.getInt(0));
+					break;
+			}
 		}
+	}
+
+	public static void handleMove(final byte message, final ToIntFunction<Tank> func) {
+		final Tank tank = clients.get(available_client);
+		available_client.readBytes(buffer_4bytes.array());
+		this_server.write(buffer_9bytes.put(0, message).putInt(1, tank.index).putInt(5, func.applyAsInt(tank)).array());
 	}
 
 	public void serverEvent(final Server server, final Client client) {
