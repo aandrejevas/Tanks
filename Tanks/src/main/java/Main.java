@@ -36,16 +36,16 @@ public class Main extends PApplet {
 		if (initialized) {
 			switch (move_state) {
 				case 0b0001:
-					this_client.write(Utils.bytes(1, -1));
+					this_client.write(Utils.bytes(Utils.MOVE_X, -1));
 					break;
 				case 0b0010:
-					this_client.write(Utils.bytes(1, 1));
+					this_client.write(Utils.bytes(Utils.MOVE_X, 1));
 					break;
 				case 0b0100:
-					this_client.write(Utils.bytes(2, -1));
+					this_client.write(Utils.bytes(Utils.MOVE_Y, -1));
 					break;
 				case 0b1000:
-					this_client.write(Utils.bytes(2, 1));
+					this_client.write(Utils.bytes(Utils.MOVE_Y, 1));
 					break;
 			}
 
@@ -58,27 +58,28 @@ public class Main extends PApplet {
 		}
 	}
 
+	// https://processing.org/reference/libraries/net/clientEvent_.html
 	public void clientEvent(final Client client) {
 		switch (client.read()) {
-			case 0:
+			case Utils.INITIALIZE:
 				initialized = true;
 				break;
-			case 1:
+			case Utils.INITIALIZE_GRID:
 				Utils.read(client, (final int x_tiles, final int y_tiles) -> {
 					scale_x = (float)W / x_tiles;
 					scale_y = (float)H / y_tiles;
 				});
 				break;
-			case 2:
+			case Utils.ADD_TANK:
 				Utils.read(client, (final int index, final int x, final int y) -> tanks.put(index, new Tank(this, x, y)));
 				break;
-			case 3:
+			case Utils.REMOVE_TANK:
 				Utils.read(client, (final int index) -> tanks.remove(index));
 				break;
-			case 4:
+			case Utils.UPDATE_X:
 				Utils.read(client, (final int index, final int x) -> tanks.get(index).updateX(x));
 				break;
-			case 5:
+			case Utils.UPDATE_Y:
 				Utils.read(client, (final int index, final int y) -> tanks.get(index).updateY(y));
 				break;
 		}

@@ -8,6 +8,11 @@ public class Utils {
 	private Utils() {
 	}
 
+	public static final int INITIALIZE = 0, INITIALIZE_GRID = 1,
+		ADD_TANK = 2, REMOVE_TANK = 3,
+		UPDATE_X = 4, UPDATE_Y = 5,
+		MOVE_X = 0, MOVE_Y = 1;
+
 	public static final ByteBuffer buffer1 = ByteBuffer.allocate(1),
 		buffer4 = ByteBuffer.allocate(4),
 		buffer5 = ByteBuffer.allocate(5),

@@ -34,11 +34,11 @@ public class Main extends PApplet {
 	public void draw() {
 		while ((available_client = this_server.available()) != null) {
 			switch (available_client.read()) {
-				case 1:
-					handleMove(4, (final Tank tank) -> tank.x);
+				case Utils.MOVE_X:
+					handleMove(Utils.UPDATE_X, (final Tank tank) -> tank.x);
 					break;
-				case 2:
-					handleMove(5, (final Tank tank) -> tank.y);
+				case Utils.MOVE_Y:
+					handleMove(Utils.UPDATE_Y, (final Tank tank) -> tank.y);
 					break;
 			}
 		}
@@ -51,20 +51,22 @@ public class Main extends PApplet {
 		});
 	}
 
+	// https://processing.org/reference/libraries/net/serverEvent_.html
 	public void serverEvent(final Server server, final Client client) {
-		client.write(Utils.bytes(1, x_tiles, y_tiles));
+		client.write(Utils.bytes(Utils.INITIALIZE_GRID, x_tiles, y_tiles));
 		clients.forEach((final Client c, final Tank tank) -> {
-			client.write(Utils.bytes(2, tank.index, tank.x(), tank.y()));
+			client.write(Utils.bytes(Utils.ADD_TANK, tank.index, tank.x(), tank.y()));
 		});
 
 		final Tank new_tank = new Tank();
-		server.write(Utils.bytes(2, new_tank.index, new_tank.x(), new_tank.y()));
-		client.write(Utils.bytes(0));
+		server.write(Utils.bytes(Utils.ADD_TANK, new_tank.index, new_tank.x(), new_tank.y()));
+		client.write(Utils.bytes(Utils.INITIALIZE));
 		clients.put(client, new_tank);
 	}
 
+	// https://processing.org/reference/libraries/net/disconnectEvent_.html
 	public void disconnectEvent(final Client client) {
-		this_server.write(Utils.bytes(3, clients.get(client).index));
+		this_server.write(Utils.bytes(Utils.REMOVE_TANK, clients.get(client).index));
 		clients.remove(client);
 	}
 }
