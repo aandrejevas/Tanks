@@ -1,4 +1,5 @@
 
+import java.lang.invoke.MethodHandles;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -18,7 +19,7 @@ public class Main extends PApplet {
 	public static Client available_client;
 
 	public static void main(final String[] args) {
-		PApplet.main(Main.class, args);
+		PApplet.main(MethodHandles.lookup().lookupClass(), args);
 	}
 
 	@Override

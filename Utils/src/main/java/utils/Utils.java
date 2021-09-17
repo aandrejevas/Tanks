@@ -4,8 +4,9 @@ import java.nio.ByteBuffer;
 import java.util.function.IntConsumer;
 import processing.net.Client;
 
-public class Utils {
-	private Utils() {
+public abstract class Utils {
+	protected Utils() {
+		throw new AssertionError();
 	}
 
 	public static final int INITIALIZE = 0, INITIALIZE_GRID = 1,
