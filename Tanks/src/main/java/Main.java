@@ -1,18 +1,14 @@
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
 import processing.core.PApplet;
 import processing.net.Client;
+import utils.Utils;
 
 // Client
 public class Main extends PApplet {
 
-	public static final ByteBuffer buffer_4bytes = ByteBuffer.allocate(4),
-		buffer_5bytes = ByteBuffer.allocate(5),
-		buffer_8bytes = ByteBuffer.allocate(8),
-		buffer_12bytes = ByteBuffer.allocate(12);
 	public static final int W = 600, H = 500;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 
@@ -40,16 +36,16 @@ public class Main extends PApplet {
 		if (initialized) {
 			switch (move_state) {
 				case 0b0001:
-					this_client.write(buffer_5bytes.put(0, (byte)1).putInt(1, -1).array());
+					this_client.write(Utils.bytes(1, -1));
 					break;
 				case 0b0010:
-					this_client.write(buffer_5bytes.put(0, (byte)1).putInt(1, 1).array());
+					this_client.write(Utils.bytes(1, 1));
 					break;
 				case 0b0100:
-					this_client.write(buffer_5bytes.put(0, (byte)2).putInt(1, -1).array());
+					this_client.write(Utils.bytes(2, -1));
 					break;
 				case 0b1000:
-					this_client.write(buffer_5bytes.put(0, (byte)2).putInt(1, 1).array());
+					this_client.write(Utils.bytes(2, 1));
 					break;
 			}
 
@@ -68,37 +64,34 @@ public class Main extends PApplet {
 				initialized = true;
 				break;
 			case 1:
-				client.readBytes(buffer_8bytes.array());
-				scale_x = (float)W / buffer_8bytes.getInt(0);
-				scale_y = (float)H / buffer_8bytes.getInt(4);
+				Utils.read(client, (final int x_tiles, final int y_tiles) -> {
+					scale_x = (float)W / x_tiles;
+					scale_y = (float)H / y_tiles;
+				});
 				break;
 			case 2:
-				client.readBytes(buffer_12bytes.array());
-				tanks.put(buffer_12bytes.getInt(0), new Tank(this, buffer_12bytes.getInt(4), buffer_12bytes.getInt(8)));
+				Utils.read(client, (final int index, final int x, final int y) -> tanks.put(index, new Tank(this, x, y)));
 				break;
 			case 3:
-				client.readBytes(buffer_4bytes.array());
-				tanks.remove(buffer_4bytes.getInt(0));
+				Utils.read(client, (final int index) -> tanks.remove(index));
 				break;
 			case 4:
-				client.readBytes(buffer_8bytes.array());
-				tanks.get(buffer_8bytes.getInt(0)).updateX(buffer_8bytes.getInt(4));
+				Utils.read(client, (final int index, final int x) -> tanks.get(index).updateX(x));
 				break;
 			case 5:
-				client.readBytes(buffer_8bytes.array());
-				tanks.get(buffer_8bytes.getInt(0)).updateY(buffer_8bytes.getInt(4));
+				Utils.read(client, (final int index, final int y) -> tanks.get(index).updateY(y));
 				break;
 		}
 	}
 
 	@Override
 	public void keyPressed() {
-		updateMoveState((final int bit) -> move_state |= (1 << bit));
+		updateMoveState((final int bit) -> move_state |= bit);
 	}
 
 	@Override
 	public void keyReleased() {
-		updateMoveState((final int bit) -> move_state &= ~(1 << bit));
+		updateMoveState((final int bit) -> move_state &= ~bit);
 	}
 
 	public void updateMoveState(final IntConsumer action) {
@@ -106,22 +99,22 @@ public class Main extends PApplet {
 			case 'a':
 			case 'A':
 			case LEFT:
-				action.accept(0);
+				action.accept(0b0001);
 				break;
 			case 'd':
 			case 'D':
 			case RIGHT:
-				action.accept(1);
+				action.accept(0b0010);
 				break;
 			case 'w':
 			case 'W':
 			case UP:
-				action.accept(2);
+				action.accept(0b0100);
 				break;
 			case 's':
 			case 'S':
 			case DOWN:
-				action.accept(3);
+				action.accept(0b1000);
 				break;
 		}
 	}
