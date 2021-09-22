@@ -13,7 +13,7 @@ import utils.Utils;
 public class Main extends PApplet {
 
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
-	public static final int x_tiles = 30, y_tiles = 25;
+	public static final int x_tiles = 20, y_tiles = 20;
 
 	public static Server this_server;
 	public static Client available_client;

@@ -9,14 +9,16 @@ public class Tank {
 	public Tank(final PApplet applet, final int ix, final int iy) {
 		final float x = ix * Main.scale_x, y = iy * Main.scale_y;
 		shape = applet.createShape(PShape.GEOMETRY);
+		shape.setTextureMode(PConstants.NORMAL);
+		shape.setTexture(Main.red_tank);
 		shape.beginShape(PConstants.POLYGON);
-		shape.vertex(x, y);
-		shape.vertex(x + Main.scale_x, y);
-		shape.vertex(x + Main.scale_x, y + Main.scale_y);
-		shape.vertex(x, y + Main.scale_y);
+		shape.vertex(x, y, 0, 0);
+		shape.vertex(x + Main.scale_x, y, 1, 0);
+		shape.vertex(x + Main.scale_x, y + Main.scale_y, 1, 1);
+		shape.vertex(x, y + Main.scale_y, 0, 1);
 		shape.endShape(PConstants.CLOSE);
 		shape.setStroke(false);
-		shape.setFill(0xFF000000);
+		shape.setFill(false);
 	}
 
 	public void updateX(final int ix) {

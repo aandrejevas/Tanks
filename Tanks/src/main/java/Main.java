@@ -4,16 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.net.Client;
 import utils.Utils;
 
 // Client
 public class Main extends PApplet {
 
-	public static final int W = 600, H = 500;
+	public static final int W = 600, H = 600;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 
 	public static Client this_client;
+	public static PImage red_tank;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
@@ -24,12 +26,14 @@ public class Main extends PApplet {
 
 	@Override
 	public void settings() {
-		size(W, H);
+		size(W, H, P2D);
 	}
 
 	@Override
 	public void setup() {
 		this_client = new Client(this, "127.0.0.1", 12345);
+
+		red_tank = loadImage("tank_test.png");
 	}
 
 	@Override
