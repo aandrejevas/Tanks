@@ -1,6 +1,7 @@
 package utils;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.IntConsumer;
 import processing.net.Client;
 
@@ -11,8 +12,8 @@ public abstract class Utils {
 
 	public static final int INITIALIZE = 0, INITIALIZE_GRID = 1,
 		ADD_TANK = 2, REMOVE_TANK = 3,
-		UPDATE_X = 4, UPDATE_Y = 5,
-		MOVE_X = 0, MOVE_Y = 1;
+		MOVE_X = 4, MOVE_Y = 5,
+		S_MOVE_X = 0, S_MOVE_Y = 1;
 
 	public static final ByteBuffer buffer1 = ByteBuffer.allocate(1),
 		buffer4 = ByteBuffer.allocate(4),
@@ -51,5 +52,9 @@ public abstract class Utils {
 	public static void read(final Client client, final IntTriConsumer action) {
 		client.readBytes(buffer12.array());
 		action.accept(buffer12.getInt(0), buffer12.getInt(4), buffer12.getInt(8));
+	}
+
+	public static ThreadLocalRandom random() {
+		return ThreadLocalRandom.current();
 	}
 }

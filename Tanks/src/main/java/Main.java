@@ -31,9 +31,9 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
-		this_client = new Client(this, "127.0.0.1", 12345);
-
 		red_tank = loadImage("tank_test.png");
+
+		this_client = new Client(this, "127.0.0.1", 12345);
 	}
 
 	@Override
@@ -41,16 +41,16 @@ public class Main extends PApplet {
 		if (initialized) {
 			switch (move_state) {
 				case 0b0001:
-					this_client.write(Utils.bytes(Utils.MOVE_X, -1));
+					this_client.write(Utils.bytes(Utils.S_MOVE_X, -1));
 					break;
 				case 0b0010:
-					this_client.write(Utils.bytes(Utils.MOVE_X, 1));
+					this_client.write(Utils.bytes(Utils.S_MOVE_X, 1));
 					break;
 				case 0b0100:
-					this_client.write(Utils.bytes(Utils.MOVE_Y, -1));
+					this_client.write(Utils.bytes(Utils.S_MOVE_Y, -1));
 					break;
 				case 0b1000:
-					this_client.write(Utils.bytes(Utils.MOVE_Y, 1));
+					this_client.write(Utils.bytes(Utils.S_MOVE_Y, 1));
 					break;
 			}
 
@@ -81,10 +81,10 @@ public class Main extends PApplet {
 			case Utils.REMOVE_TANK:
 				Utils.read(client, (final int index) -> tanks.remove(index));
 				break;
-			case Utils.UPDATE_X:
+			case Utils.MOVE_X:
 				Utils.read(client, (final int index, final int x) -> tanks.get(index).updateX(x));
 				break;
-			case Utils.UPDATE_Y:
+			case Utils.MOVE_Y:
 				Utils.read(client, (final int index, final int y) -> tanks.get(index).updateY(y));
 				break;
 		}

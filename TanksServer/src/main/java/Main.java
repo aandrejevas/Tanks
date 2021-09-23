@@ -35,11 +35,11 @@ public class Main extends PApplet {
 	public void draw() {
 		while ((available_client = this_server.available()) != null) {
 			switch (available_client.read()) {
-				case Utils.MOVE_X:
-					handleMove(Utils.UPDATE_X, (final Tank tank) -> tank.x);
+				case Utils.S_MOVE_X:
+					handleMove(Utils.MOVE_X, (final Tank tank) -> tank.x);
 					break;
-				case Utils.MOVE_Y:
-					handleMove(Utils.UPDATE_Y, (final Tank tank) -> tank.y);
+				case Utils.S_MOVE_Y:
+					handleMove(Utils.MOVE_Y, (final Tank tank) -> tank.y);
 					break;
 			}
 		}
@@ -48,7 +48,8 @@ public class Main extends PApplet {
 	public static void handleMove(final int message, final Function<Tank, IntUnit> func) {
 		Utils.read(available_client, (final int d) -> {
 			final Tank tank = clients.get(available_client);
-			this_server.write(Utils.bytes(message, tank.index, func.apply(tank).add(d)));
+			func.apply(tank).item0 += d;
+			this_server.write(Utils.bytes(message, tank.index, d));
 		});
 	}
 
