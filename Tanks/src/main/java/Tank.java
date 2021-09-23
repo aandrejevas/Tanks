@@ -25,11 +25,19 @@ public class Tank {
 		shape.translate(ix * Main.scale_x, iy * Main.scale_y);
 	}
 
-	public void updateX(final int ix) {
-		shape.translate(ix * Main.scale_x, 0);
+	public void moveLeft() {
+		shape.translate(-Main.scale_x, 0);
 	}
 
-	public void updateY(final int iy) {
-		shape.translate(0, iy * Main.scale_y);
+	public void moveRight() {
+		shape.translate(Main.scale_x, 0);
+	}
+
+	public void moveUp() {
+		shape.translate(0, -Main.scale_y);
+	}
+
+	public void moveDown() {
+		shape.translate(0, Main.scale_y);
 	}
 }

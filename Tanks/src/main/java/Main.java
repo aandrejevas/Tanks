@@ -41,22 +41,22 @@ public class Main extends PApplet {
 		if (initialized) {
 			switch (move_state) {
 				case 0b0001:
-					this_client.write(Utils.bytes(Utils.S_MOVE_X, -1));
+					this_client.write(Utils.S_MOVE_LEFT);
 					break;
 				case 0b0010:
-					this_client.write(Utils.bytes(Utils.S_MOVE_X, 1));
+					this_client.write(Utils.S_MOVE_RIGHT);
 					break;
 				case 0b0100:
-					this_client.write(Utils.bytes(Utils.S_MOVE_Y, -1));
+					this_client.write(Utils.S_MOVE_UP);
 					break;
 				case 0b1000:
-					this_client.write(Utils.bytes(Utils.S_MOVE_Y, 1));
+					this_client.write(Utils.S_MOVE_DOWN);
 					break;
 			}
 
 			background(0xFFFFFFFF);
 			tanks.forEach((final Integer i, final Tank tank) -> {
-				shape(tank.shape);
+				tank.shape.draw(g);
 			});
 		} else if (this_client.available() != 0) {
 			clientEvent(this_client);
@@ -70,22 +70,28 @@ public class Main extends PApplet {
 				initialized = true;
 				break;
 			case Utils.INITIALIZE_GRID:
-				Utils.read(client, (final int x_tiles, final int y_tiles) -> {
-					scale_x = (float)W / x_tiles;
-					scale_y = (float)H / y_tiles;
-				});
+				Utils.readII(client);
+				scale_x = (float)W / Utils.i1;
+				scale_y = (float)H / Utils.i2;
 				break;
 			case Utils.ADD_TANK:
-				Utils.read(client, (final int index, final int x, final int y) -> tanks.put(index, new Tank(this, x, y)));
+				Utils.readIII(client);
+				tanks.put(Utils.i1, new Tank(this, Utils.i2, Utils.i3));
 				break;
 			case Utils.REMOVE_TANK:
-				Utils.read(client, (final int index) -> tanks.remove(index));
+				tanks.remove(Utils.readInt(client));
 				break;
-			case Utils.MOVE_X:
-				Utils.read(client, (final int index, final int x) -> tanks.get(index).updateX(x));
+			case Utils.MOVE_LEFT:
+				tanks.get(Utils.readInt(client)).moveLeft();
 				break;
-			case Utils.MOVE_Y:
-				Utils.read(client, (final int index, final int y) -> tanks.get(index).updateY(y));
+			case Utils.MOVE_RIGHT:
+				tanks.get(Utils.readInt(client)).moveRight();
+				break;
+			case Utils.MOVE_UP:
+				tanks.get(Utils.readInt(client)).moveUp();
+				break;
+			case Utils.MOVE_DOWN:
+				tanks.get(Utils.readInt(client)).moveDown();
 				break;
 		}
 	}
