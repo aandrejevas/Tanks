@@ -34,6 +34,10 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
+		hint(DISABLE_ASYNC_SAVEFRAME);
+		//hint(DISABLE_OPENGL_ERRORS);
+		surface.setResizable(false);
+
 		self = this;
 		red_tank = loadImage("tank_test.png");
 

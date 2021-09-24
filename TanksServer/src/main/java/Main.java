@@ -27,6 +27,8 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
+		surface.setVisible(false);
+
 		this_server = new Server(this, 12345);
 	}
 
