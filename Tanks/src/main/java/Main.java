@@ -15,6 +15,7 @@ public class Main extends PApplet {
 
 	public static final int W = 600, H = 600;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
+	public static final long timeout = 100_000_000;
 
 	public static PApplet self;
 	public static Client this_client;
@@ -22,6 +23,7 @@ public class Main extends PApplet {
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
+	public static long start_time = System.nanoTime();
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -47,19 +49,21 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		if (initialized) {
-			switch (move_state) {
-				case 0b0001:
-					this_client.write(Utils.S_MOVE_LEFT);
-					break;
-				case 0b0010:
-					this_client.write(Utils.S_MOVE_RIGHT);
-					break;
-				case 0b0100:
-					this_client.write(Utils.S_MOVE_UP);
-					break;
-				case 0b1000:
-					this_client.write(Utils.S_MOVE_DOWN);
-					break;
+			if (System.nanoTime() - start_time > timeout) {
+				switch (move_state) {
+					case 0b0001:
+						sendMove(Utils.S_MOVE_LEFT);
+						break;
+					case 0b0010:
+						sendMove(Utils.S_MOVE_RIGHT);
+						break;
+					case 0b0100:
+						sendMove(Utils.S_MOVE_UP);
+						break;
+					case 0b1000:
+						sendMove(Utils.S_MOVE_DOWN);
+						break;
+				}
 			}
 
 			background(0xFFFFFFFF);
@@ -69,6 +73,11 @@ public class Main extends PApplet {
 		} else if (this_client.available() != 0) {
 			clientEvent(this_client);
 		}
+	}
+
+	public static void sendMove(final byte message) {
+		this_client.write(message);
+		start_time = System.nanoTime();
 	}
 
 	// https://processing.org/reference/libraries/net/clientEvent_.html
