@@ -34,8 +34,29 @@ public class Main extends PApplet {
 
 	@Override
 	public void draw() {
+		if (this_server.clientCount != clients.size()) {
+			clients.entrySet().removeIf((final Map.Entry<Client, Tank> entry) -> {
+				if (!entry.getKey().active()) {
+					Utils.send(this_server::write, Utils.REMOVE_TANK, entry.getValue().index);
+					return true;
+				} else return false;
+			});
+		}
+
 		while ((available_client = this_server.available()) != null) {
 			switch (available_client.read()) {
+				case Utils.S_INIT_CLIENT:
+					Utils.send(available_client::write, Utils.INITIALIZE_GRID, x_tiles, y_tiles);
+					clients.values().forEach((final Tank tank) -> {
+						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y);
+					});
+
+					final Tank new_tank = new Tank();
+					Utils.send(this_server::write, Utils.ADD_UP_TANK, new_tank.index, new_tank.x, new_tank.y);
+					Utils.send(available_client::write, Utils.INITIALIZE);
+					clients.put(available_client, new_tank);
+					break;
+				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
 					handleMove(Tank::moveLeft);
 					break;
@@ -55,24 +76,5 @@ public class Main extends PApplet {
 
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(clients.get(available_client));
-	}
-
-	// https://processing.org/reference/libraries/net/serverEvent_.html
-	public static void serverEvent(final Server server, final Client client) {
-		Utils.write(client::write, Utils.INITIALIZE_GRID, x_tiles, y_tiles);
-		clients.values().forEach((final Tank tank) -> {
-			Utils.write(client::write, tank.getAddMessage(), tank.index, tank.x, tank.y);
-		});
-
-		final Tank new_tank = new Tank();
-		Utils.write(server::write, Utils.ADD_UP_TANK, new_tank.index, new_tank.x, new_tank.y);
-		client.write(Utils.INITIALIZE);
-		clients.put(client, new_tank);
-	}
-
-	// https://processing.org/reference/libraries/net/disconnectEvent_.html
-	public static void disconnectEvent(final Client client) {
-		Utils.write(this_server::write, Utils.REMOVE_TANK, clients.get(client).index);
-		clients.remove(client);
 	}
 }

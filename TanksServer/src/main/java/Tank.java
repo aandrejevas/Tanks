@@ -3,13 +3,12 @@ import utils.Utils;
 
 public class Tank {
 
-	protected static final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
+	protected static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
 	protected static int counter = 0;
 
 	public final int index;
 	public int x, y;
-
-	protected int direction;
+	public byte direction;
 
 	public Tank() {
 		index = counter++;
@@ -18,18 +17,8 @@ public class Tank {
 		direction = UP;
 	}
 
-	public byte getAddMessage() {
-		switch (direction) {
-			case LEFT: return Utils.ADD_LEFT_TANK;
-			case RIGHT: return Utils.ADD_RIGHT_TANK;
-			case UP: return Utils.ADD_UP_TANK;
-			case DOWN: return Utils.ADD_DOWN_TANK;
-			default: throw new AssertionError();
-		}
-	}
-
 	protected void sendMove(final byte message) {
-		Utils.write(Main.this_server::write, message, index);
+		Utils.send(Main.this_server::write, message, index);
 	}
 
 	public void moveLeft() {

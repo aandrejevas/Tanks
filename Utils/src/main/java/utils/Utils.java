@@ -3,6 +3,7 @@ package utils;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import processing.net.Client;
 
 public abstract class Utils {
@@ -14,7 +15,8 @@ public abstract class Utils {
 		ADD_LEFT_TANK = 2, ADD_RIGHT_TANK = 12, ADD_UP_TANK = 13, ADD_DOWN_TANK = 14, REMOVE_TANK = 3,
 		MOVE_LEFT = 4, MOVE_RIGHT = 5, MOVE_UP = 6, MOVE_DOWN = 7, POINT_LEFT = 8, POINT_RIGHT = 9, POINT_UP = 10, POINT_DOWN = 11,
 		TURN_LEFT = 15, TURN_RIGHT = 16, TURN_UP = 17, TURN_DOWN = 18,
-		S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3;
+		S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
+		S_INIT_CLIENT = 4;
 
 	public static final ByteBuffer buffer4 = ByteBuffer.allocate(4),
 		buffer5 = ByteBuffer.allocate(5),
@@ -25,15 +27,19 @@ public abstract class Utils {
 
 	public static int i1, i2, i3;
 
-	public static void write(final Consumer<byte[]> func, final byte _0, final int _1) {
+	public static void send(final IntConsumer func, final byte _0) {
+		func.accept(_0);
+	}
+
+	public static void send(final Consumer<byte[]> func, final byte _0, final int _1) {
 		func.accept(buffer5.put(0, _0).putInt(1, _1).array());
 	}
 
-	public static void write(final Consumer<byte[]> func, final byte _0, final int _1, final int _2) {
+	public static void send(final Consumer<byte[]> func, final byte _0, final int _1, final int _2) {
 		func.accept(buffer9.put(0, _0).putInt(1, _1).putInt(5, _2).array());
 	}
 
-	public static void write(final Consumer<byte[]> func, final byte _0, final int _1, final int _2, final int _3) {
+	public static void send(final Consumer<byte[]> func, final byte _0, final int _1, final int _2, final int _3) {
 		func.accept(buffer13.put(0, _0).putInt(1, _1).putInt(5, _2).putInt(9, _3).array());
 	}
 

@@ -44,10 +44,80 @@ public class Main extends PApplet {
 		red_tank = loadImage("tank_test.png");
 
 		this_client = new Client(this, "127.0.0.1", 12345);
+		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
 	}
 
 	@Override
 	public void draw() {
+		while (this_client.available() != 0) {
+			switch (this_client.read()) {
+				case Utils.INITIALIZE:
+					initialized = true;
+					break;
+				case Utils.INITIALIZE_GRID:
+					Utils.readII(this_client);
+					scale_x = (float)W / Utils.i1;
+					scale_y = (float)H / Utils.i2;
+					break;
+				// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
+				case Utils.ADD_LEFT_TANK:
+					handleAdd(Tank::initLeft);
+					break;
+				case Utils.ADD_RIGHT_TANK:
+					handleAdd(Tank::initRight);
+					break;
+				case Utils.ADD_UP_TANK:
+					handleAdd(Tank::initUp);
+					break;
+				case Utils.ADD_DOWN_TANK:
+					handleAdd(Tank::initDown);
+					break;
+				case Utils.REMOVE_TANK:
+					tanks.remove(Utils.readInt(this_client));
+					break;
+				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
+				case Utils.MOVE_LEFT:
+					handleMove(Tank::moveLeft);
+					break;
+				case Utils.MOVE_RIGHT:
+					handleMove(Tank::moveRight);
+					break;
+				case Utils.MOVE_UP:
+					handleMove(Tank::moveUp);
+					break;
+				case Utils.MOVE_DOWN:
+					handleMove(Tank::moveDown);
+					break;
+				// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
+				case Utils.POINT_LEFT:
+					handleMove(Tank::pointLeft);
+					break;
+				case Utils.POINT_RIGHT:
+					handleMove(Tank::pointRight);
+					break;
+				case Utils.POINT_UP:
+					handleMove(Tank::pointUp);
+					break;
+				case Utils.POINT_DOWN:
+					handleMove(Tank::pointDown);
+					break;
+				// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
+				case Utils.TURN_LEFT:
+					handleMove(Tank::turnLeft);
+					break;
+				case Utils.TURN_RIGHT:
+					handleMove(Tank::turnRight);
+					break;
+				case Utils.TURN_UP:
+					handleMove(Tank::turnUp);
+					break;
+				case Utils.TURN_DOWN:
+					handleMove(Tank::turnDown);
+					break;
+				default: throw new AssertionError();
+			}
+		}
+
 		if (initialized) {
 			if (System.nanoTime() - start_time > timeout) {
 				switch (move_state) {
@@ -70,89 +140,21 @@ public class Main extends PApplet {
 			tanks.values().forEach((final Tank tank) -> {
 				tank.shape.draw(g);
 			});
-		} else if (this_client.available() != 0) {
-			clientEvent(this_client);
 		}
 	}
 
 	public static void sendMove(final byte message) {
-		this_client.write(message);
+		Utils.send(this_client::write, message);
 		start_time = System.nanoTime();
 	}
 
-	// https://processing.org/reference/libraries/net/clientEvent_.html
-	public static void clientEvent(final Client client) {
-		switch (client.read()) {
-			case Utils.INITIALIZE:
-				initialized = true;
-				return;
-			case Utils.INITIALIZE_GRID:
-				Utils.readII(client);
-				scale_x = (float)W / Utils.i1;
-				scale_y = (float)H / Utils.i2;
-				return;
-			case Utils.ADD_LEFT_TANK:
-				handleAdd(client, Tank::initLeft);
-				return;
-			case Utils.ADD_RIGHT_TANK:
-				handleAdd(client, Tank::initRight);
-				return;
-			case Utils.ADD_UP_TANK:
-				handleAdd(client, Tank::initUp);
-				return;
-			case Utils.ADD_DOWN_TANK:
-				handleAdd(client, Tank::initDown);
-				return;
-			case Utils.REMOVE_TANK:
-				tanks.remove(Utils.readInt(client));
-				return;
-			case Utils.MOVE_LEFT:
-				handleMove(client, Tank::moveLeft);
-				return;
-			case Utils.MOVE_RIGHT:
-				handleMove(client, Tank::moveRight);
-				return;
-			case Utils.MOVE_UP:
-				handleMove(client, Tank::moveUp);
-				return;
-			case Utils.MOVE_DOWN:
-				handleMove(client, Tank::moveDown);
-				return;
-			case Utils.POINT_LEFT:
-				handleMove(client, Tank::pointLeft);
-				return;
-			case Utils.POINT_RIGHT:
-				handleMove(client, Tank::pointRight);
-				return;
-			case Utils.POINT_UP:
-				handleMove(client, Tank::pointUp);
-				return;
-			case Utils.POINT_DOWN:
-				handleMove(client, Tank::pointDown);
-				return;
-			case Utils.TURN_LEFT:
-				handleMove(client, Tank::turnLeft);
-				return;
-			case Utils.TURN_RIGHT:
-				handleMove(client, Tank::turnRight);
-				return;
-			case Utils.TURN_UP:
-				handleMove(client, Tank::turnUp);
-				return;
-			case Utils.TURN_DOWN:
-				handleMove(client, Tank::turnDown);
-				return;
-			default: throw new AssertionError();
-		}
-	}
-
-	public static void handleAdd(final Client client, final UnaryOperator<Tank> func) {
-		Utils.readIII(client);
+	public static void handleAdd(final UnaryOperator<Tank> func) {
+		Utils.readIII(this_client);
 		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));
 	}
 
-	public static void handleMove(final Client client, final Consumer<Tank> func) {
-		func.accept(tanks.get(Utils.readInt(client)));
+	public static void handleMove(final Consumer<Tank> func) {
+		func.accept(tanks.get(Utils.readInt(this_client)));
 	}
 
 	@Override
