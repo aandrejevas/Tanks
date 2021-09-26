@@ -59,7 +59,6 @@ public class Tank {
 		shape.setTextureUV(1, 1, 1);
 		shape.setTextureUV(2, 0, 1);
 		shape.setTextureUV(3, 0, 0);
-		moveLeft();
 	}
 
 	public void pointRight() {
@@ -67,7 +66,6 @@ public class Tank {
 		shape.setTextureUV(1, 0, 0);
 		shape.setTextureUV(2, 1, 0);
 		shape.setTextureUV(3, 1, 1);
-		moveRight();
 	}
 
 	public void pointUp() {
@@ -75,7 +73,6 @@ public class Tank {
 		shape.setTextureUV(1, 1, 0);
 		shape.setTextureUV(2, 1, 1);
 		shape.setTextureUV(3, 0, 1);
-		moveUp();
 	}
 
 	public void pointDown() {
@@ -83,7 +80,6 @@ public class Tank {
 		shape.setTextureUV(1, 0, 1);
 		shape.setTextureUV(2, 0, 0);
 		shape.setTextureUV(3, 1, 0);
-		moveDown();
 	}
 
 	public void moveLeft() {
@@ -100,5 +96,25 @@ public class Tank {
 
 	public void moveDown() {
 		shape.translate(0, Main.scale_y);
+	}
+
+	public void turnLeft() {
+		pointLeft();
+		moveLeft();
+	}
+
+	public void turnRight() {
+		pointRight();
+		moveRight();
+	}
+
+	public void turnUp() {
+		pointUp();
+		moveUp();
+	}
+
+	public void turnDown() {
+		pointDown();
+		moveDown();
 	}
 }

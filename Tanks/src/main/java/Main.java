@@ -85,51 +85,63 @@ public class Main extends PApplet {
 		switch (client.read()) {
 			case Utils.INITIALIZE:
 				initialized = true;
-				break;
+				return;
 			case Utils.INITIALIZE_GRID:
 				Utils.readII(client);
 				scale_x = (float)W / Utils.i1;
 				scale_y = (float)H / Utils.i2;
-				break;
+				return;
 			case Utils.ADD_LEFT_TANK:
 				handleAdd(client, Tank::initLeft);
-				break;
+				return;
 			case Utils.ADD_RIGHT_TANK:
 				handleAdd(client, Tank::initRight);
-				break;
+				return;
 			case Utils.ADD_UP_TANK:
 				handleAdd(client, Tank::initUp);
-				break;
+				return;
 			case Utils.ADD_DOWN_TANK:
 				handleAdd(client, Tank::initDown);
-				break;
+				return;
 			case Utils.REMOVE_TANK:
 				tanks.remove(Utils.readInt(client));
-				break;
+				return;
 			case Utils.MOVE_LEFT:
 				handleMove(client, Tank::moveLeft);
-				break;
+				return;
 			case Utils.MOVE_RIGHT:
 				handleMove(client, Tank::moveRight);
-				break;
+				return;
 			case Utils.MOVE_UP:
 				handleMove(client, Tank::moveUp);
-				break;
+				return;
 			case Utils.MOVE_DOWN:
 				handleMove(client, Tank::moveDown);
-				break;
+				return;
 			case Utils.POINT_LEFT:
 				handleMove(client, Tank::pointLeft);
-				break;
+				return;
 			case Utils.POINT_RIGHT:
 				handleMove(client, Tank::pointRight);
-				break;
+				return;
 			case Utils.POINT_UP:
 				handleMove(client, Tank::pointUp);
-				break;
+				return;
 			case Utils.POINT_DOWN:
 				handleMove(client, Tank::pointDown);
-				break;
+				return;
+			case Utils.TURN_LEFT:
+				handleMove(client, Tank::turnLeft);
+				return;
+			case Utils.TURN_RIGHT:
+				handleMove(client, Tank::turnRight);
+				return;
+			case Utils.TURN_UP:
+				handleMove(client, Tank::turnUp);
+				return;
+			case Utils.TURN_DOWN:
+				handleMove(client, Tank::turnDown);
+				return;
 			default: throw new AssertionError();
 		}
 	}
@@ -159,22 +171,22 @@ public class Main extends PApplet {
 			case 'A':
 			case LEFT:
 				action.accept(0b0001);
-				break;
+				return;
 			case 'd':
 			case 'D':
 			case RIGHT:
 				action.accept(0b0010);
-				break;
+				return;
 			case 'w':
 			case 'W':
 			case UP:
 				action.accept(0b0100);
-				break;
+				return;
 			case 's':
 			case 'S':
 			case DOWN:
 				action.accept(0b1000);
-				break;
+				return;
 		}
 	}
 }

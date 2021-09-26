@@ -2,17 +2,17 @@
 import java.lang.invoke.MethodHandles;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
-import utils.ToByteFunction;
 import utils.Utils;
 
 // Server
 public class Main extends PApplet {
 
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
-	public static final int x_tiles = 20, y_tiles = 20;
+	public static final int x_tiles = 20, y_tiles = 20, x_tiles_S1 = x_tiles - 1, y_tiles_S1 = y_tiles - 1;
 
 	public static Server this_server;
 	public static Client available_client;
@@ -53,9 +53,8 @@ public class Main extends PApplet {
 		}
 	}
 
-	public static void handleMove(final ToByteFunction<Tank> func) {
-		final Tank tank = clients.get(available_client);
-		Utils.write(this_server::write, func.applyAsByte(tank), tank.index);
+	public static void handleMove(final Consumer<Tank> func) {
+		func.accept(clients.get(available_client));
 	}
 
 	// https://processing.org/reference/libraries/net/serverEvent_.html

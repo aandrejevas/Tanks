@@ -3,13 +3,13 @@ import utils.Utils;
 
 public class Tank {
 
-	private static final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
-	private static int counter = 0;
+	protected static final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3;
+	protected static int counter = 0;
 
 	public final int index;
 	public int x, y;
 
-	private int direction;
+	protected int direction;
 
 	public Tank() {
 		index = counter++;
@@ -28,55 +28,95 @@ public class Tank {
 		}
 	}
 
-	public byte moveLeft() {
-		--x;
-		switch (direction) {
-			case RIGHT:
-			case UP:
-			case DOWN:
-				direction = LEFT;
-				return Utils.POINT_LEFT;
-			case LEFT: return Utils.MOVE_LEFT;
-			default: throw new AssertionError();
+	protected void sendMove(final byte message) {
+		Utils.write(Main.this_server::write, message, index);
+	}
+
+	public void moveLeft() {
+		if (x == 0) {
+			switch (direction) {
+				default:
+					direction = LEFT;
+					sendMove(Utils.POINT_LEFT);
+				case LEFT: return;
+			}
+		} else {
+			--x;
+			switch (direction) {
+				default:
+					direction = LEFT;
+					sendMove(Utils.TURN_LEFT);
+					return;
+				case LEFT:
+					sendMove(Utils.MOVE_LEFT);
+					return;
+			}
 		}
 	}
 
-	public byte moveRight() {
-		++x;
-		switch (direction) {
-			case LEFT:
-			case UP:
-			case DOWN:
-				direction = RIGHT;
-				return Utils.POINT_RIGHT;
-			case RIGHT: return Utils.MOVE_RIGHT;
-			default: throw new AssertionError();
+	public void moveRight() {
+		if (x == Main.x_tiles_S1) {
+			switch (direction) {
+				default:
+					direction = RIGHT;
+					sendMove(Utils.POINT_RIGHT);
+				case RIGHT: return;
+			}
+		} else {
+			++x;
+			switch (direction) {
+				default:
+					direction = RIGHT;
+					sendMove(Utils.TURN_RIGHT);
+					return;
+				case RIGHT:
+					sendMove(Utils.MOVE_RIGHT);
+					return;
+			}
 		}
 	}
 
-	public byte moveUp() {
-		--y;
-		switch (direction) {
-			case LEFT:
-			case RIGHT:
-			case DOWN:
-				direction = UP;
-				return Utils.POINT_UP;
-			case UP: return Utils.MOVE_UP;
-			default: throw new AssertionError();
+	public void moveUp() {
+		if (y == 0) {
+			switch (direction) {
+				default:
+					direction = UP;
+					sendMove(Utils.POINT_UP);
+				case UP: return;
+			}
+		} else {
+			--y;
+			switch (direction) {
+				default:
+					direction = UP;
+					sendMove(Utils.TURN_UP);
+					return;
+				case UP:
+					sendMove(Utils.MOVE_UP);
+					return;
+			}
 		}
 	}
 
-	public byte moveDown() {
-		++y;
-		switch (direction) {
-			case LEFT:
-			case RIGHT:
-			case UP:
-				direction = DOWN;
-				return Utils.POINT_DOWN;
-			case DOWN: return Utils.MOVE_DOWN;
-			default: throw new AssertionError();
+	public void moveDown() {
+		if (y == Main.y_tiles_S1) {
+			switch (direction) {
+				default:
+					direction = DOWN;
+					sendMove(Utils.POINT_DOWN);
+				case DOWN: return;
+			}
+		} else {
+			++y;
+			switch (direction) {
+				default:
+					direction = DOWN;
+					sendMove(Utils.TURN_DOWN);
+					return;
+				case DOWN:
+					sendMove(Utils.MOVE_DOWN);
+					return;
+			}
 		}
 	}
 }
