@@ -13,6 +13,7 @@ public class Main extends PApplet {
 
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
 	public static final int x_tiles = 20, y_tiles = 20, x_tiles_S1 = x_tiles - 1, y_tiles_S1 = y_tiles - 1;
+	public static final boolean[][] occupied = new boolean[y_tiles][x_tiles];
 
 	public static Server this_server;
 	public static Client available_client;
