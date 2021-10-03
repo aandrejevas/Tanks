@@ -18,6 +18,10 @@ public abstract class Utils {
 		S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
 		S_INIT_CLIENT = 4;
 
+	public static final byte MAP_WALL = 1, MAP_BORDER = 2, MAP_PLAYER = 4, MAP_T34 = 5, MAP_SHERMAN = 6, MAP_TIGER = 7,
+			MAP_NON_OBSTACLE = 8, MAP_EMPTY = 9,  MAP_WATER = 10, MAP_LAVA = 11,
+			MAP_COLLECTIBLE = 16, MAP_DROP = 17;
+
 	public static final ByteBuffer buffer4 = ByteBuffer.allocate(4),
 		buffer5 = ByteBuffer.allocate(5),
 		buffer8 = ByteBuffer.allocate(8),
@@ -68,5 +72,11 @@ public abstract class Utils {
 
 	public static ThreadLocalRandom random() {
 		return ThreadLocalRandom.current();
+	}
+
+
+	public static int GetRand(ArenaMap map) {
+		map.seed = ((map.seed * 1103515245) + 12345) & 0x7fffffff;
+		return map.seed;
 	}
 }

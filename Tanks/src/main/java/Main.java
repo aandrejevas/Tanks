@@ -8,6 +8,8 @@ import java.util.function.UnaryOperator;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
+import utils.ArenaMap;
+import utils.MapBuilder;
 import utils.Utils;
 
 // Client
@@ -15,15 +17,24 @@ public class Main extends PApplet {
 
 	public static final int W = 600, H = 600;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
+	public static Map<Byte, PImage> imgMap = new HashMap<>();
 	public static final long timeout = 100_000_000;
 
 	public static PApplet self;
 	public static Client this_client;
-	public static PImage red_tank;
+	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank, background_box, water_box, lava_box, metal_box, wood_box;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
 	public static long start_time = System.nanoTime();
+
+
+	public static int seed; //todo hardcoded for now
+	public static int edge; //todo hardcoded for now
+	public static ArenaMap map = null;
+
+
+
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -42,9 +53,29 @@ public class Main extends PApplet {
 
 		self = this;
 		red_tank = loadImage("tank_test.png");
+		t34_tank = loadImage("t-34.png");
+		tiger_tank = loadImage("tiger-1.png");
+		sherman_tank = loadImage("sherman.png");
+		background_box = loadImage("Backgound_box.png");
+		metal_box = loadImage("metal_box.png");
+		wood_box = loadImage("wood_box.png");
+		lava_box = loadImage("lava_box.png");
+		water_box = loadImage("pudle_box.png");
+
+		imgMap.put(Utils.MAP_EMPTY, background_box);
+		imgMap.put(Utils.MAP_BORDER, metal_box);
+		imgMap.put(Utils.MAP_WALL, wood_box);
+		imgMap.put(Utils.MAP_WATER, water_box);
+		imgMap.put(Utils.MAP_LAVA, lava_box);
+		imgMap.put(Utils.MAP_T34, t34_tank);
+		imgMap.put(Utils.MAP_SHERMAN, sherman_tank);
+		imgMap.put(Utils.MAP_TIGER, tiger_tank);
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
+
+
+
 	}
 
 	@Override
@@ -56,8 +87,11 @@ public class Main extends PApplet {
 					break;
 				case Utils.INITIALIZE_GRID:
 					Utils.readII(this_client);
-					scale_x = (float)W / Utils.i1;
-					scale_y = (float)H / Utils.i2;
+					edge = Utils.i1;
+					scale_x = scale_y = (float)H / Utils.i1;
+					seed = Utils.i2;
+
+					handleGenMap();
 					break;
 				// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
 				case Utils.ADD_LEFT_TANK:
@@ -137,9 +171,61 @@ public class Main extends PApplet {
 			}
 
 			background(0xFFFFFFFF);
+
+			for (int i = 0; i < edge; i++) {
+				for (int j = 0; j < edge; j++) {
+					((TextureBlock)(map.map[j][i])).shape.draw(g);
+				}
+			}
+
 			tanks.values().forEach((final Tank tank) -> {
 				tank.shape.draw(g);
 			});
+		}
+	}
+
+	public static void handleGenMap() {
+		map = new ArenaMap(seed, edge, false);
+
+		for (int i = 0; i < edge; i++) {
+			for (int j = 0; j < edge; j++) {
+				map.setBlock(new TextureBlock(i, j));
+				map.setDefBlock(new TextureBlock(i, j));
+			}
+		}
+
+		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+
+		for (int i = 0; i < map.edge; i++) {
+			for (int j = 0; j < map.edge; j++) {
+				switch (map.map[i][j].value) {
+					case Utils.MAP_WALL:
+						print('▒');
+						break;
+					case Utils.MAP_EMPTY:
+						print('░');
+						break;
+					case Utils.MAP_BORDER:
+						print('▓');
+						break;
+					case Utils.MAP_LAVA:
+						print('^');
+						break;
+					case Utils.MAP_WATER:
+						print('0');
+						break;
+				}
+			}
+			println();
+		}
+
+		for (int i = 0; i < edge; i++) {
+			for (int j = 0; j < edge; j++) {
+//				((TextureBlock)(map.map[j][i])).setShape(Main.red_tank);
+//				((TextureBlock)(map.defMap[j][i])).setShape(Main.red_tank);
+				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
+				((TextureBlock)(map.defMap[j][i])).setShape(imgMap.get(map.defMap[j][i].value));
+			}
 		}
 	}
 
@@ -190,5 +276,10 @@ public class Main extends PApplet {
 				action.accept(0b1000);
 				return;
 		}
+	}
+
+	public static int GetRand() {
+		seed = ((seed * 1103515245) + 12345) & 0x7fffffff;
+		return seed;
 	}
 }
