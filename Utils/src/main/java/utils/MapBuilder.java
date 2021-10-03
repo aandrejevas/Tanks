@@ -42,7 +42,7 @@ public class MapBuilder {
             for(int j = 0; j < map.edge; j++) {
                 for(int k = 0; k < count; k++) {
                     dist = Math.sqrt(Math.pow(lava_y[k]-i, 2) + Math.pow(lava_x[k]-j, 2));
-                    prob = 2 / (dist*dist + 0.0001);
+                    prob = 0.5 / (dist*dist + 0.0001);
                     if (prob * 1000 > (double)(Utils.GetRand(map) % 1000)) {
                         map.map[j][i].value = Utils.MAP_LAVA;
                     }
@@ -66,7 +66,7 @@ public class MapBuilder {
             for(int j = 0; j < map.edge; j++) {
                 for(int k = 0; k < count; k++) {
                     dist = Math.sqrt(Math.pow(lava_y[k]-i, 2) + Math.pow(lava_x[k]-j, 2));
-                    prob = 2 / (dist*dist + 0.0001);
+                    prob = 0.4 / (dist*dist + 0.0001);
                     if (prob * 1000 > (double)(Utils.GetRand(map) % 1000)) {
                         map.map[j][i].value = Utils.MAP_WATER;
                     }

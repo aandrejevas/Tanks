@@ -40,29 +40,6 @@ public class Main extends PApplet {
 
 //		map = new ArenaMap(seed, edge, true);
 		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
-//
-//		for (int i = 0; i < map.edge; i++) {
-//			for (int j = 0; j < map.edge; j++) {
-//				switch (map.map[i][j].value) {
-//					case Utils.MAP_WALL:
-//						print('▒');
-//						break;
-//					case Utils.MAP_EMPTY:
-//						print('░');
-//						break;
-//					case Utils.MAP_BORDER:
-//						print('▓');
-//						break;
-//					case Utils.MAP_LAVA:
-//						print('^');
-//						break;
-//					case Utils.MAP_WATER:
-//						print('0');
-//						break;
-//				}
-//			}
-//			println();
-//		}
 	}
 
 	@Override
