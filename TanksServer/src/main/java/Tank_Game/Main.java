@@ -43,7 +43,6 @@ public class Main extends PApplet {
 	@Override
 	public void setup() {
 		surface.setVisible(false);
-		System.out.println("ddd");
 		this_server = new Server(this, 12345);
 
 		game_context = Game_Context.getInstance();

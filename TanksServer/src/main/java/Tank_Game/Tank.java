@@ -13,16 +13,6 @@ public class Tank {
 
 	public int ally_or_enemy;
 
-	public Tank() {
-		index = counter++;
-		do {
-			x = Utils.random().nextInt(Main.edge);
-			y = Utils.random().nextInt(Main.edge);
-		} while (Main.map.map[y][x].value < Utils.MAP_NON_OBSTACLE);
-		Main.map.map[y][x].value = Utils.MAP_PLAYER;
-		direction = UP;
-	}
-
 	public Tank(int index, int ally_or_enemy) {
 		this.index = index;
 		this.ally_or_enemy = ally_or_enemy;

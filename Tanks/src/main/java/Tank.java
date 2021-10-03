@@ -5,19 +5,6 @@ import processing.core.PShape;
 public class Tank {
 	public final PShape shape;
 
-	public Tank(final int ix, final int iy) {
-		shape = Main.self.createShape(PShape.GEOMETRY);
-
-		shape.setStroke(false);
-		shape.setFill(false);
-		shape.setTint(false);
-		shape.setTextureMode(PConstants.NORMAL);
-		shape.setTexture(Main.red_tank);
-		shape.translate(ix * Main.scale_x, iy * Main.scale_y);
-
-		shape.beginShape(PConstants.POLYGON);
-	}
-
 	public Tank(final int ix, final int iy, final int ally_or_enemy) {
 		shape = Main.self.createShape(PShape.GEOMETRY);
 
