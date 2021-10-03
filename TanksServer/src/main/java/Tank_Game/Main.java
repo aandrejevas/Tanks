@@ -1,8 +1,15 @@
+package Tank_Game;
 
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
+
+import Tank_Game.Patterns.Factory.Creator;
+import Tank_Game.Patterns.Factory.PlayerCreator;
+import Tank_Game.Patterns.Singletone.Game_Context;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
@@ -16,8 +23,11 @@ public class Main extends PApplet {
 	public static int seed = 3;
 	public static final int edge = 30;
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
+	public static final ArrayList<Tank> enemies = new ArrayList();
 	public static ArenaMap map = new ArenaMap(seed, edge, true);
 
+	public static Game_Context game_context;
+	public static Creator ctr = new PlayerCreator();
 
 	public static Server this_server;
 	public static Client available_client;
@@ -33,11 +43,11 @@ public class Main extends PApplet {
 	@Override
 	public void setup() {
 		surface.setVisible(false);
-
+		System.out.println("ddd");
 		this_server = new Server(this, 12345);
 
+		game_context = Game_Context.getInstance();
 		//building map
-
 //		map = new ArenaMap(seed, edge, true);
 		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 	}
@@ -53,18 +63,40 @@ public class Main extends PApplet {
 			});
 		}
 
+		if (enemies.size() != 0 && frameCount % 30 == 0){
+			enemies.forEach((final Tank tank) -> {
+				int rand = new Random().nextInt(4);
+				if (rand == 0)
+					tank.moveUp();
+				else if (rand == 1)
+					tank.moveDown();
+				else if (rand == 2)
+					tank.moveLeft();
+				else
+					tank.moveRight();
+			});
+		}
+
+
 		while ((available_client = this_server.available()) != null) {
 			switch (available_client.read()) {
 				case Utils.S_INIT_CLIENT:
 					Utils.send(available_client::write, Utils.INITIALIZE_GRID, edge, seed);
 					clients.values().forEach((final Tank tank) -> {
-						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y);
+						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y, tank.ally_or_enemy);
 					});
+					if (enemies.size() != 0) {
+						enemies.forEach((final Tank tank) -> {
+							Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y, tank.ally_or_enemy);
+						});
+					}
 
-					final Tank new_tank = new Tank();
-					Utils.send(this_server::write, Utils.ADD_UP_TANK, new_tank.index, new_tank.x, new_tank.y);
+
+					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
+
+					Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.ally_or_enemy);
 					Utils.send(available_client::write, Utils.INITIALIZE);
-					clients.put(available_client, new_tank);
+					clients.put(available_client, new_player);
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
@@ -80,6 +112,11 @@ public class Main extends PApplet {
 					handleMove(Tank::moveDown);
 					break;
 				default: throw new AssertionError();
+			}
+			if (clients.size() > enemies.size()){
+				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
+				Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.ally_or_enemy);
+				enemies.add(new_player);
 			}
 		}
 	}

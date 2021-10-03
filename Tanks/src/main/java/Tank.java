@@ -18,6 +18,23 @@ public class Tank {
 		shape.beginShape(PConstants.POLYGON);
 	}
 
+	public Tank(final int ix, final int iy, final int ally_or_enemy) {
+		shape = Main.self.createShape(PShape.GEOMETRY);
+
+		shape.setStroke(false);
+		shape.setFill(false);
+		shape.setTint(false);
+		shape.setTextureMode(PConstants.NORMAL);
+		if (ally_or_enemy == 0){
+			shape.setTexture(Main.t34_tank);
+		}else {
+			shape.setTexture(Main.tiger_tank);
+		}
+		shape.translate(ix * Main.scale_x, iy * Main.scale_y);
+
+		shape.beginShape(PConstants.POLYGON);
+	}
+
 	public Tank initLeft() {
 		shape.vertex(0, 0, /*                 */ 1, 0);
 		shape.vertex(Main.scale_x, 0, /*      */ 1, 1);
