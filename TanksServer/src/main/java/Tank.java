@@ -13,10 +13,10 @@ public class Tank {
 	public Tank() {
 		index = counter++;
 		do {
-			x = Utils.random().nextInt(Main.x_tiles);
-			y = Utils.random().nextInt(Main.y_tiles);
-		} while (Main.occupied[y][x]);
-		Main.occupied[y][x] = true;
+			x = Utils.random().nextInt(Main.edge);
+			y = Utils.random().nextInt(Main.edge);
+		} while (Main.map.map[y][x].value < Utils.MAP_NON_OBSTACLE);
+		Main.map.map[y][x].value = Utils.MAP_PLAYER;
 		direction = UP;
 	}
 
@@ -25,7 +25,7 @@ public class Tank {
 	}
 
 	public void moveLeft() {
-		if (x == 0 || Main.occupied[y][x - 1]) {
+		if (Main.map.map[y][x - 1].value < Utils.MAP_NON_OBSTACLE) {
 			switch (direction) {
 				default:
 					direction = LEFT;
@@ -33,8 +33,8 @@ public class Tank {
 				case LEFT: return;
 			}
 		} else {
-			Main.occupied[y][x] = false;
-			Main.occupied[y][--x] = true;
+			Main.map.map[y][x].value = Main.map.defMap[y][x].value;
+			Main.map.map[y][--x].value = Utils.MAP_PLAYER;
 			switch (direction) {
 				default:
 					direction = LEFT;
@@ -48,7 +48,7 @@ public class Tank {
 	}
 
 	public void moveRight() {
-		if (x == Main.x_tiles_S1 || Main.occupied[y][x + 1]) {
+		if (Main.map.map[y][x + 1].value < Utils.MAP_NON_OBSTACLE) {
 			switch (direction) {
 				default:
 					direction = RIGHT;
@@ -56,8 +56,8 @@ public class Tank {
 				case RIGHT: return;
 			}
 		} else {
-			Main.occupied[y][x] = false;
-			Main.occupied[y][++x] = true;
+			Main.map.map[y][x].value = Main.map.defMap[y][x].value;
+			Main.map.map[y][++x].value = Utils.MAP_PLAYER;
 			switch (direction) {
 				default:
 					direction = RIGHT;
@@ -71,7 +71,7 @@ public class Tank {
 	}
 
 	public void moveUp() {
-		if (y == 0 || Main.occupied[y - 1][x]) {
+		if (Main.map.map[y - 1][x].value < Utils.MAP_NON_OBSTACLE) {
 			switch (direction) {
 				default:
 					direction = UP;
@@ -79,8 +79,8 @@ public class Tank {
 				case UP: return;
 			}
 		} else {
-			Main.occupied[y][x] = false;
-			Main.occupied[--y][x] = true;
+			Main.map.map[y][x].value = Main.map.defMap[y][x].value;
+			Main.map.map[--y][x].value = Utils.MAP_PLAYER;
 			switch (direction) {
 				default:
 					direction = UP;
@@ -94,7 +94,7 @@ public class Tank {
 	}
 
 	public void moveDown() {
-		if (y == Main.y_tiles_S1 || Main.occupied[y + 1][x]) {
+		if (Main.map.map[y + 1][x].value < Utils.MAP_NON_OBSTACLE) {
 			switch (direction) {
 				default:
 					direction = DOWN;
@@ -102,8 +102,8 @@ public class Tank {
 				case DOWN: return;
 			}
 		} else {
-			Main.occupied[y][x] = false;
-			Main.occupied[++y][x] = true;
+			Main.map.map[y][x].value = Main.map.defMap[y][x].value;
+			Main.map.map[++y][x].value = Utils.MAP_PLAYER;
 			switch (direction) {
 				default:
 					direction = DOWN;

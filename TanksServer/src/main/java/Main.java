@@ -6,14 +6,18 @@ import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
+import utils.ArenaMap;
+import utils.MapBuilder;
 import utils.Utils;
 
 // Server
 public class Main extends PApplet {
 
+	public static int seed = 3;
+	public static final int edge = 30;
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
-	public static final int x_tiles = 20, y_tiles = 20, x_tiles_S1 = x_tiles - 1, y_tiles_S1 = y_tiles - 1;
-	public static final boolean[][] occupied = new boolean[y_tiles][x_tiles];
+	public static ArenaMap map = new ArenaMap(seed, edge, true);
+
 
 	public static Server this_server;
 	public static Client available_client;
@@ -31,6 +35,34 @@ public class Main extends PApplet {
 		surface.setVisible(false);
 
 		this_server = new Server(this, 12345);
+
+		//building map
+
+//		map = new ArenaMap(seed, edge, true);
+		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+//
+//		for (int i = 0; i < map.edge; i++) {
+//			for (int j = 0; j < map.edge; j++) {
+//				switch (map.map[i][j].value) {
+//					case Utils.MAP_WALL:
+//						print('▒');
+//						break;
+//					case Utils.MAP_EMPTY:
+//						print('░');
+//						break;
+//					case Utils.MAP_BORDER:
+//						print('▓');
+//						break;
+//					case Utils.MAP_LAVA:
+//						print('^');
+//						break;
+//					case Utils.MAP_WATER:
+//						print('0');
+//						break;
+//				}
+//			}
+//			println();
+//		}
 	}
 
 	@Override
@@ -47,7 +79,7 @@ public class Main extends PApplet {
 		while ((available_client = this_server.available()) != null) {
 			switch (available_client.read()) {
 				case Utils.S_INIT_CLIENT:
-					Utils.send(available_client::write, Utils.INITIALIZE_GRID, x_tiles, y_tiles);
+					Utils.send(available_client::write, Utils.INITIALIZE_GRID, edge, seed);
 					clients.values().forEach((final Tank tank) -> {
 						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y);
 					});
@@ -77,5 +109,10 @@ public class Main extends PApplet {
 
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(clients.get(available_client));
+	}
+
+	public static int GetRand() {
+		seed = ((seed * 1103515245) + 12345) & 0x7fffffff;
+		return seed;
 	}
 }
