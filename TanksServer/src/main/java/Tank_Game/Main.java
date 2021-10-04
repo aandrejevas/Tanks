@@ -10,6 +10,10 @@ import java.util.function.Consumer;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
+import Tank_Game.Patterns.Strategy.MoveDown;
+import Tank_Game.Patterns.Strategy.MoveLeft;
+import Tank_Game.Patterns.Strategy.MoveRight;
+import Tank_Game.Patterns.Strategy.MoveUp;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
@@ -66,13 +70,14 @@ public class Main extends PApplet {
 			enemies.forEach((final Tank tank) -> {
 				int rand = new Random().nextInt(4);
 				if (rand == 0)
-					tank.moveUp();
+					tank.setAlgorithm(new MoveUp());
 				else if (rand == 1)
-					tank.moveDown();
+					tank.setAlgorithm(new MoveDown());
 				else if (rand == 2)
-					tank.moveLeft();
+					tank.setAlgorithm(new MoveLeft());
 				else
-					tank.moveRight();
+					tank.setAlgorithm(new MoveRight());
+				tank.move();
 			});
 		}
 
@@ -82,39 +87,43 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					Utils.send(available_client::write, Utils.INITIALIZE_GRID, edge, seed);
 					clients.values().forEach((final Tank tank) -> {
-						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y, tank.ally_or_enemy);
+						Utils.send(available_client::write, tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
 					});
 					if (enemies.size() != 0) {
 						enemies.forEach((final Tank tank) -> {
-							Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y, tank.ally_or_enemy);
+							Utils.send(available_client::write, tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
 						});
 					}
 
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 
-					Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.ally_or_enemy);
+					Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
 					Utils.send(available_client::write, Utils.INITIALIZE);
 					clients.put(available_client, new_player);
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
-					handleMove(Tank::moveLeft);
+					//handleMove(Tank::moveLeft);
+					handleMove(Tank-> Tank.setAlgorithm(new MoveLeft()).move());
 					break;
 				case Utils.S_MOVE_RIGHT:
-					handleMove(Tank::moveRight);
+					//handleMove(Tank::moveRight);
+					handleMove(Tank-> Tank.setAlgorithm(new MoveRight()).move());
 					break;
 				case Utils.S_MOVE_UP:
-					handleMove(Tank::moveUp);
+					//handleMove(Tank::moveUp);
+					handleMove(Tank-> Tank.setAlgorithm(new MoveUp()).move());
 					break;
 				case Utils.S_MOVE_DOWN:
-					handleMove(Tank::moveDown);
+					//handleMove(Tank::moveDown);
+					handleMove(Tank-> Tank.setAlgorithm(new MoveDown()).move());
 					break;
 				default: throw new AssertionError();
 			}
 			if (clients.size() > enemies.size()){
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
-				Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.ally_or_enemy);
+				Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
 				enemies.add(new_player);
 			}
 		}
