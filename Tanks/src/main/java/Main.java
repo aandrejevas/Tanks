@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.function.UnaryOperator;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
+import utils.ObjectPool;
 import utils.Utils;
 
 // Client
@@ -58,22 +58,23 @@ public class Main extends PApplet {
 					Utils.readII(this_client);
 					scale_x = (float)W / Utils.i1;
 					scale_y = (float)H / Utils.i2;
+					ObjectPool.register(Tank.class, Tank::new);
 					break;
 				// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
 				case Utils.ADD_LEFT_TANK:
-					handleAdd(Tank::initLeft);
+					handleAdd(Tank::pointLeft);
 					break;
 				case Utils.ADD_RIGHT_TANK:
-					handleAdd(Tank::initRight);
+					handleAdd(Tank::pointRight);
 					break;
 				case Utils.ADD_UP_TANK:
-					handleAdd(Tank::initUp);
+					handleAdd(Tank::pointUp);
 					break;
 				case Utils.ADD_DOWN_TANK:
-					handleAdd(Tank::initDown);
+					handleAdd(Tank::pointDown);
 					break;
 				case Utils.REMOVE_TANK:
-					tanks.remove(Utils.readInt(this_client));
+					ObjectPool.returnObject(Tank.class, tanks.remove(Utils.readInt(this_client)));
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.MOVE_LEFT:
@@ -148,9 +149,12 @@ public class Main extends PApplet {
 		start_time = System.nanoTime();
 	}
 
-	public static void handleAdd(final UnaryOperator<Tank> func) {
+	public static void handleAdd(final Consumer<Tank> func) {
 		Utils.readIII(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));
+		final Tank tank = ObjectPool.borrowObject(Tank.class);
+		func.accept(tank);
+		tank.move(Utils.i2, Utils.i3);
+		tanks.put(Utils.i1, tank);
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {

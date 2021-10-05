@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
+import utils.ObjectPool;
 import utils.Utils;
 
 // Server
@@ -30,6 +31,8 @@ public class Main extends PApplet {
 	public void setup() {
 		surface.setVisible(false);
 
+		ObjectPool.register(Tank.class, Tank::new);
+
 		this_server = new Server(this, 12345);
 	}
 
@@ -38,7 +41,10 @@ public class Main extends PApplet {
 		if (this_server.clientCount != clients.size()) {
 			clients.entrySet().removeIf((final Map.Entry<Client, Tank> entry) -> {
 				if (!entry.getKey().active()) {
-					Utils.send(this_server::write, Utils.REMOVE_TANK, entry.getValue().index);
+					final Tank tank = entry.getValue();
+					occupied[tank.y][tank.x] = false;
+					ObjectPool.returnObject(Tank.class, tank);
+					Utils.send(this_server::write, Utils.REMOVE_TANK, tank.index);
 					return true;
 				} else return false;
 			});
@@ -52,7 +58,8 @@ public class Main extends PApplet {
 						Utils.send(available_client::write, tank.direction, tank.index, tank.x, tank.y);
 					});
 
-					final Tank new_tank = new Tank();
+					final Tank new_tank = ObjectPool.borrowObject(Tank.class);
+					new_tank.initPos();
 					Utils.send(this_server::write, Utils.ADD_UP_TANK, new_tank.index, new_tank.x, new_tank.y);
 					Utils.send(available_client::write, Utils.INITIALIZE);
 					clients.put(available_client, new_tank);
