@@ -235,8 +235,10 @@ public class Main extends PApplet {
 	}
 
 	public static void handleAdd(final UnaryOperator<Tank> func) {
-		Utils.readIII(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));
+		/*Utils.readIII(this_client);
+		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));*/
+		Utils.readIV(this_client);
+		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3, Utils.i4)));
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {
