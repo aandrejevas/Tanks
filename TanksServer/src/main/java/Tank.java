@@ -15,12 +15,12 @@ public class Tank {
 		direction = UP;
 	}
 
-	public void initPos() {
-		do {
-			x = Utils.random().nextInt(Main.x_tiles);
-			y = Utils.random().nextInt(Main.y_tiles);
-		} while (Main.occupied[y][x]);
-		Main.occupied[y][x] = true;
+	public void occupy(final int ix, final int iy) {
+		Main.occupied[y = iy][x = ix] = true;
+	}
+
+	public void unoccupy() {
+		Main.occupied[y][x] = false;
 	}
 
 	protected void sendMove(final byte message) {

@@ -16,7 +16,7 @@ public abstract class Utils {
 		MOVE_LEFT = 4, MOVE_RIGHT = 5, MOVE_UP = 6, MOVE_DOWN = 7, POINT_LEFT = 8, POINT_RIGHT = 9, POINT_UP = 10, POINT_DOWN = 11,
 		TURN_LEFT = 15, TURN_RIGHT = 16, TURN_UP = 17, TURN_DOWN = 18,
 		S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
-		S_INIT_CLIENT = 4;
+		S_INIT_CLIENT = 4, S_SPAWN_TANK = 5;
 
 	public static final ByteBuffer buffer4 = ByteBuffer.allocate(4),
 		buffer5 = ByteBuffer.allocate(5),

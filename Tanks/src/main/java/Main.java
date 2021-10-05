@@ -23,7 +23,7 @@ public class Main extends PApplet {
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
-	public static long start_time = System.nanoTime();
+	public static long start_time;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -52,6 +52,7 @@ public class Main extends PApplet {
 		while (this_client.available() != 0) {
 			switch (this_client.read()) {
 				case Utils.INITIALIZE:
+					start_time = System.nanoTime() - timeout;
 					initialized = true;
 					break;
 				case Utils.INITIALIZE_GRID:
@@ -136,12 +137,12 @@ public class Main extends PApplet {
 						break;
 				}
 			}
-
-			background(0xFFFFFFFF);
-			tanks.values().forEach((final Tank tank) -> {
-				tank.shape.draw(g);
-			});
 		}
+
+		background(0xFFFFFFFF);
+		tanks.values().forEach((final Tank tank) -> {
+			tank.shape.draw(g);
+		});
 	}
 
 	public static void sendMove(final byte message) {
@@ -159,6 +160,13 @@ public class Main extends PApplet {
 
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(tanks.get(Utils.readInt(this_client)));
+	}
+
+	@Override
+	public void mousePressed() {
+		if (!initialized) {
+			Utils.send(this_client::write, Utils.S_SPAWN_TANK, (int)(mouseX / scale_x), (int)(mouseY / scale_y));
+		}
 	}
 
 	@Override
