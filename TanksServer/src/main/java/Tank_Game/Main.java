@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import Tank_Game.Patterns.AbstractFactory.*;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
@@ -126,6 +127,42 @@ public class Main extends PApplet {
 				Utils.send(this_server::write, Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
 				enemies.add(new_player);
 			}
+		}
+		//generate drops randomly
+		generateDrops();
+
+	}
+
+	private static void generateDrops() {
+		if (GetRand() % 10000 < 20) {
+			int size = GetRand() % 300;
+			AbstractFactory af;
+			if (size < 100) {
+				af = new SmallFactory();
+			} else if (size < 200) {
+				af = new MediumFactory();
+			} else {
+				af = new LargeFactory();
+			}
+			int dropType = GetRand() % 300;
+			Drop drop;
+			if (dropType < 100) {
+				drop = af.createAmmo();
+			} else if (dropType < 200) {
+				drop = af.createArmor();
+			} else {
+				drop = af.createHealth();
+			}
+
+			int[] cord = new int[2];
+
+			do {
+				cord[0] = Utils.random().nextInt(Main.edge);
+				cord[1] = Utils.random().nextInt(Main.edge);
+			} while (Main.map.map[cord[1]][cord[0]].value != Utils.MAP_EMPTY);
+			Main.map.map[cord[1]][cord[0]].value = drop.getName();
+
+			Utils.send(this_server::write, Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), cord[1], cord[0]);
 		}
 	}
 
