@@ -2,3 +2,6 @@
 Tanks/Tanks.iml
 TanksServer/TanksServer.iml
 Utils/Utils.iml
+Tanks/target
+TankServer/target
+Utils/target
