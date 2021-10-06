@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import Tank_Game.Patterns.AbstractFactory.*;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
@@ -24,7 +25,7 @@ import utils.Utils;
 // Server
 public class Main extends PApplet {
 
-	public static int seed = 3;
+	public static int seed = 3, seedAux = 3;
 	public static final int edge = 30;
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
 	public static final ArrayList<Tank> enemies = new ArrayList();
@@ -53,6 +54,29 @@ public class Main extends PApplet {
 		//building map
 //		map = new ArenaMap(seed, edge, true);
 		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+
+//		for (int i = 0; i < map.edge; i++) {
+//			for (int j = 0; j < map.edge; j++) {
+//				switch (map.map[i][j].value) {
+//					case Utils.MAP_WALL:
+//						print('▒');
+//						break;
+//					case Utils.MAP_EMPTY:
+//						print('░');
+//						break;
+//					case Utils.MAP_BORDER:
+//						print('▓');
+//						break;
+//					case Utils.MAP_LAVA:
+//						print('^');
+//						break;
+//					case Utils.MAP_WATER:
+//						print('0');
+//						break;
+//				}
+//			}
+//			println();
+//		}
 	}
 
 	@Override
@@ -127,6 +151,42 @@ public class Main extends PApplet {
 				enemies.add(new_player);
 			}
 		}
+		//generate drops randomly
+		generateDrops();
+
+	}
+
+	private static void generateDrops() {
+		if (GetRandAux() % 10000 < 20) {
+			int size = GetRandAux() % 300;
+			AbstractFactory af;
+			if (size < 100) {
+				af = new SmallFactory();
+			} else if (size < 200) {
+				af = new MediumFactory();
+			} else {
+				af = new LargeFactory();
+			}
+			int dropType = GetRandAux() % 300;
+			Drop drop;
+			if (dropType < 100) {
+				drop = af.createAmmo();
+			} else if (dropType < 200) {
+				drop = af.createArmor();
+			} else {
+				drop = af.createHealth();
+			}
+
+			int[] cord = new int[2];
+
+			do {
+				cord[0] = Utils.random().nextInt(Main.edge);
+				cord[1] = Utils.random().nextInt(Main.edge);
+			} while (Main.map.map[cord[1]][cord[0]].value != Utils.MAP_EMPTY);
+			Main.map.map[cord[1]][cord[0]].value = drop.getName();
+
+			Utils.send(this_server::write, Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), cord[1], cord[0]);
+		}
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {
@@ -136,5 +196,10 @@ public class Main extends PApplet {
 	public static int GetRand() {
 		seed = ((seed * 1103515245) + 12345) & 0x7fffffff;
 		return seed;
+	}
+
+	public static int GetRandAux() {
+		seedAux = ((seedAux * 1103515245) + 12345) & 0x7fffffff;
+		return seedAux;
 	}
 }

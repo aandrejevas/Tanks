@@ -22,7 +22,11 @@ public class Main extends PApplet {
 
 	public static PApplet self;
 	public static Client this_client;
-	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank, background_box, water_box, lava_box, metal_box, wood_box;
+	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
+			background_box, water_box, lava_box, metal_box, wood_box,
+			drop_sammo, drop_mammo, drop_lammo,
+			drop_sarmor, drop_marmor, drop_larmor,
+			drop_shealth, drop_mhealth, drop_lhealth;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
@@ -61,6 +65,15 @@ public class Main extends PApplet {
 		wood_box = loadImage("wood_box.png");
 		lava_box = loadImage("lava_box.png");
 		water_box = loadImage("pudle_box.png");
+		drop_lammo = loadImage("Drops/Ammo_Drop/Large_Ammo.png");
+		drop_mammo = loadImage("Drops/Ammo_Drop/Medium_Ammo.png");
+		drop_sammo = loadImage("Drops/Ammo_Drop/Small_Ammo.png");
+		drop_sarmor = loadImage("Drops/Armor_Drop/Small_Armor.png");
+		drop_marmor = loadImage("Drops/Armor_Drop/Medium_Armor.png");
+		drop_larmor = loadImage("Drops/Armor_Drop/Large_Armor.png");
+		drop_lhealth = loadImage("Drops/Health_Drop/Large_Health.png");
+		drop_mhealth = loadImage("Drops/Health_Drop/Medium_Health.png");
+		drop_shealth = loadImage("Drops/Health_Drop/Small_Health.png");
 
 		imgMap.put(Utils.MAP_EMPTY, background_box);
 		imgMap.put(Utils.MAP_BORDER, metal_box);
@@ -70,12 +83,18 @@ public class Main extends PApplet {
 		imgMap.put(Utils.MAP_T34, t34_tank);
 		imgMap.put(Utils.MAP_SHERMAN, sherman_tank);
 		imgMap.put(Utils.MAP_TIGER, tiger_tank);
+		imgMap.put(Utils.DROP_LAMMO, drop_lammo);
+		imgMap.put(Utils.DROP_MAMMO, drop_mammo);
+		imgMap.put(Utils.DROP_SAMMO, drop_sammo);
+		imgMap.put(Utils.DROP_LARMOR, drop_larmor);
+		imgMap.put(Utils.DROP_MARMOR, drop_marmor);
+		imgMap.put(Utils.DROP_SARMOR, drop_sarmor);
+		imgMap.put(Utils.DROP_LHEALTH, drop_lhealth);
+		imgMap.put(Utils.DROP_MHEALTH, drop_mhealth);
+		imgMap.put(Utils.DROP_SHEALTH, drop_shealth);
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
-
-
-
 	}
 
 	@Override
@@ -108,6 +127,10 @@ public class Main extends PApplet {
 					break;
 				case Utils.REMOVE_TANK:
 					tanks.remove(Utils.readInt(this_client));
+					break;
+				case Utils.ADD_DROP:
+					Utils.readIV(this_client);
+					handleAddDrop();
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.MOVE_LEFT:
@@ -196,37 +219,41 @@ public class Main extends PApplet {
 
 		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
-		for (int i = 0; i < map.edge; i++) {
-			for (int j = 0; j < map.edge; j++) {
-				switch (map.map[i][j].value) {
-					case Utils.MAP_WALL:
-						print('▒');
-						break;
-					case Utils.MAP_EMPTY:
-						print('░');
-						break;
-					case Utils.MAP_BORDER:
-						print('▓');
-						break;
-					case Utils.MAP_LAVA:
-						print('^');
-						break;
-					case Utils.MAP_WATER:
-						print('0');
-						break;
-				}
-			}
-			println();
-		}
+//		for (int i = 0; i < map.edge; i++) {
+//			for (int j = 0; j < map.edge; j++) {
+//				switch (map.map[i][j].value) {
+//					case Utils.MAP_WALL:
+//						print('▒');
+//						break;
+//					case Utils.MAP_EMPTY:
+//						print('░');
+//						break;
+//					case Utils.MAP_BORDER:
+//						print('▓');
+//						break;
+//					case Utils.MAP_LAVA:
+//						print('^');
+//						break;
+//					case Utils.MAP_WATER:
+//						print('0');
+//						break;
+//				}
+//			}
+//			println();
+//		}
 
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-//				((TextureBlock)(map.map[j][i])).setShape(Main.red_tank);
-//				((TextureBlock)(map.defMap[j][i])).setShape(Main.red_tank);
 				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
 				((TextureBlock)(map.defMap[j][i])).setShape(imgMap.get(map.defMap[j][i].value));
 			}
 		}
+	}
+
+	public static void handleAddDrop() {
+		((TextureBlock)(map.map[Utils.i3][Utils.i4])).setShape(imgMap.get((byte)Utils.i1));
+		//todo do something with value (i2)
+
 	}
 
 	public static void sendMove(final byte message) {
