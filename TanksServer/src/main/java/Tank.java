@@ -24,7 +24,7 @@ public class Tank {
 	}
 
 	protected void sendMove(final byte message) {
-		Utils.send(Main.this_server::write, message, index);
+		Main.this_server.write(message, index);
 	}
 
 	public void moveLeft() {

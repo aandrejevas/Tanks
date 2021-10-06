@@ -8,6 +8,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
 import utils.ObjectPool;
+import utils.TOutputStream;
 import utils.Utils;
 
 // Client
@@ -19,6 +20,7 @@ public class Main extends PApplet {
 
 	public static PApplet self;
 	public static Client this_client;
+	public static TOutputStream this_os;
 	public static PImage red_tank;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
@@ -44,7 +46,8 @@ public class Main extends PApplet {
 		red_tank = loadImage("tank_test.png");
 
 		this_client = new Client(this, "127.0.0.1", 12345);
-		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
+		this_client.output = (this_os = new TOutputStream(this_client));
+		this_os.write(Utils.S_INIT_CLIENT);
 	}
 
 	@Override
@@ -146,7 +149,7 @@ public class Main extends PApplet {
 	}
 
 	public static void sendMove(final byte message) {
-		Utils.send(this_client::write, message);
+		this_os.write(message);
 		start_time = System.nanoTime();
 	}
 
@@ -165,7 +168,7 @@ public class Main extends PApplet {
 	@Override
 	public void mousePressed() {
 		if (!initialized) {
-			Utils.send(this_client::write, Utils.S_SPAWN_TANK, (int)(mouseX / scale_x), (int)(mouseY / scale_y));
+			this_os.write(Utils.S_SPAWN_TANK, (int)(mouseX / scale_x), (int)(mouseY / scale_y));
 		}
 	}
 

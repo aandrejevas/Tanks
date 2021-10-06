@@ -2,8 +2,6 @@ package utils;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import processing.net.Client;
 
 public abstract class Utils {
@@ -23,25 +21,10 @@ public abstract class Utils {
 		buffer8 = ByteBuffer.allocate(8),
 		buffer9 = ByteBuffer.allocate(9),
 		buffer12 = ByteBuffer.allocate(12),
-		buffer13 = ByteBuffer.allocate(13);
+		buffer13 = ByteBuffer.allocate(13),
+		buffer = ByteBuffer.allocate(1000);
 
 	public static int i1, i2, i3;
-
-	public static void send(final IntConsumer func, final byte _0) {
-		func.accept(_0);
-	}
-
-	public static void send(final Consumer<byte[]> func, final byte _0, final int _1) {
-		func.accept(buffer5.put(0, _0).putInt(1, _1).array());
-	}
-
-	public static void send(final Consumer<byte[]> func, final byte _0, final int _1, final int _2) {
-		func.accept(buffer9.put(0, _0).putInt(1, _1).putInt(5, _2).array());
-	}
-
-	public static void send(final Consumer<byte[]> func, final byte _0, final int _1, final int _2, final int _3) {
-		func.accept(buffer13.put(0, _0).putInt(1, _1).putInt(5, _2).putInt(9, _3).array());
-	}
 
 	public static int readInt(final Client client) {
 		client.readBytes(buffer4.array());
