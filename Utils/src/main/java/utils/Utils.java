@@ -17,7 +17,7 @@ public abstract class Utils {
 		TURN_LEFT = 15, TURN_RIGHT = 16, TURN_UP = 17, TURN_DOWN = 18,
 		S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
 		S_INIT_CLIENT = 4,
-		ADD_DROP = 28;
+		ADD_DROP = 28, REMOVE_DROP = 29;
 
 	public static final byte MAP_WALL = 1, MAP_BORDER = 2, MAP_PLAYER = 4, MAP_T34 = 5, MAP_SHERMAN = 6, MAP_TIGER = 7,
 			MAP_NON_OBSTACLE = 8, MAP_EMPTY = 9,  MAP_WATER = 10, MAP_LAVA = 11,

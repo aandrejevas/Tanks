@@ -12,7 +12,7 @@ public class MoveRight extends MoveAlgorithm
 
     @Override
     public void move(int[] cord, byte[] direction, int index) {
-        if (Main.map.map[cord[1]][cord[0] + 1].value < Utils.MAP_NON_OBSTACLE) {
+        if (Main.map.map[cord[1]][cord[0] + 1].obstacle) {
             switch (direction[0]) {
                 default:
                     direction[0] = RIGHT;
@@ -20,8 +20,8 @@ public class MoveRight extends MoveAlgorithm
                 case RIGHT: return;
             }
         } else {
-            Main.map.map[cord[1]][cord[0]].value = Main.map.defMap[cord[1]][cord[0]].value;
-            Main.map.map[cord[1]][++cord[0]].value = Utils.MAP_PLAYER;
+            Main.map.map[cord[1]][cord[0]].obstacle = false;
+            Main.map.map[cord[1]][++cord[0]].obstacle = true;
             switch (direction[0]) {
                 default:
                     direction[0] = RIGHT;

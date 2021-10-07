@@ -22,8 +22,17 @@ public class MapBuilder {
             for (int j = 0; j < edge; j++) {
                 if (i == 0 || j  == 0 || i+1 == edge || j+1 == edge) {
                     this.map.map[i][j].value = Utils.MAP_BORDER;
-                    this.map.defMap[i][j].value = Utils.MAP_BORDER;
+                    this.map.map[i][j].obstacle = true;
                 }
+            }
+        }
+        return this;
+    }
+
+    public MapBuilder makeBackground() {
+        for (int i = 0; i < this.map.edge; i++) {
+            for (int j = 0; j < this.map.edge; j++) {
+                this.map.background[i][j].value = Utils.MAP_EMPTY;
             }
         }
         return this;
@@ -126,7 +135,8 @@ public class MapBuilder {
                         status = CheckAvailable(x-1, y, x-2, y);
                         if (status) {
                             st.push(st_last -1);
-                            map.map[y][x-1].value =  1;
+                            map.map[y][x-1].value =  Utils.MAP_WALL;
+                            map.map[y][x-1].obstacle = true;
                             return true;
                         }
                         break;
@@ -134,7 +144,8 @@ public class MapBuilder {
                         status = CheckAvailable(x, y-1, x, y-2);
                         if (status){
                             st.push(st_last-map.edge);
-                            map.map[y-1][x].value =  1;
+                            map.map[y-1][x].value =  Utils.MAP_WALL;
+                            map.map[y-1][x].obstacle = true;
                             return true;
                         }
                         break;
@@ -142,7 +153,8 @@ public class MapBuilder {
                         status = CheckAvailable(x+1, y, x+2, y);
                         if (status) {
                             st.push(st_last+1);
-                            map.map[y][x+1].value =  1;
+                            map.map[y][x+1].value =  Utils.MAP_WALL;
+                            map.map[y][x+1].obstacle = true;
                             return true;
                         }
                         break;
@@ -150,7 +162,8 @@ public class MapBuilder {
                         status = CheckAvailable(x, y+1, x, y+2);
                         if (status) {
                             st.push(st_last+map.edge);
-                            map.map[y+1][x].value =  1;
+                            map.map[y+1][x].value =  Utils.MAP_WALL;
+                            map.map[y+1][x].obstacle = true;
                             return true;
                         }
                         break;
@@ -176,6 +189,7 @@ public class MapBuilder {
 
         for(int i = 0; i < stArr.size(); i++) {
             map.map[stArr.get(i).peek() / map.edge][(int)stArr.get(i).peek() % map.edge].value =  Utils.MAP_WALL;
+            map.map[stArr.get(i).peek() / map.edge][(int)stArr.get(i).peek() % map.edge].obstacle = true;
         }
 
         while (changed) {

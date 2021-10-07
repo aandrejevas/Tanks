@@ -19,6 +19,7 @@ import processing.core.PApplet;
 import processing.net.Client;
 import processing.net.Server;
 import utils.ArenaMap;
+import utils.Drop;
 import utils.MapBuilder;
 import utils.Utils;
 
@@ -113,6 +114,16 @@ public class Main extends PApplet {
 					clients.values().forEach((final Tank tank) -> {
 						Utils.send(available_client::write, tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
 					});
+
+					for (int i = 0; i < map.edge; i++) {
+						for (int j = 0; j < map.edge; j++) {
+							if (map.map[i][j].drop != null) {
+								Utils.send(this_server::write, Utils.ADD_DROP, map.map[i][j].drop.getName(), map.map[i][j].drop.getValue(), i, j);
+							}
+						}
+					}
+
+
 					if (enemies.size() != 0) {
 						enemies.forEach((final Tank tank) -> {
 							Utils.send(available_client::write, tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
@@ -183,7 +194,7 @@ public class Main extends PApplet {
 				cord[0] = Utils.random().nextInt(Main.edge);
 				cord[1] = Utils.random().nextInt(Main.edge);
 			} while (Main.map.map[cord[1]][cord[0]].value != Utils.MAP_EMPTY);
-			Main.map.map[cord[1]][cord[0]].value = drop.getName();
+			Main.map.map[cord[1]][cord[0]].drop = drop;
 
 			Utils.send(this_server::write, Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), cord[1], cord[0]);
 		}
