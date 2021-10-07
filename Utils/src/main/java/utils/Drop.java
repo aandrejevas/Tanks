@@ -2,7 +2,7 @@
  * @(#) Drop.java
  */
 
-package Tank_Game.Patterns.AbstractFactory;
+package utils;
 
 public abstract class Drop
 {

@@ -33,8 +33,8 @@ public class Main extends PApplet {
 	public static long start_time = System.nanoTime();
 
 
-	public static int seed; //todo hardcoded for now
-	public static int edge; //todo hardcoded for now
+	public static int seed;
+	public static int edge;
 	public static ArenaMap map = null;
 
 
@@ -197,7 +197,11 @@ public class Main extends PApplet {
 
 			for (int i = 0; i < edge; i++) {
 				for (int j = 0; j < edge; j++) {
+					((TextureBlock)(map.background[j][i])).shape.draw(g);
 					((TextureBlock)(map.map[j][i])).shape.draw(g);
+					if (map.map[j][i].drop != null) {
+						((TextureDrop)(map.map[j][i].drop)).shape.draw(g);
+					}
 				}
 			}
 
@@ -217,7 +221,7 @@ public class Main extends PApplet {
 			}
 		}
 
-		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+		map = (new MapBuilder(map)).makeBackground().makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
 //		for (int i = 0; i < map.edge; i++) {
 //			for (int j = 0; j < map.edge; j++) {
@@ -245,15 +249,22 @@ public class Main extends PApplet {
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
 				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
-				((TextureBlock)(map.defMap[j][i])).setShape(imgMap.get(map.defMap[j][i].value));
+				((TextureBlock)(map.background[j][i])).setShape(imgMap.get(map.background[j][i].value));
 			}
 		}
 	}
 
 	public static void handleAddDrop() {
-		((TextureBlock)(map.map[Utils.i3][Utils.i4])).setShape(imgMap.get((byte)Utils.i1));
-		//todo do something with value (i2)
+		map.map[Utils.i3][Utils.i4].drop = new TextureDrop(
+				(byte)Utils.i1,
+				Utils.i2,
+				imgMap.get((byte)Utils.i1),
+				Utils.i4,
+				Utils.i3);
+	}
 
+	public static void handleRemoveDrop() {
+		map.map[Utils.i3][Utils.i4].drop = null;
 	}
 
 	public static void sendMove(final byte message) {
