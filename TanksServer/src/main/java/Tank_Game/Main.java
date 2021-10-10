@@ -54,7 +54,8 @@ public class Main extends PApplet {
 		game_context = Game_Context.getInstance();
 		//building map
 //		map = new ArenaMap(seed, edge, true);
-		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+		map = (new MapBuilder(map)).Build(false).getBuildable();
+//		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
 //		for (int i = 0; i < map.edge; i++) {
 //			for (int j = 0; j < map.edge; j++) {
