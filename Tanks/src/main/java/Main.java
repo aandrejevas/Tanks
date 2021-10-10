@@ -221,7 +221,8 @@ public class Main extends PApplet {
 			}
 		}
 
-		map = (new MapBuilder(map)).makeBackground().makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+//		map = (new MapBuilder(map)).makeBackground().makeLava().makeWater().makeBorders().makeMaze().getBuildable();
+		map = (new MapBuilder(map)).Build(true).getBuildable();
 
 //		for (int i = 0; i < map.edge; i++) {
 //			for (int j = 0; j < map.edge; j++) {

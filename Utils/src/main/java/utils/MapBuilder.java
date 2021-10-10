@@ -4,7 +4,7 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class MapBuilder {
+public class MapBuilder extends Builder {
 
     private ArenaMap map;
 
@@ -12,8 +12,18 @@ public class MapBuilder {
         this.map = map;
     }
 
+    @Override
     public ArenaMap getBuildable() {
         return this.map;
+    }
+
+    @Override
+    public Builder Build(boolean background) {
+        if (background) {
+            return this.makeBackground().makeLava().makeWater().makeBorders().makeMaze();
+        } else {
+            return this.makeLava().makeWater().makeBorders().makeMaze();
+        }
     }
 
     public MapBuilder makeBorders() {
