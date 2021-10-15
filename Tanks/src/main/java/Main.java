@@ -10,6 +10,7 @@ import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaMap;
 import utils.MapBuilder;
+import utils.TOutputStream;
 import utils.Utils;
 
 // Client
@@ -22,23 +23,20 @@ public class Main extends PApplet {
 
 	public static PApplet self;
 	public static Client this_client;
+	public static TOutputStream this_os;
 	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
-			background_box, water_box, lava_box, metal_box, wood_box,
-			drop_sammo, drop_mammo, drop_lammo,
-			drop_sarmor, drop_marmor, drop_larmor,
-			drop_shealth, drop_mhealth, drop_lhealth;
+		background_box, water_box, lava_box, metal_box, wood_box,
+		drop_sammo, drop_mammo, drop_lammo,
+		drop_sarmor, drop_marmor, drop_larmor,
+		drop_shealth, drop_mhealth, drop_lhealth;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
 	public static long start_time = System.nanoTime();
 
-
 	public static int seed;
 	public static int edge;
 	public static ArenaMap map = null;
-
-
-
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -94,7 +92,8 @@ public class Main extends PApplet {
 		imgMap.put(Utils.DROP_SHEALTH, drop_shealth);
 
 		this_client = new Client(this, "127.0.0.1", 12345);
-		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
+		this_client.output = (this_os = new TOutputStream(this_client));
+		this_os.write(Utils.S_INIT_CLIENT);
 	}
 
 	@Override
@@ -246,7 +245,6 @@ public class Main extends PApplet {
 //			}
 //			println();
 //		}
-
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
 				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
@@ -257,11 +255,11 @@ public class Main extends PApplet {
 
 	public static void handleAddDrop() {
 		map.map[Utils.i3][Utils.i4].drop = new TextureDrop(
-				(byte)Utils.i1,
-				Utils.i2,
-				imgMap.get((byte)Utils.i1),
-				Utils.i4,
-				Utils.i3);
+			(byte)Utils.i1,
+			Utils.i2,
+			imgMap.get((byte)Utils.i1),
+			Utils.i4,
+			Utils.i3);
 	}
 
 	public static void handleRemoveDrop() {
@@ -269,7 +267,7 @@ public class Main extends PApplet {
 	}
 
 	public static void sendMove(final byte message) {
-		Utils.send(this_client::write, message);
+		this_os.write(message);
 		start_time = System.nanoTime();
 	}
 
