@@ -99,79 +99,80 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		while (this_client.available() != 0) {
-			switch (this_client.read()) {
-				case Utils.INITIALIZE:
-					initialized = true;
-					break;
-				case Utils.INITIALIZE_GRID:
-					Utils.readII(this_client);
-					edge = Utils.i1;
-					scale_x = scale_y = (float)H / Utils.i1;
-					seed = Utils.i2;
+			Utils.rbuf.reset().limit(this_client.readBytes(Utils.rbuf.array()));
+			do {
+				switch (Utils.rbuf.get()) {
+					case Utils.INITIALIZE:
+						initialized = true;
+						break;
+					case Utils.INITIALIZE_GRID:
+						edge = Utils.rbuf.getInt();
+						scale_x = scale_y = (float)H / edge;
+						seed = Utils.rbuf.getInt();
 
-					handleGenMap();
-					break;
-				// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
-				case Utils.ADD_LEFT_TANK:
-					handleAdd(Tank::initLeft);
-					break;
-				case Utils.ADD_RIGHT_TANK:
-					handleAdd(Tank::initRight);
-					break;
-				case Utils.ADD_UP_TANK:
-					handleAdd(Tank::initUp);
-					break;
-				case Utils.ADD_DOWN_TANK:
-					handleAdd(Tank::initDown);
-					break;
-				case Utils.REMOVE_TANK:
-					tanks.remove(Utils.readInt(this_client));
-					break;
-				case Utils.ADD_DROP:
-					Utils.readIV(this_client);
-					handleAddDrop();
-					break;
-				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
-				case Utils.MOVE_LEFT:
-					handleMove(Tank::moveLeft);
-					break;
-				case Utils.MOVE_RIGHT:
-					handleMove(Tank::moveRight);
-					break;
-				case Utils.MOVE_UP:
-					handleMove(Tank::moveUp);
-					break;
-				case Utils.MOVE_DOWN:
-					handleMove(Tank::moveDown);
-					break;
-				// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
-				case Utils.POINT_LEFT:
-					handleMove(Tank::pointLeft);
-					break;
-				case Utils.POINT_RIGHT:
-					handleMove(Tank::pointRight);
-					break;
-				case Utils.POINT_UP:
-					handleMove(Tank::pointUp);
-					break;
-				case Utils.POINT_DOWN:
-					handleMove(Tank::pointDown);
-					break;
-				// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
-				case Utils.TURN_LEFT:
-					handleMove(Tank::turnLeft);
-					break;
-				case Utils.TURN_RIGHT:
-					handleMove(Tank::turnRight);
-					break;
-				case Utils.TURN_UP:
-					handleMove(Tank::turnUp);
-					break;
-				case Utils.TURN_DOWN:
-					handleMove(Tank::turnDown);
-					break;
-				default: throw new AssertionError();
-			}
+						handleGenMap();
+						break;
+					// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
+					case Utils.ADD_LEFT_TANK:
+						handleAdd(Tank::initLeft);
+						break;
+					case Utils.ADD_RIGHT_TANK:
+						handleAdd(Tank::initRight);
+						break;
+					case Utils.ADD_UP_TANK:
+						handleAdd(Tank::initUp);
+						break;
+					case Utils.ADD_DOWN_TANK:
+						handleAdd(Tank::initDown);
+						break;
+					case Utils.REMOVE_TANK:
+						tanks.remove(Utils.rbuf.getInt());
+						break;
+					case Utils.ADD_DROP:
+						handleAddDrop();
+						break;
+					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
+					case Utils.MOVE_LEFT:
+						handleMove(Tank::moveLeft);
+						break;
+					case Utils.MOVE_RIGHT:
+						handleMove(Tank::moveRight);
+						break;
+					case Utils.MOVE_UP:
+						handleMove(Tank::moveUp);
+						break;
+					case Utils.MOVE_DOWN:
+						handleMove(Tank::moveDown);
+						break;
+					// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
+					case Utils.POINT_LEFT:
+						handleMove(Tank::pointLeft);
+						break;
+					case Utils.POINT_RIGHT:
+						handleMove(Tank::pointRight);
+						break;
+					case Utils.POINT_UP:
+						handleMove(Tank::pointUp);
+						break;
+					case Utils.POINT_DOWN:
+						handleMove(Tank::pointDown);
+						break;
+					// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
+					case Utils.TURN_LEFT:
+						handleMove(Tank::turnLeft);
+						break;
+					case Utils.TURN_RIGHT:
+						handleMove(Tank::turnRight);
+						break;
+					case Utils.TURN_UP:
+						handleMove(Tank::turnUp);
+						break;
+					case Utils.TURN_DOWN:
+						handleMove(Tank::turnDown);
+						break;
+					default: throw new AssertionError();
+				}
+			} while (Utils.rbuf.hasRemaining());
 		}
 
 		if (initialized) {
@@ -254,16 +255,13 @@ public class Main extends PApplet {
 	}
 
 	public static void handleAddDrop() {
-		map.map[Utils.i3][Utils.i4].drop = new TextureDrop(
-			(byte)Utils.i1,
-			Utils.i2,
-			imgMap.get((byte)Utils.i1),
-			Utils.i4,
-			Utils.i3);
-	}
-
-	public static void handleRemoveDrop() {
-		map.map[Utils.i3][Utils.i4].drop = null;
+		final int i1 = Utils.rbuf.getInt(), i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
+		map.map[i3][i4].drop = new TextureDrop(
+			(byte)i1,
+			i2,
+			imgMap.get((byte)i1),
+			i4,
+			i3);
 	}
 
 	public static void sendMove(final byte message) {
@@ -272,14 +270,11 @@ public class Main extends PApplet {
 	}
 
 	public static void handleAdd(final UnaryOperator<Tank> func) {
-		/*Utils.readIII(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));*/
-		Utils.readIV(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3, Utils.i4)));
+		tanks.put(Utils.rbuf.getInt(), func.apply(new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.rbuf.getInt())));
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {
-		func.accept(tanks.get(Utils.readInt(this_client)));
+		func.accept(tanks.get(Utils.rbuf.getInt()));
 	}
 
 	@Override

@@ -2,7 +2,6 @@ package utils;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
-import processing.net.Client;
 
 public abstract class Utils {
 	protected Utils() {
@@ -25,58 +24,11 @@ public abstract class Utils {
 		DROP_SARMOR = 21, DROP_MARMOR = 22, DROP_LARMOR = 23,
 		DROP_SAMMO = 24, DROP_MAMMO = 25, DROP_LAMMO = 26;
 
-	public static final ByteBuffer buffer4 = ByteBuffer.allocate(4),
-		buffer5 = ByteBuffer.allocate(5),
-		buffer8 = ByteBuffer.allocate(8),
-		buffer9 = ByteBuffer.allocate(9),
-		buffer12 = ByteBuffer.allocate(12),
-		buffer13 = ByteBuffer.allocate(13),
-		buffer16 = ByteBuffer.allocate(16),
-		buffer17 = ByteBuffer.allocate(17),
-		buffer20 = ByteBuffer.allocate(20),
-		buffer21 = ByteBuffer.allocate(21),
-		buffer = ByteBuffer.allocate(1000);
+	public static final ByteBuffer wbuf = ByteBuffer.allocate(1000),
+		rbuf = ByteBuffer.allocate(1000);
 
-	public static int i1, i2, i3, i4, i5;
-
-	public static int readInt(final Client client) {
-		client.readBytes(buffer4.array());
-		return buffer4.getInt(0);
-	}
-
-	public static void readI(final Client client) {
-		client.readBytes(buffer4.array());
-		i1 = buffer4.getInt(0);
-	}
-
-	public static void readII(final Client client) {
-		client.readBytes(buffer8.array());
-		i1 = buffer8.getInt(0);
-		i2 = buffer8.getInt(4);
-	}
-
-	public static void readIII(final Client client) {
-		client.readBytes(buffer12.array());
-		i1 = buffer12.getInt(0);
-		i2 = buffer12.getInt(4);
-		i3 = buffer12.getInt(8);
-	}
-
-	public static void readIV(final Client client) {
-		client.readBytes(buffer16.array());
-		i1 = buffer16.getInt(0);
-		i2 = buffer16.getInt(4);
-		i3 = buffer16.getInt(8);
-		i4 = buffer16.getInt(12);
-	}
-
-	public static void readV(final Client client) {
-		client.readBytes(buffer20.array());
-		i1 = buffer20.getInt(0);
-		i2 = buffer20.getInt(4);
-		i3 = buffer20.getInt(8);
-		i4 = buffer20.getInt(12);
-		i5 = buffer20.getInt(16);
+	static {
+		rbuf.mark().limit(0);
 	}
 
 	public static ThreadLocalRandom random() {
