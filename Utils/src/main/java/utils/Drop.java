@@ -1,13 +1,8 @@
-/**
- * @(#) Drop.java
- */
-
 package utils;
 
-public abstract class Drop
-{
-	private byte name;
-	private int value;
+public abstract class Drop {
+	private final byte name;
+	private final int value;
 
 	public Drop(byte name, int value) {
 		this.name = name;

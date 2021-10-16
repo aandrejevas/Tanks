@@ -10,6 +10,7 @@ import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaMap;
 import utils.MapBuilder;
+import utils.TOutputStream;
 import utils.Utils;
 
 // Client
@@ -22,23 +23,20 @@ public class Main extends PApplet {
 
 	public static PApplet self;
 	public static Client this_client;
+	public static TOutputStream this_os;
 	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
-			background_box, water_box, lava_box, metal_box, wood_box,
-			drop_sammo, drop_mammo, drop_lammo,
-			drop_sarmor, drop_marmor, drop_larmor,
-			drop_shealth, drop_mhealth, drop_lhealth;
+		background_box, water_box, lava_box, metal_box, wood_box,
+		drop_sammo, drop_mammo, drop_lammo,
+		drop_sarmor, drop_marmor, drop_larmor,
+		drop_shealth, drop_mhealth, drop_lhealth;
 	public static float scale_x, scale_y;
 	public static boolean initialized = false;
 	public static int move_state = 0;
 	public static long start_time = System.nanoTime();
 
-
 	public static int seed;
 	public static int edge;
 	public static ArenaMap map = null;
-
-
-
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -94,85 +92,87 @@ public class Main extends PApplet {
 		imgMap.put(Utils.DROP_SHEALTH, drop_shealth);
 
 		this_client = new Client(this, "127.0.0.1", 12345);
-		Utils.send(this_client::write, Utils.S_INIT_CLIENT);
+		this_client.output = (this_os = new TOutputStream(this_client));
+		this_os.write(Utils.S_INIT_CLIENT);
 	}
 
 	@Override
 	public void draw() {
 		while (this_client.available() != 0) {
-			switch (this_client.read()) {
-				case Utils.INITIALIZE:
-					initialized = true;
-					break;
-				case Utils.INITIALIZE_GRID:
-					Utils.readII(this_client);
-					edge = Utils.i1;
-					scale_x = scale_y = (float)H / Utils.i1;
-					seed = Utils.i2;
+			Utils.rbuf.reset().limit(this_client.readBytes(Utils.rbuf.array()));
+			do {
+				switch (Utils.rbuf.get()) {
+					case Utils.INITIALIZE:
+						initialized = true;
+						break;
+					case Utils.INITIALIZE_GRID:
+						edge = Utils.rbuf.getInt();
+						scale_x = scale_y = (float)H / edge;
+						seed = Utils.rbuf.getInt();
 
-					handleGenMap();
-					break;
-				// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
-				case Utils.ADD_LEFT_TANK:
-					handleAdd(Tank::initLeft);
-					break;
-				case Utils.ADD_RIGHT_TANK:
-					handleAdd(Tank::initRight);
-					break;
-				case Utils.ADD_UP_TANK:
-					handleAdd(Tank::initUp);
-					break;
-				case Utils.ADD_DOWN_TANK:
-					handleAdd(Tank::initDown);
-					break;
-				case Utils.REMOVE_TANK:
-					tanks.remove(Utils.readInt(this_client));
-					break;
-				case Utils.ADD_DROP:
-					Utils.readIV(this_client);
-					handleAddDrop();
-					break;
-				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
-				case Utils.MOVE_LEFT:
-					handleMove(Tank::moveLeft);
-					break;
-				case Utils.MOVE_RIGHT:
-					handleMove(Tank::moveRight);
-					break;
-				case Utils.MOVE_UP:
-					handleMove(Tank::moveUp);
-					break;
-				case Utils.MOVE_DOWN:
-					handleMove(Tank::moveDown);
-					break;
-				// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
-				case Utils.POINT_LEFT:
-					handleMove(Tank::pointLeft);
-					break;
-				case Utils.POINT_RIGHT:
-					handleMove(Tank::pointRight);
-					break;
-				case Utils.POINT_UP:
-					handleMove(Tank::pointUp);
-					break;
-				case Utils.POINT_DOWN:
-					handleMove(Tank::pointDown);
-					break;
-				// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
-				case Utils.TURN_LEFT:
-					handleMove(Tank::turnLeft);
-					break;
-				case Utils.TURN_RIGHT:
-					handleMove(Tank::turnRight);
-					break;
-				case Utils.TURN_UP:
-					handleMove(Tank::turnUp);
-					break;
-				case Utils.TURN_DOWN:
-					handleMove(Tank::turnDown);
-					break;
-				default: throw new AssertionError();
-			}
+						handleGenMap();
+						break;
+					// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
+					case Utils.ADD_LEFT_TANK:
+						handleAdd(Tank::initLeft);
+						break;
+					case Utils.ADD_RIGHT_TANK:
+						handleAdd(Tank::initRight);
+						break;
+					case Utils.ADD_UP_TANK:
+						handleAdd(Tank::initUp);
+						break;
+					case Utils.ADD_DOWN_TANK:
+						handleAdd(Tank::initDown);
+						break;
+					case Utils.REMOVE_TANK:
+						tanks.remove(Utils.rbuf.getInt());
+						break;
+					case Utils.ADD_DROP:
+						handleAddDrop();
+						break;
+					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
+					case Utils.MOVE_LEFT:
+						handleMove(Tank::moveLeft);
+						break;
+					case Utils.MOVE_RIGHT:
+						handleMove(Tank::moveRight);
+						break;
+					case Utils.MOVE_UP:
+						handleMove(Tank::moveUp);
+						break;
+					case Utils.MOVE_DOWN:
+						handleMove(Tank::moveDown);
+						break;
+					// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
+					case Utils.POINT_LEFT:
+						handleMove(Tank::pointLeft);
+						break;
+					case Utils.POINT_RIGHT:
+						handleMove(Tank::pointRight);
+						break;
+					case Utils.POINT_UP:
+						handleMove(Tank::pointUp);
+						break;
+					case Utils.POINT_DOWN:
+						handleMove(Tank::pointDown);
+						break;
+					// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
+					case Utils.TURN_LEFT:
+						handleMove(Tank::turnLeft);
+						break;
+					case Utils.TURN_RIGHT:
+						handleMove(Tank::turnRight);
+						break;
+					case Utils.TURN_UP:
+						handleMove(Tank::turnUp);
+						break;
+					case Utils.TURN_DOWN:
+						handleMove(Tank::turnDown);
+						break;
+					default: throw new AssertionError();
+				}
+			} while (Utils.rbuf.hasRemaining());
 		}
 
 		if (initialized) {
@@ -246,7 +246,6 @@ public class Main extends PApplet {
 //			}
 //			println();
 //		}
-
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
 				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].defValue));
@@ -256,32 +255,26 @@ public class Main extends PApplet {
 	}
 
 	public static void handleAddDrop() {
-		map.map[Utils.i3][Utils.i4].drop = new TextureDrop(
-				(byte)Utils.i1,
-				Utils.i2,
-				imgMap.get((byte)Utils.i1),
-				Utils.i4,
-				Utils.i3);
-	}
-
-	public static void handleRemoveDrop() {
-		map.map[Utils.i3][Utils.i4].drop = null;
+		final int i1 = Utils.rbuf.getInt(), i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
+		map.map[i3][i4].drop = new TextureDrop(
+			(byte)i1,
+			i2,
+			imgMap.get((byte)i1),
+			i4,
+			i3);
 	}
 
 	public static void sendMove(final byte message) {
-		Utils.send(this_client::write, message);
+		this_os.write(message);
 		start_time = System.nanoTime();
 	}
 
 	public static void handleAdd(final UnaryOperator<Tank> func) {
-		/*Utils.readIII(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3)));*/
-		Utils.readIV(this_client);
-		tanks.put(Utils.i1, func.apply(new Tank(Utils.i2, Utils.i3, Utils.i4)));
+		tanks.put(Utils.rbuf.getInt(), func.apply(new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.rbuf.getInt())));
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {
-		func.accept(tanks.get(Utils.readInt(this_client)));
+		func.accept(tanks.get(Utils.rbuf.getInt()));
 	}
 
 	@Override

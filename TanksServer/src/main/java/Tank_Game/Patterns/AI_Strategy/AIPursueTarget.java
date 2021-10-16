@@ -112,7 +112,6 @@ public class AIPursueTarget extends AIAlgorithm
                     map[toIdx(adjx, adjy)] = toIdx(x, y);
                     vis[adjy][adjx] = true;
 
-//                    grid[adjy][adjx].debugValue = MAP_BORDER;
                 }
 
                 if (target[0] == adjx && target[1] == adjy) {
@@ -135,7 +134,6 @@ public class AIPursueTarget extends AIAlgorithm
             stack.push(cord);
             idx = map[idx];
             cord = toCord(idx);
-//            Main.map.map[cord[1]][cord[0]].debugValue = MAP_DEBUG;
         }
 
         return stack;

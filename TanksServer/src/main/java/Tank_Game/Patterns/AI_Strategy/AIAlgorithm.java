@@ -13,6 +13,6 @@ public abstract class AIAlgorithm
 
 
 	protected void sendMove(final byte message, int index) {
-		Utils.send(Main.this_server::write, message, index);
+		Main.this_server.write(message, index);
 	}
 }
