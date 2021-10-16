@@ -1,5 +1,6 @@
 package utils;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -52,7 +53,7 @@ public class MapBuilder extends Builder {
 		int count = map.edge / 10;
 		int[] lava_x = new int[count];
 		int[] lava_y = new int[count];
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < count; i++) {
 			lava_x[i] = Utils.getRand(map) % map.edge;
 			lava_y[i] = Utils.getRand(map) % map.edge;
 		}
@@ -76,7 +77,7 @@ public class MapBuilder extends Builder {
 		int count = map.edge / 10;
 		int[] lava_x = new int[count];
 		int[] lava_y = new int[count];
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < count; i++) {
 			lava_x[i] = Utils.getRand(map) % map.edge;
 			lava_y[i] = Utils.getRand(map) % map.edge;
 		}

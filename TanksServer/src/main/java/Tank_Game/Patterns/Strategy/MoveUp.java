@@ -21,10 +21,11 @@ public class MoveUp extends MoveAlgorithm
                 case UP: return;
             }
         } else {
-//            Main.map.map[cord[1]][cord[0]].value = Main.map.background[cord[1]][cord[0]].value;
-//            Main.map.map[--cord[1]][cord[0]].value = Utils.MAP_PLAYER;
+            Main.map.map[cord[1]-1][cord[0]].value = Main.map.map[cord[1]][cord[0]].value;
+            Main.map.map[cord[1]][cord[0]].value = Main.map.map[cord[1]][cord[0]].defValue;
             Main.map.map[cord[1]][cord[0]].obstacle = false;
-            Main.map.map[--cord[1]][cord[0]].obstacle = true;
+            Main.map.map[cord[1]-1][cord[0]].obstacle = true;
+            cord[1]--;
             switch (direction[0]) {
                 default:
                     direction[0] = UP;

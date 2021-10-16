@@ -1,6 +1,14 @@
 package Tank_Game;
 
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.Consumer;
+
 import Tank_Game.Patterns.AbstractFactory.*;
+import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
@@ -8,13 +16,9 @@ import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
+import processing.net.Server;
 import utils.ArenaMap;
 import utils.Drop;
 import utils.MapBuilder;
@@ -57,28 +61,6 @@ public class Main extends PApplet {
 		map = (new MapBuilder(map)).Build(false).getBuildable();
 //		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
-//		for (int i = 0; i < map.edge; i++) {
-//			for (int j = 0; j < map.edge; j++) {
-//				switch (map.map[i][j].value) {
-//					case Utils.MAP_WALL:
-//						print('▒');
-//						break;
-//					case Utils.MAP_EMPTY:
-//						print('░');
-//						break;
-//					case Utils.MAP_BORDER:
-//						print('▓');
-//						break;
-//					case Utils.MAP_LAVA:
-//						print('^');
-//						break;
-//					case Utils.MAP_WATER:
-//						print('0');
-//						break;
-//				}
-//			}
-//			println();
-//		}
 	}
 
 	@Override
@@ -92,25 +74,12 @@ public class Main extends PApplet {
 			});
 		}
 
-		if (!enemies.isEmpty() && frameCount % 30 == 0) {
+		if (enemies.size() != 0 && frameCount % 30 == 0){
 			enemies.forEach((final Tank tank) -> {
-				switch (Utils.random().nextInt(4)) {
-					case 0:
-						tank.setAlgorithm(new MoveUp());
-						break;
-					case 1:
-						tank.setAlgorithm(new MoveDown());
-						break;
-					case 2:
-						tank.setAlgorithm(new MoveLeft());
-						break;
-					case 3:
-						tank.setAlgorithm(new MoveRight());
-						break;
-				}
-				tank.move();
+				((AI_Player)tank).AIThink();
 			});
 		}
+
 
 		while ((available_client = this_server.available()) != null) {
 			client_os = (TOutputStream)available_client.output;
@@ -152,15 +121,15 @@ public class Main extends PApplet {
 					break;
 				case Utils.S_MOVE_UP:
 					//handleMove(Tank::moveUp);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveUp()).move());
+					handleMove(Tank-> Tank.setAlgorithm(new MoveUp()).move());
 					break;
 				case Utils.S_MOVE_DOWN:
 					//handleMove(Tank::moveDown);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveDown()).move());
+					handleMove(Tank-> Tank.setAlgorithm(new MoveDown()).move());
 					break;
 				default: throw new AssertionError();
 			}
-			if (clients.size() > enemies.size()) {
+			if (clients.size() > enemies.size()){
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
 				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
 				enemies.add(new_player);

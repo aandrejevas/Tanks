@@ -2,6 +2,9 @@ package utils;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import processing.net.Client;
 
 public abstract class Utils {
 	protected Utils() {
