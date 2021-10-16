@@ -20,8 +20,11 @@ public class MoveLeft extends MoveAlgorithm
                 case LEFT: return;
             }
         } else {
+            Main.map.map[cord[1]][cord[0]-1].value = Main.map.map[cord[1]][cord[0]].value;
+            Main.map.map[cord[1]][cord[0]].value = Main.map.map[cord[1]][cord[0]].defValue;
             Main.map.map[cord[1]][cord[0]].obstacle = false;
-            Main.map.map[cord[1]][--cord[0]].obstacle = true;
+            Main.map.map[cord[1]][cord[0]-1].obstacle = true;
+            cord[0]--;
             switch (direction[0]) {
                 default:
                     direction[0] = LEFT;

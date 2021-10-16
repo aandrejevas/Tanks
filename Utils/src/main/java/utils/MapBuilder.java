@@ -32,6 +32,8 @@ public class MapBuilder extends Builder {
             for (int j = 0; j < edge; j++) {
                 if (i == 0 || j  == 0 || i+1 == edge || j+1 == edge) {
                     this.map.map[i][j].value = Utils.MAP_BORDER;
+                    this.map.map[i][j].defValue = Utils.MAP_BORDER;
+                    this.map.map[i][j].debugValue = Utils.MAP_BORDER;
                     this.map.map[i][j].obstacle = true;
                 }
             }
@@ -43,6 +45,8 @@ public class MapBuilder extends Builder {
         for (int i = 0; i < this.map.edge; i++) {
             for (int j = 0; j < this.map.edge; j++) {
                 this.map.background[i][j].value = Utils.MAP_EMPTY;
+                this.map.background[i][j].debugValue = Utils.MAP_EMPTY;
+                this.map.background[i][j].defValue = Utils.MAP_EMPTY;
             }
         }
         return this;
@@ -53,7 +57,7 @@ public class MapBuilder extends Builder {
         int count = map.edge / 10;
         int[] lava_x = new int[count];
         int[] lava_y = new int[count];
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < count; i++) {
             lava_x[i] = Utils.GetRand(map) % map.edge;
             lava_y[i] = Utils.GetRand(map) % map.edge;
         }
@@ -64,6 +68,8 @@ public class MapBuilder extends Builder {
                     prob = 0.5 / (dist*dist + 0.0001);
                     if (prob * 1000 > (double)(Utils.GetRand(map) % 1000)) {
                         map.map[j][i].value = Utils.MAP_LAVA;
+                        map.map[j][i].debugValue = Utils.MAP_LAVA;
+                        map.map[j][i].defValue = Utils.MAP_LAVA;
                     }
                 }
             }
@@ -77,7 +83,7 @@ public class MapBuilder extends Builder {
         int count = map.edge / 10;
         int[] lava_x = new int[count];
         int[] lava_y = new int[count];
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < count; i++) {
             lava_x[i] = Utils.GetRand(map) % map.edge;
             lava_y[i] = Utils.GetRand(map) % map.edge;
         }
@@ -88,6 +94,8 @@ public class MapBuilder extends Builder {
                     prob = 0.4 / (dist*dist + 0.0001);
                     if (prob * 1000 > (double)(Utils.GetRand(map) % 1000)) {
                         map.map[j][i].value = Utils.MAP_WATER;
+                        map.map[j][i].defValue = Utils.MAP_WATER;
+                        map.map[j][i].debugValue = Utils.MAP_WATER;
                     }
                 }
             }
@@ -146,6 +154,8 @@ public class MapBuilder extends Builder {
                         if (status) {
                             st.push(st_last -1);
                             map.map[y][x-1].value =  Utils.MAP_WALL;
+                            map.map[y][x-1].defValue =  Utils.MAP_WALL;
+                            map.map[y][x-1].debugValue =  Utils.MAP_WALL;
                             map.map[y][x-1].obstacle = true;
                             return true;
                         }
@@ -155,6 +165,8 @@ public class MapBuilder extends Builder {
                         if (status){
                             st.push(st_last-map.edge);
                             map.map[y-1][x].value =  Utils.MAP_WALL;
+                            map.map[y-1][x].defValue =  Utils.MAP_WALL;
+                            map.map[y-1][x].debugValue =  Utils.MAP_WALL;
                             map.map[y-1][x].obstacle = true;
                             return true;
                         }
@@ -164,6 +176,8 @@ public class MapBuilder extends Builder {
                         if (status) {
                             st.push(st_last+1);
                             map.map[y][x+1].value =  Utils.MAP_WALL;
+                            map.map[y][x+1].defValue =  Utils.MAP_WALL;
+                            map.map[y][x+1].debugValue =  Utils.MAP_WALL;
                             map.map[y][x+1].obstacle = true;
                             return true;
                         }
@@ -173,6 +187,8 @@ public class MapBuilder extends Builder {
                         if (status) {
                             st.push(st_last+map.edge);
                             map.map[y+1][x].value =  Utils.MAP_WALL;
+                            map.map[y+1][x].defValue =  Utils.MAP_WALL;
+                            map.map[y+1][x].debugValue =  Utils.MAP_WALL;
                             map.map[y+1][x].obstacle = true;
                             return true;
                         }
@@ -199,6 +215,7 @@ public class MapBuilder extends Builder {
 
         for(int i = 0; i < stArr.size(); i++) {
             map.map[stArr.get(i).peek() / map.edge][(int)stArr.get(i).peek() % map.edge].value =  Utils.MAP_WALL;
+            map.map[stArr.get(i).peek() / map.edge][(int)stArr.get(i).peek() % map.edge].defValue =  Utils.MAP_WALL;
             map.map[stArr.get(i).peek() / map.edge][(int)stArr.get(i).peek() % map.edge].obstacle = true;
         }
 

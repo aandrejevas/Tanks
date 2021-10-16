@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import Tank_Game.Patterns.AbstractFactory.*;
+import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
@@ -27,7 +28,7 @@ import utils.Utils;
 public class Main extends PApplet {
 
 	public static int seed = 3, seedAux = 3;
-	public static final int edge = 30;
+	public static final int edge = 25;
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
 	public static final ArrayList<Tank> enemies = new ArrayList();
 	public static ArenaMap map = new ArenaMap(seed, edge, true);
@@ -53,32 +54,9 @@ public class Main extends PApplet {
 
 		game_context = Game_Context.getInstance();
 		//building map
-//		map = new ArenaMap(seed, edge, true);
 		map = (new MapBuilder(map)).Build(false).getBuildable();
-//		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
-//		for (int i = 0; i < map.edge; i++) {
-//			for (int j = 0; j < map.edge; j++) {
-//				switch (map.map[i][j].value) {
-//					case Utils.MAP_WALL:
-//						print('▒');
-//						break;
-//					case Utils.MAP_EMPTY:
-//						print('░');
-//						break;
-//					case Utils.MAP_BORDER:
-//						print('▓');
-//						break;
-//					case Utils.MAP_LAVA:
-//						print('^');
-//						break;
-//					case Utils.MAP_WATER:
-//						print('0');
-//						break;
-//				}
-//			}
-//			println();
-//		}
+
 	}
 
 	@Override
@@ -94,16 +72,40 @@ public class Main extends PApplet {
 
 		if (enemies.size() != 0 && frameCount % 30 == 0){
 			enemies.forEach((final Tank tank) -> {
-				int rand = new Random().nextInt(4);
-				if (rand == 0)
-					tank.setAlgorithm(new MoveUp());
-				else if (rand == 1)
-					tank.setAlgorithm(new MoveDown());
-				else if (rand == 2)
-					tank.setAlgorithm(new MoveLeft());
-				else
-					tank.setAlgorithm(new MoveRight());
-				tank.move();
+//				for (int i_ = 0; i_ < edge; i_++) {
+//					for (int j = 0; j < edge; j++) {
+//						map.map[i_][j].debugValue = map.map[i_][j].value;
+//					}
+//				}
+				((AI_Player)tank).AIThink();
+//				for (int i_ = 0; i_ < edge; i_++) {
+//					for (int j = 0; j < edge; j++) {
+//						switch (map.map[i_][j].debugValue) {
+//							case Utils.MAP_WALL:
+//								PApplet.print('▒');
+//								break;
+//							case Utils.MAP_EMPTY:
+//								PApplet.print('░');
+//								break;
+//							case Utils.MAP_BORDER:
+//								PApplet.print('▓');
+//								break;
+//							case Utils.MAP_LAVA:
+//								PApplet.print('^');
+//								break;
+//							case Utils.MAP_WATER:
+//								PApplet.print('0');
+//								break;
+//							case Utils.MAP_PLAYER:
+//								PApplet.print('X');
+//								break;
+//							case Utils.MAP_DEBUG:
+//								PApplet.print('*');
+//								break;
+//						}
+//					}
+//					println();
+//				}
 			});
 		}
 
@@ -130,7 +132,6 @@ public class Main extends PApplet {
 							Utils.send(available_client::write, tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
 						});
 					}
-
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 
@@ -213,5 +214,33 @@ public class Main extends PApplet {
 	public static int GetRandAux() {
 		seedAux = ((seedAux * 1103515245) + 12345) & 0x7fffffff;
 		return seedAux;
+	}
+
+	public void printMap() {
+		for (int i = 0; i < map.edge; i++) {
+			for (int j = 0; j < map.edge; j++) {
+				switch (map.map[i][j].value) {
+					case Utils.MAP_WALL:
+						print('▒');
+						break;
+					case Utils.MAP_EMPTY:
+						print('░');
+						break;
+					case Utils.MAP_BORDER:
+						print('▓');
+						break;
+					case Utils.MAP_LAVA:
+						print('^');
+						break;
+					case Utils.MAP_WATER:
+						print('0');
+						break;
+					case Utils.MAP_PLAYER:
+						print('X');
+						break;
+				}
+			}
+			println();
+		}
 	}
 }

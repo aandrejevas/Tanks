@@ -21,7 +21,7 @@ public abstract class Utils {
 
 	public static final byte MAP_WALL = 1, MAP_BORDER = 2, MAP_PLAYER = 4, MAP_T34 = 5, MAP_SHERMAN = 6, MAP_TIGER = 7,
 			MAP_NON_OBSTACLE = 8, MAP_EMPTY = 9,  MAP_WATER = 10, MAP_LAVA = 11,
-			MAP_COLLECTIBLE = 16, MAP_DROP = 17;
+			MAP_COLLECTIBLE = 16, MAP_DROP = 17, MAP_DEBUG = 127;
 
 	public static final byte DROP_SHEALTH = 18, DROP_MHEALTH = 19, DROP_LHEALTH = 20,
 							DROP_SARMOR = 21, DROP_MARMOR = 22, DROP_LARMOR = 23,

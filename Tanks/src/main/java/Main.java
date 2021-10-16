@@ -249,8 +249,8 @@ public class Main extends PApplet {
 
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).setShape(imgMap.get(map.background[j][i].value));
+				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].defValue));
+				((TextureBlock)(map.background[j][i])).setShape(imgMap.get(map.background[j][i].defValue));
 			}
 		}
 	}
