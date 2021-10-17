@@ -1,23 +1,18 @@
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
+import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
-import Tank_Game.Patterns.Factory.PlayerCreator;
-import Tank_Game.Patterns.Strategy.MoveDown;
-import Tank_Game.Patterns.Strategy.MoveLeft;
-import Tank_Game.Patterns.Strategy.MoveRight;
-import Tank_Game.Patterns.Strategy.MoveUp;
-import Tank_Game.Tank;
-import processing.core.PApplet;
 import utils.ArenaBlock;
 import utils.Utils;
 
 import java.util.*;
 
+import static processing.core.PApplet.print;
 import static processing.core.PApplet.println;
 import static utils.Utils.*;
 
-public class AIPursueTarget extends AIAlgorithm
+public class AIPursueTarget implements AIState
 {
     @Override
     public void perform(AI_Player ai) {
@@ -27,7 +22,7 @@ public class AIPursueTarget extends AIAlgorithm
             ai.path = BFS(Main.map.map, vis, toCord(ai.cord), ai.pursueTarget);
         }
 
-        ai.state |= AI_Player.AI_PURSUING;
+        ai.state.addState(new AICompState(AICompState.AI_PURSUING));
     }
 
     static int[] dRow = { -1, 0, 1, 0 };
@@ -86,10 +81,11 @@ public class AIPursueTarget extends AIAlgorithm
 
     private Stack<Integer[]> BFS(ArenaBlock[][] grid, boolean[][] vis, Integer[] start, int[] target) {
         int e = Main.map.edge;
-//        Cord[][] map = new Cord[e][e];
         Integer[] map = new Integer[e*e];
         int adjx = -1;
         int adjy = -1;
+        int x = -1;
+        int y = -1;
         Queue<Integer[] > q = new LinkedList<>();
 
         q.add(toCord(start[0], start[1]));
@@ -99,8 +95,8 @@ public class AIPursueTarget extends AIAlgorithm
 
         while (!q.isEmpty()) {
             Integer[] cell = q.peek();
-            int x = cell[0];
-            int y = cell[1];
+            x = cell[0];
+            y = cell[1];
             q.remove();
 
             for(int i = 0; i < 4; i++) {
@@ -111,7 +107,7 @@ public class AIPursueTarget extends AIAlgorithm
                     q.add(toCord(adjx, adjy));
                     map[toIdx(adjx, adjy)] = toIdx(x, y);
                     vis[adjy][adjx] = true;
-
+                    Main.map.map[adjy][adjx].debugValue = 1;
                 }
 
                 if (target[0] == adjx && target[1] == adjy) {
@@ -119,7 +115,7 @@ public class AIPursueTarget extends AIAlgorithm
                 }
             }
         }
-        return mapToPath(map, start, toCord(adjx, adjy));
+        return mapToPath(map, start, toCord(x, y));
     }
 
     private Stack<Integer[]> mapToPath(Integer[] map, Integer[] base, Integer[] dest) {
@@ -132,10 +128,12 @@ public class AIPursueTarget extends AIAlgorithm
                 break;
             }
             stack.push(cord);
+            Main.map.map[cord[1]][cord[0]].debugValue = 2;
             idx = map[idx];
             cord = toCord(idx);
         }
 
+//        Main.printMap();
         return stack;
     }
 

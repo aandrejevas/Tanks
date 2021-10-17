@@ -1,17 +1,16 @@
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
+import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
-import utils.Utils;
 
 import static processing.core.PApplet.println;
 
-public class AIAim extends AIAlgorithm
+public class AIAim implements AIState
 {
-    @Override
     public void perform(AI_Player ai) {
         int dx = ai.fireTarget[0] - ai.cord[0];
         int dy = ai.fireTarget[1] - ai.cord[1];
@@ -28,7 +27,7 @@ public class AIAim extends AIAlgorithm
             println("aim failed");
         }
 
-        ai.state |= AI_Player.AI_AIMED;
+        ai.state.addState(new AICompState(AICompState.AI_AIMED));
         ai.move();
     }
 }
