@@ -5,6 +5,7 @@
 package Tank_Game.Patterns.Decorator;
 
 import Tank_Game.Tank;
+import utils.Utils;
 
 public class RedShoot extends Decorator
 {
@@ -18,8 +19,8 @@ public class RedShoot extends Decorator
 	}
 
 	@Override
-	public int getDamage() {
-		return this.wrapee.getDamage()+10;
+	public int getShotType() {
+		return Utils.SHOT_RED;
 	}
 
 	@Override

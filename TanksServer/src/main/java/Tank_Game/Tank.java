@@ -3,8 +3,6 @@ package Tank_Game;
 import Tank_Game.Patterns.Strategy.MoveAlgorithm;
 import utils.Utils;
 
-import java.util.function.Function;
-
 public class Tank implements Cloneable {
 
 	protected static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
@@ -12,7 +10,7 @@ public class Tank implements Cloneable {
 	public int index;
 
 	public int type;
-	private int damage = 10;
+	private byte shotType = Utils.SHOT_NORMAL;
 
 	private MoveAlgorithm moveAlgorithm;
 	public int[] cord = new int[2];
@@ -42,12 +40,12 @@ public class Tank implements Cloneable {
 		return moveAlgorithm;
 	}
 
-	public int getDamage() {
-		return damage;
+	public int getShotType() {
+		return shotType;
 	}
 
-	public void setDamage(int damage) {
-		this.damage = damage;
+	public void setShotType(byte shotType) {
+		this.shotType = shotType;
 	}
 
 	public void move(){
@@ -63,7 +61,7 @@ public class Tank implements Cloneable {
 		Tank tank = (Tank)super.clone();
 		tank.index = this.index;
 		tank.type = this.type;
-		tank.damage = this.damage;
+		tank.shotType = this.shotType;
 		if (this.moveAlgorithm != null)
 			tank.moveAlgorithm = (MoveAlgorithm) this.moveAlgorithm.clone();
 

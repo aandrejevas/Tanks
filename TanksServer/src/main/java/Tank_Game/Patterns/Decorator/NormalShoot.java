@@ -18,8 +18,8 @@ public class NormalShoot extends Decorator
 	}
 
 	@Override
-	public int getDamage() {
-		return this.wrapee.getDamage();
+	public int getShotType() {
+		return this.wrapee.getShotType();
 	}
 
 	@Override

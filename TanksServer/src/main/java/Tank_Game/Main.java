@@ -4,7 +4,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Consumer;
 
 import Tank_Game.Patterns.AbstractFactory.*;
@@ -18,7 +17,6 @@ import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import processing.core.PApplet;
 import processing.net.Client;
-import processing.net.Server;
 import utils.ArenaMap;
 import utils.Drop;
 import utils.MapBuilder;
@@ -148,26 +146,26 @@ public class Main extends PApplet {
 			try {
 				Command cmd = new RedShootCommand(tank);
 				Decorator dec = invoker.runCommand(cmd);
-				System.out.println("First red decoration: " + dec.getDamage());
+				System.out.println("First red decoration: " + dec.getShotType());
 
 				Command cmd2 = new BlueShootCommand(dec);
 				Decorator dec2 = invoker.runCommand(cmd2);
-				System.out.println("Second blue decoration: " + dec2.getDamage());
+				System.out.println("Second blue decoration: " + dec2.getShotType());
 
 				Command cmd3 = new RedShootCommand(dec2);
 				Decorator dec3 = invoker.runCommand(cmd3);
-				System.out.println("Third red decorator" + dec3.getDamage());
+				System.out.println("Third red decorator" + dec3.getShotType());
 
 				Decorator decUndo = invoker.undoCommand();
-				System.out.println("Undo last decorator: " + decUndo.getDamage());
+				System.out.println("Undo last decorator: " + decUndo.getShotType());
 
 				Decorator decUndo2 = invoker.undoCommand();
-				System.out.println("Undo previous decorator: " + decUndo2.getDamage());
+				System.out.println("Undo previous decorator: " + decUndo2.getShotType());
 
 				Decorator decUndo3 = invoker.undoCommand();
-				System.out.println("Undo first decorator: " +  decUndo3.getDamage());
+				System.out.println("Undo first decorator: " +  decUndo3.getShotType());
 
-				System.out.println("Tank without decorations: " + cmd.undoTank().getDamage());
+				System.out.println("Tank without decorations: " + cmd.undoTank().getShotType());
 
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
