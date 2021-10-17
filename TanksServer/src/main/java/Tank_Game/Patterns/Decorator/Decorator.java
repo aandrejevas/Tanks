@@ -17,8 +17,8 @@ public abstract class Decorator extends Tank
 	}
 
 	@Override
-	public void setDamage(int damage) {
-		super.setDamage(damage);
+	public void setShotType(byte shotType) {
+		super.setShotType(shotType);
 	}
 
 	@Override

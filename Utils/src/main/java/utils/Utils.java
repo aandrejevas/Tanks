@@ -27,6 +27,8 @@ public abstract class Utils {
 		DROP_SARMOR = 21, DROP_MARMOR = 22, DROP_LARMOR = 23,
 		DROP_SAMMO = 24, DROP_MAMMO = 25, DROP_LAMMO = 26;
 
+	public static final byte SHOT_NORMAL = 1, SHOT_RED = 2, SHOT_BLUE = 3;
+
 	public static final ByteBuffer wbuf = ByteBuffer.allocate(1000),
 		rbuf = ByteBuffer.allocate(1000);
 
