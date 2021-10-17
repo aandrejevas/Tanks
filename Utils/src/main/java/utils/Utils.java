@@ -1,10 +1,8 @@
 package utils;
 
 import java.nio.ByteBuffer;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import processing.net.Client;
 
 public abstract class Utils {
 	protected Utils() {
@@ -29,6 +27,8 @@ public abstract class Utils {
 
 	public static final byte SHOT_NORMAL = 1, SHOT_RED = 2, SHOT_BLUE = 3;
 
+	public static final Random random = new Random();
+
 	public static final ByteBuffer wbuf = ByteBuffer.allocate(1000),
 		rbuf = ByteBuffer.allocate(1000);
 
@@ -38,10 +38,5 @@ public abstract class Utils {
 
 	public static ThreadLocalRandom random() {
 		return ThreadLocalRandom.current();
-	}
-
-	public static int getRand(final ArenaMap map) {
-		map.seed = ((map.seed * 1103515245) + 12345) & 0x7fffffff;
-		return map.seed;
 	}
 }

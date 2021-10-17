@@ -33,7 +33,6 @@ public class Main extends PApplet {
 	public static int move_state = 0;
 	public static long start_time = System.nanoTime();
 
-	public static int seed;
 	public static int edge;
 	public static ArenaMap map = null;
 
@@ -112,7 +111,7 @@ public class Main extends PApplet {
 					case Utils.INITIALIZE_GRID:
 						edge = Utils.rbuf.getInt();
 						scale_x = scale_y = (float)H / edge;
-						seed = Utils.rbuf.getInt();
+						Utils.random.setSeed(Utils.rbuf.getInt());
 
 						handleGenMap();
 						break;
@@ -216,7 +215,7 @@ public class Main extends PApplet {
 	}
 
 	public static void handleGenMap() {
-		map = new ArenaMap(seed, edge, false);
+		map = new ArenaMap(edge, false);
 
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
@@ -226,7 +225,7 @@ public class Main extends PApplet {
 		}
 
 //		map = (new MapBuilder(map)).makeBackground().makeLava().makeWater().makeBorders().makeMaze().getBuildable();
-		map = (new MapBuilder(map)).Build(true).getBuildable();
+		map = (new MapBuilder(map)).build(true).getBuildable();
 
 //		for (int i = 0; i < map.edge; i++) {
 //			for (int j = 0; j < map.edge; j++) {
@@ -310,10 +309,5 @@ public class Main extends PApplet {
 				action.accept(0b1000);
 				return;
 		}
-	}
-
-	public static int GetRand() {
-		seed = ((seed * 1103515245) + 12345) & 0x7fffffff;
-		return seed;
 	}
 }

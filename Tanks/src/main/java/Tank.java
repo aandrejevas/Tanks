@@ -12,9 +12,9 @@ public class Tank {
 		shape.setFill(false);
 		shape.setTint(false);
 		shape.setTextureMode(PConstants.NORMAL);
-		if (ally_or_enemy == 0){
+		if (ally_or_enemy == 0) {
 			shape.setTexture(Main.t34_tank);
-		}else {
+		} else {
 			shape.setTexture(Main.tiger_tank);
 		}
 		shape.translate(ix * Main.scale_x, iy * Main.scale_y);

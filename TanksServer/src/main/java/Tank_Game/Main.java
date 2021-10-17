@@ -1,11 +1,5 @@
 package Tank_Game;
 
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import Tank_Game.Patterns.AbstractFactory.*;
 import Tank_Game.Patterns.Command.*;
 import Tank_Game.Patterns.Decorator.Decorator;
@@ -15,6 +9,11 @@ import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
+import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
 import utils.ArenaMap;
@@ -24,16 +23,13 @@ import utils.TOutputStream;
 import utils.TServer;
 import utils.Utils;
 
-import static utils.Utils.MAP_PLAYER;
-
 // Server
 public class Main extends PApplet {
 
-	public static int seed = 3, seedAux = 3;
-	public static final int edge = 30;
+	public static final int edge = 30, seed = Utils.random().nextInt();
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
 	public static final ArrayList<Tank> enemies = new ArrayList();
-	public static ArenaMap map = new ArenaMap(seed, edge, true);
+	public static ArenaMap map = new ArenaMap(edge, true);
 
 	public static Game_Context game_context;
 	public static Creator ctr = new PlayerCreator();
@@ -59,7 +55,8 @@ public class Main extends PApplet {
 
 		game_context = Game_Context.getInstance();
 		//building map
-		map = (new MapBuilder(map)).Build(false).getBuildable();
+		Utils.random.setSeed(seed);
+		map = (new MapBuilder(map)).build(false).getBuildable();
 
 	}
 
@@ -74,12 +71,11 @@ public class Main extends PApplet {
 			});
 		}
 
-		if (enemies.size() != 0 && frameCount % 30 == 0){
+		if (!enemies.isEmpty() && frameCount % 30 == 0) {
 			enemies.forEach((final Tank tank) -> {
 				((AI_Player)tank).AIThink();
 			});
 		}
-
 
 		while ((available_client = this_server.available()) != null) {
 			client_os = (TOutputStream)available_client.output;
@@ -121,15 +117,15 @@ public class Main extends PApplet {
 					break;
 				case Utils.S_MOVE_UP:
 					//handleMove(Tank::moveUp);
-					handleMove(Tank-> Tank.setAlgorithm(new MoveUp()).move());
+					handleMove(Tank -> Tank.setAlgorithm(new MoveUp()).move());
 					break;
 				case Utils.S_MOVE_DOWN:
 					//handleMove(Tank::moveDown);
-					handleMove(Tank-> Tank.setAlgorithm(new MoveDown()).move());
+					handleMove(Tank -> Tank.setAlgorithm(new MoveDown()).move());
 					break;
 				default: throw new AssertionError();
 			}
-			if (clients.size() > enemies.size()){
+			if (clients.size() > enemies.size()) {
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
 				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
 				enemies.add(new_player);
@@ -139,7 +135,7 @@ public class Main extends PApplet {
 		generateDrops();
 
 		//Prototype, command and decorator pattern
-		if (test && enemies.size() != 0) {
+		if (test && !enemies.isEmpty()) {
 			Tank tank = enemies.get(enemies.size() - 1);
 
 			Invoker invoker = new Invoker();
@@ -163,7 +159,7 @@ public class Main extends PApplet {
 				System.out.println("Undo previous decorator: " + decUndo2.getShotType());
 
 				Decorator decUndo3 = invoker.undoCommand();
-				System.out.println("Undo first decorator: " +  decUndo3.getShotType());
+				System.out.println("Undo first decorator: " + decUndo3.getShotType());
 
 				System.out.println("Tank without decorations: " + cmd.undoTank().getShotType());
 
@@ -175,8 +171,8 @@ public class Main extends PApplet {
 	}
 
 	private static void generateDrops() {
-		if (GetRandAux() % 1000000 < map.edge*map.edge) {
-			int size = GetRandAux() % 300;
+		if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
+			final int size = Utils.random().nextInt(300);
 			AbstractFactory af;
 			if (size < 100) {
 				af = new SmallFactory();
@@ -185,7 +181,7 @@ public class Main extends PApplet {
 			} else {
 				af = new LargeFactory();
 			}
-			int dropType = GetRandAux() % 300;
+			final int dropType = Utils.random().nextInt(300);
 			Drop drop;
 			if (dropType < 100) {
 				drop = af.createAmmo();
@@ -195,7 +191,7 @@ public class Main extends PApplet {
 				drop = af.createHealth();
 			}
 
-			int[] dropCord = new int[2];
+			final int[] dropCord = new int[2];
 
 			do {
 				dropCord[0] = Utils.random().nextInt(Main.edge);
@@ -209,16 +205,6 @@ public class Main extends PApplet {
 
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(clients.get(available_client));
-	}
-
-	public static int GetRand() {
-		seed = ((seed * 1103515245) + 12345) & 0x7fffffff;
-		return seed;
-	}
-
-	public static int GetRandAux() {
-		seedAux = ((seedAux * 1103515245) + 12345) & 0x7fffffff;
-		return seedAux;
 	}
 
 	public static void printMap() {
@@ -251,7 +237,7 @@ public class Main extends PApplet {
 						case Utils.MAP_WATER:
 							print('0');
 							break;
-						case MAP_PLAYER:
+						case Utils.MAP_PLAYER:
 							print('X');
 							break;
 						default:

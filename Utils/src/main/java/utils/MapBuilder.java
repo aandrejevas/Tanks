@@ -1,14 +1,13 @@
 package utils;
 
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class MapBuilder extends Builder {
+public class MapBuilder implements Builder {
 
 	private final ArenaMap map;
 
-	public MapBuilder(ArenaMap map) {
+	public MapBuilder(final ArenaMap map) {
 		this.map = map;
 	}
 
@@ -18,7 +17,7 @@ public class MapBuilder extends Builder {
 	}
 
 	@Override
-	public Builder Build(boolean background) {
+	public Builder build(final boolean background) {
 		if (background) {
 			return this.makeBackground().makeLava().makeWater().makeBorders().makeMaze();
 		} else {
@@ -54,15 +53,15 @@ public class MapBuilder extends Builder {
 		int[] lava_x = new int[count];
 		int[] lava_y = new int[count];
 		for (int i = 0; i < count; i++) {
-			lava_x[i] = Utils.getRand(map) % map.edge;
-			lava_y[i] = Utils.getRand(map) % map.edge;
+			lava_x[i] = Utils.random.nextInt(map.edge);
+			lava_y[i] = Utils.random.nextInt(map.edge);
 		}
 		for (int i = 0; i < map.edge; i++) {
 			for (int j = 0; j < map.edge; j++) {
 				for (int k = 0; k < count; k++) {
 					dist = Math.sqrt(Math.pow(lava_y[k] - i, 2) + Math.pow(lava_x[k] - j, 2));
 					prob = 0.5 / (dist * dist + 0.0001);
-					if (prob * 1000 > (double)(Utils.getRand(map) % 1000)) {
+					if (prob * 1000 > (double)(Utils.random.nextInt(1000))) {
 						map.map[j][i].value = Utils.MAP_LAVA;
 					}
 				}
@@ -78,15 +77,15 @@ public class MapBuilder extends Builder {
 		int[] lava_x = new int[count];
 		int[] lava_y = new int[count];
 		for (int i = 0; i < count; i++) {
-			lava_x[i] = Utils.getRand(map) % map.edge;
-			lava_y[i] = Utils.getRand(map) % map.edge;
+			lava_x[i] = Utils.random.nextInt(map.edge);
+			lava_y[i] = Utils.random.nextInt(map.edge);
 		}
 		for (int i = 0; i < map.edge; i++) {
 			for (int j = 0; j < map.edge; j++) {
 				for (int k = 0; k < count; k++) {
 					dist = Math.sqrt(Math.pow(lava_y[k] - i, 2) + Math.pow(lava_x[k] - j, 2));
 					prob = 0.4 / (dist * dist + 0.0001);
-					if (prob * 1000 > (double)(Utils.getRand(map) % 1000)) {
+					if (prob * 1000 > (double)Utils.random.nextInt(1000)) {
 						map.map[j][i].value = Utils.MAP_WATER;
 					}
 				}
@@ -130,7 +129,7 @@ public class MapBuilder extends Builder {
 			int y = (st_last / map.edge);
 			int x = (st_last % map.edge);
 
-			int rot = Utils.getRand(map) & 3; //takes 2 last bits
+			int rot = Utils.random.nextInt() & 3; //takes 2 last bits
 			if ((rot & 1) == 0) { //additional randomness(reverse rotation)
 				rot = (rot + 2) & 3;
 			}
@@ -189,7 +188,7 @@ public class MapBuilder extends Builder {
 
 		for (int i = 0; i < map.edge; i++) {
 			Stack<Integer> s = new Stack<>();
-			s.push((map.edge * (Utils.getRand(map) % (map.edge - 4) + 2) + (Utils.getRand(map) % (map.edge - 4) + 2)));
+			s.push((map.edge * (Utils.random.nextInt(map.edge - 4) + 2) + (Utils.random.nextInt(map.edge - 4) + 2)));
 			stArr.add(s);
 		}
 
