@@ -16,13 +16,13 @@ public class TextureDrop extends Drop {
 		shape.setTint(false);
 		shape.setTextureMode(PConstants.NORMAL);
 		shape.setTexture(image);
-		shape.translate(x * Main.scale_x, y * Main.scale_y);
+		shape.translate(x * Main.scale, y * Main.scale);
 
 		shape.beginShape(PConstants.POLYGON);
-		shape.vertex(0, 0, /*                 */ 0, 0);
-		shape.vertex(Main.scale_x, 0, /*      */ 1, 0);
-		shape.vertex(Main.scale_x, Main.scale_y, 1, 1);
-		shape.vertex(0, Main.scale_y, /*      */ 0, 1);
+		shape.vertex(0, 0, /*             */ 0, 0);
+		shape.vertex(Main.scale, 0, /*    */ 1, 0);
+		shape.vertex(Main.scale, Main.scale, 1, 1);
+		shape.vertex(0, Main.scale, /*    */ 0, 1);
 		shape.endShape(PConstants.CLOSE);
 	}
 }

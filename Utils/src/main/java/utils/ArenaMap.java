@@ -21,11 +21,11 @@ public class ArenaMap {
 		}
 	}
 
-	public void setBlock(ArenaBlock block) {
+	public void setBlock(final ArenaBlock block) {
 		this.map[block.y][block.x] = block;
 	}
 
-	public void setDefBlock(ArenaBlock block) {
+	public void setDefBlock(final ArenaBlock block) {
 		this.background[block.y][block.x] = block;
 	}
 

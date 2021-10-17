@@ -23,7 +23,7 @@ public abstract class Decorator extends Tank {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		Decorator decorator = (Decorator)super.clone();
+		final Decorator decorator = (Decorator)super.clone();
 		decorator.wrapee = (Tank)this.wrapee.clone();
 		//decorator.wrapee = (Tank) super.thisTank().clone();
 		return decorator;

@@ -17,43 +17,43 @@ public class Tank {
 		} else {
 			shape.setTexture(Main.tiger_tank);
 		}
-		shape.translate(ix * Main.scale_x, iy * Main.scale_y);
+		shape.translate(ix * Main.scale, iy * Main.scale);
 
 		shape.beginShape(PConstants.POLYGON);
 	}
 
 	public Tank initLeft() {
-		shape.vertex(0, 0, /*                 */ 1, 0);
-		shape.vertex(Main.scale_x, 0, /*      */ 1, 1);
-		shape.vertex(Main.scale_x, Main.scale_y, 0, 1);
-		shape.vertex(0, Main.scale_y, /*      */ 0, 0);
+		shape.vertex(0, 0, /*             */ 1, 0);
+		shape.vertex(Main.scale, 0, /*    */ 1, 1);
+		shape.vertex(Main.scale, Main.scale, 0, 1);
+		shape.vertex(0, Main.scale, /*    */ 0, 0);
 		shape.endShape(PConstants.CLOSE);
 		return this;
 	}
 
 	public Tank initRight() {
-		shape.vertex(0, 0, /*                 */ 0, 1);
-		shape.vertex(Main.scale_x, 0, /*      */ 0, 0);
-		shape.vertex(Main.scale_x, Main.scale_y, 1, 0);
-		shape.vertex(0, Main.scale_y, /*      */ 1, 1);
+		shape.vertex(0, 0, /*             */ 0, 1);
+		shape.vertex(Main.scale, 0, /*    */ 0, 0);
+		shape.vertex(Main.scale, Main.scale, 1, 0);
+		shape.vertex(0, Main.scale, /*    */ 1, 1);
 		shape.endShape(PConstants.CLOSE);
 		return this;
 	}
 
 	public Tank initUp() {
-		shape.vertex(0, 0, /*                 */ 0, 0);
-		shape.vertex(Main.scale_x, 0, /*      */ 1, 0);
-		shape.vertex(Main.scale_x, Main.scale_y, 1, 1);
-		shape.vertex(0, Main.scale_y, /*      */ 0, 1);
+		shape.vertex(0, 0, /*             */ 0, 0);
+		shape.vertex(Main.scale, 0, /*    */ 1, 0);
+		shape.vertex(Main.scale, Main.scale, 1, 1);
+		shape.vertex(0, Main.scale, /*    */ 0, 1);
 		shape.endShape(PConstants.CLOSE);
 		return this;
 	}
 
 	public Tank initDown() {
-		shape.vertex(0, 0, /*                 */ 1, 1);
-		shape.vertex(Main.scale_x, 0, /*      */ 0, 1);
-		shape.vertex(Main.scale_x, Main.scale_y, 0, 0);
-		shape.vertex(0, Main.scale_y, /*      */ 1, 0);
+		shape.vertex(0, 0, /*             */ 1, 1);
+		shape.vertex(Main.scale, 0, /*    */ 0, 1);
+		shape.vertex(Main.scale, Main.scale, 0, 0);
+		shape.vertex(0, Main.scale, /*    */ 1, 0);
 		shape.endShape(PConstants.CLOSE);
 		return this;
 	}
@@ -87,19 +87,19 @@ public class Tank {
 	}
 
 	public void moveLeft() {
-		shape.translate(-Main.scale_x, 0);
+		shape.translate(-Main.scale, 0);
 	}
 
 	public void moveRight() {
-		shape.translate(Main.scale_x, 0);
+		shape.translate(Main.scale, 0);
 	}
 
 	public void moveUp() {
-		shape.translate(0, -Main.scale_y);
+		shape.translate(0, -Main.scale);
 	}
 
 	public void moveDown() {
-		shape.translate(0, Main.scale_y);
+		shape.translate(0, Main.scale);
 	}
 
 	public void turnLeft() {

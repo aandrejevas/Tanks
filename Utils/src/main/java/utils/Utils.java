@@ -30,11 +30,7 @@ public abstract class Utils {
 	public static final Random random = new Random();
 
 	public static final ByteBuffer wbuf = ByteBuffer.allocate(1000),
-		rbuf = ByteBuffer.allocate(1000);
-
-	static {
-		rbuf.mark().limit(0);
-	}
+		rbuf = ByteBuffer.allocate(1000).mark().limit(0);
 
 	public static ThreadLocalRandom random() {
 		return ThreadLocalRandom.current();

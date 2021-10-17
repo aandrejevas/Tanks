@@ -16,7 +16,7 @@ import utils.Utils;
 // Client
 public class Main extends PApplet {
 
-	public static final int W = 600, H = 600;
+	public static final int D = 800;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final long timeout = 100_000_000;
 
@@ -28,7 +28,7 @@ public class Main extends PApplet {
 		drop_sammo, drop_mammo, drop_lammo,
 		drop_sarmor, drop_marmor, drop_larmor,
 		drop_shealth, drop_mhealth, drop_lhealth;
-	public static float scale_x, scale_y;
+	public static float scale;
 	public static boolean initialized = false;
 	public static int move_state = 0;
 	public static long start_time = System.nanoTime();
@@ -42,7 +42,7 @@ public class Main extends PApplet {
 
 	@Override
 	public void settings() {
-		size(W, H, P2D);
+		size(D, D, P2D);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class Main extends PApplet {
 						break;
 					case Utils.INITIALIZE_GRID:
 						edge = Utils.rbuf.getInt();
-						scale_x = scale_y = (float)H / edge;
+						scale = (float)D / edge;
 						Utils.random.setSeed(Utils.rbuf.getInt());
 
 						handleGenMap();

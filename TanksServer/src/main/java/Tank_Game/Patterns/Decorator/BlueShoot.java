@@ -1,21 +1,14 @@
-/**
- * @(#) BlueShoot.java
- */
-
 package Tank_Game.Patterns.Decorator;
 
 import Tank_Game.Tank;
 import utils.Utils;
 
-public class BlueShoot extends Decorator
-{
-	public BlueShoot(Tank wrapee) {
+public class BlueShoot extends Decorator {
+	public BlueShoot(final Tank wrapee) {
 		super(wrapee);
 	}
 
-	public void blueShoot( )
-	{
-
+	public void blueShoot() {
 	}
 
 	@Override

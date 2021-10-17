@@ -1,21 +1,14 @@
-/**
- * @(#) RedShoot.java
- */
-
 package Tank_Game.Patterns.Decorator;
 
 import Tank_Game.Tank;
 import utils.Utils;
 
-public class RedShoot extends Decorator
-{
-	public RedShoot(Tank wrapee) {
+public class RedShoot extends Decorator {
+	public RedShoot(final Tank wrapee) {
 		super(wrapee);
 	}
 
-	public void redShoot( )
-	{
-
+	public void redShoot() {
 	}
 
 	@Override
