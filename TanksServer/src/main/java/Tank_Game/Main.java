@@ -8,9 +8,9 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 import Tank_Game.Patterns.AbstractFactory.*;
-import Tank_Game.Patterns.Factory.AI_Player;
-import Tank_Game.Patterns.Factory.Creator;
-import Tank_Game.Patterns.Factory.PlayerCreator;
+import Tank_Game.Patterns.Command.*;
+import Tank_Game.Patterns.Decorator.Decorator;
+import Tank_Game.Patterns.Factory.*;
 import Tank_Game.Patterns.Singletone.Game_Context;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
@@ -43,6 +43,8 @@ public class Main extends PApplet {
 	public static TServer this_server;
 	public static Client available_client;
 	public static TOutputStream client_os;
+
+	public static boolean test = true;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -87,7 +89,7 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 					clients.values().forEach((final Tank tank) -> {
-						client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
+						client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
 					});
 
 					for (int i = 0; i < map.edge; i++) {
@@ -100,13 +102,13 @@ public class Main extends PApplet {
 
 					if (!enemies.isEmpty()) {
 						enemies.forEach((final Tank tank) -> {
-							client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.ally_or_enemy);
+							client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
 						});
 					}
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 
-					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
+					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
 					client_os.write(Utils.INITIALIZE);
 					clients.put(available_client, new_player);
 					break;
@@ -131,13 +133,47 @@ public class Main extends PApplet {
 			}
 			if (clients.size() > enemies.size()){
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
-				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.ally_or_enemy);
+				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
 				enemies.add(new_player);
 			}
 		}
 		//generate drops randomly
 		generateDrops();
 
+		//Prototype, command and decorator pattern
+		if (test && enemies.size() != 0) {
+			Tank tank = enemies.get(enemies.size() - 1);
+
+			Invoker invoker = new Invoker();
+			try {
+				Command cmd = new RedShootCommand(tank);
+				Decorator dec = invoker.runCommand(cmd);
+				System.out.println("First red decoration: " + dec.getDamage());
+
+				Command cmd2 = new BlueShootCommand(dec);
+				Decorator dec2 = invoker.runCommand(cmd2);
+				System.out.println("Second blue decoration: " + dec2.getDamage());
+
+				Command cmd3 = new RedShootCommand(dec2);
+				Decorator dec3 = invoker.runCommand(cmd3);
+				System.out.println("Third red decorator" + dec3.getDamage());
+
+				Decorator decUndo = invoker.undoCommand();
+				System.out.println("Undo last decorator: " + decUndo.getDamage());
+
+				Decorator decUndo2 = invoker.undoCommand();
+				System.out.println("Undo previous decorator: " + decUndo2.getDamage());
+
+				Decorator decUndo3 = invoker.undoCommand();
+				System.out.println("Undo first decorator: " +  decUndo3.getDamage());
+
+				System.out.println("Tank without decorations: " + cmd.undoTank().getDamage());
+
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+			test = false;
+		}
 	}
 
 	private static void generateDrops() {

@@ -5,14 +5,14 @@ import utils.Utils;
 
 import java.util.function.Function;
 
-public class Tank {
+public class Tank implements Cloneable {
 
 	protected static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
-	protected static int counter = 0;
 
-	public final int index;
+	public int index;
 
-	public int ally_or_enemy;
+	public int type;
+	private int damage = 10;
 
 	private MoveAlgorithm moveAlgorithm;
 	public int[] cord = new int[2];
@@ -20,7 +20,7 @@ public class Tank {
 
 	public Tank(int index, int ally_or_enemy) {
 		this.index = index;
-		this.ally_or_enemy = ally_or_enemy;
+		this.type = ally_or_enemy;
 		do {
 			cord[0] = Utils.random().nextInt(Main.edge);
 			cord[1] = Utils.random().nextInt(Main.edge);
@@ -29,13 +29,56 @@ public class Tank {
 		direction[0] = UP;
 	}
 
+	public Tank() {
+
+	}
 
 	public Tank setAlgorithm(MoveAlgorithm moveAlgorithm){
 		this.moveAlgorithm =  moveAlgorithm;
 		return this;
 	}
 
+	public MoveAlgorithm getMoveAlgorithm() {
+		return moveAlgorithm;
+	}
+
+	public int getDamage() {
+		return damage;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
+	}
+
 	public void move(){
 		moveAlgorithm.move(cord, direction, index);
+	}
+
+	public void shoot(){
+
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Tank tank = (Tank)super.clone();
+		tank.index = this.index;
+		tank.type = this.type;
+		tank.damage = this.damage;
+		if (this.moveAlgorithm != null)
+			tank.moveAlgorithm = (MoveAlgorithm) this.moveAlgorithm.clone();
+
+		int[] cord = new int[2];
+		cord[0] = this.cord[0];
+		cord[1] = this.cord[1];
+		tank.cord = cord;
+
+		byte[] direction = new byte[1];
+		direction[0] = this.direction[0];
+		tank.direction = direction;
+		return tank;
+	}
+
+	public Tank thisTank(){
+		return this;
 	}
 }
