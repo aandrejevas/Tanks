@@ -5,7 +5,8 @@
 package Tank_Game.Patterns.Factory;
 
 import Tank_Game.*;
-import Tank_Game.Patterns.AI_Strategy.*;
+import Tank_Game.Patterns.AI_Composite.AICompState;
+import Tank_Game.Patterns.AI_State.*;
 import Tank_Game.Patterns.Strategy.MoveUp;
 
 import java.util.Stack;
@@ -14,13 +15,10 @@ import static processing.core.PApplet.println;
 
 public class AI_Player extends Tank
 {
-
-    public static final int AI_NONE = 0, AI_PURSUING = 1, AI_TARGET_LOCKED = 2, AI_TARGET_FOUND = 4,
-            AI_ROAM_FOUND = 8, AI_AIMED = 16;
-    public int state = AI_NONE;
-    public int sightDist = 12;
-    public int shotChangeDist = 7;
-    public int scanDist = 6;
+    public AICompState state;
+    public int sightDist = 20;
+    public int shotChangeDist = 8;
+    public int scanDist = 7;
 
     public int[] pursueTarget = new int[2];
     public int[] fireTarget = new int[2];
@@ -29,50 +27,33 @@ public class AI_Player extends Tank
 
     public Stack<Integer[]> path = new Stack<Integer[]>();
 
-    private AIAlgorithm aiAlg;
-
     public AI_Player(int playerIndex) {
         super(playerIndex, 1);
         this.setAlgorithm(new MoveUp());
-    }
-
-    public AI_Player setAIAlgorithm(AIAlgorithm aiAlg){
-        this.aiAlg = aiAlg;
-        return this;
-    }
-
-    private void behave() {
-        aiAlg.perform(this);
+        this.state = new AICompState();
     }
 
     public void AIThink() {
-        setAIAlgorithm(new AIEnemyScan());
-        behave();
+        (new AIEnemyScan()).perform(this);
 
-        if (AI_NONE == (state & (AI_PURSUING | AI_ROAM_FOUND))) {
-            setAIAlgorithm(new AIRoamScan());
-            behave();
+        if (!state.hasState(AICompState.AI_PURSUING) && !state.hasState(AICompState.AI_ROAM_FOUND)) {
+            (new AIRoamScan()).perform(this);
         }
 
-        setAIAlgorithm(new AILockTarget());
-        behave();
+        (new AILockTarget()).perform(this);
 
-        if (AI_NONE != (state & AI_AIMED)) {
-            setAIAlgorithm(new AIShoot());
-            behave();
+        if (state.hasState(AICompState.AI_AIMED)) {
+            (new AIShoot()).perform(this);
             return;
-        } else  if (AI_NONE != (state & AI_TARGET_LOCKED)) {
-            setAIAlgorithm(new AIAim());
-            behave();
+        } else if (state.hasState(AICompState.AI_TARGET_LOCKED)){
+            (new AIAim()).perform(this);
             return;
-        } else if (AI_NONE != (state & AI_ROAM_FOUND)) {
-            setAIAlgorithm(new AIPursueTarget());
-            behave();
+        } else {
+            (new AIPursueTarget()).perform(this);
         }
 
-        if (AI_NONE != (state & AI_PURSUING)) {
-            setAIAlgorithm(new AIDrive());
-            behave();
+        if (state.hasState(AICompState.AI_PURSUING)) {
+            (new AIDrive()).perform(this);
         }
     }
 }

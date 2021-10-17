@@ -1,16 +1,14 @@
 
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
+import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
 
-import java.util.Collection;
-import java.util.List;
-
 import static processing.core.PApplet.println;
 
-public class AIEnemyScan extends AIAlgorithm
+public class AIEnemyScan implements AIState
 {
     @Override
     public void perform(AI_Player ai) {
@@ -29,11 +27,11 @@ public class AIEnemyScan extends AIAlgorithm
         }
 
         if (bestDist < ai.scanDist && best_tank != null) {
-            ai.state |= AI_Player.AI_TARGET_FOUND;
-            ai.state |= AI_Player.AI_ROAM_FOUND;
-            ai.pursueTarget = best_tank.cord;
+            ai.state.addState(new AICompState(AICompState.AI_TARGET_FOUND));
+            ai.state.addState(new AICompState(AICompState.AI_ROAM_FOUND));
+            ai.pursueTarget = best_tank.cord.clone();
         } else {
-            ai.state &= ~AI_Player.AI_TARGET_FOUND;
+            ai.state.removeState(new AICompState(AICompState.AI_TARGET_FOUND));
         }
     }
 

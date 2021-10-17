@@ -1,15 +1,14 @@
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
+import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
 import utils.Utils;
 
-import java.util.List;
-
 import static processing.core.PApplet.println;
 
-public class AILockTarget extends AIAlgorithm
+public class AILockTarget implements AIState
 {
     @Override
     public void perform(AI_Player ai) {
@@ -30,11 +29,11 @@ public class AILockTarget extends AIAlgorithm
         }
 
         if (bestDist < ai.sightDist && best_tank != null) {
-            ai.state |= AI_Player.AI_TARGET_LOCKED;
-            ai.fireTarget = best_tank.cord;
+            ai.state.addState(new AICompState(AICompState.AI_TARGET_LOCKED));
+            ai.fireTarget = best_tank.cord.clone();
             ai.fireTargetDist = bestDist;
-            if(isAimed(ai, best_tank.cord)) {
-                ai.state |= AI_Player.AI_AIMED;
+            if(isAimed(ai, ai.fireTarget)) {
+                ai.state.addState(new AICompState(AICompState.AI_AIMED));
             }
         }
     }

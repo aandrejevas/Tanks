@@ -1,24 +1,22 @@
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
-import Tank_Game.Main;
+import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
-import Tank_Game.Tank;
-
-import java.util.List;
 
 import static processing.core.PApplet.println;
 
-public class AIDrive extends AIAlgorithm
+public class AIDrive implements AIState
 {
     @Override
     public void perform(AI_Player ai) {
         if (ai.path.empty()) {
 //            println("stack empty");
-            ai.state &= ~(AI_Player.AI_PURSUING | AI_Player.AI_ROAM_FOUND);
+            ai.state.removeState(new AICompState(AICompState.AI_ROAM_FOUND));
+            ai.state.removeState(new AICompState(AICompState.AI_PURSUING));
             return;
         }
 
