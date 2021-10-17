@@ -1,11 +1,8 @@
 
-package Tank_Game.Patterns.AI_Strategy;
+package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
 import Tank_Game.Patterns.Factory.AI_Player;
-import Tank_Game.Tank;
-import utils.ArenaMap;
-import utils.Utils;
 
 public abstract class AIAlgorithm
 {

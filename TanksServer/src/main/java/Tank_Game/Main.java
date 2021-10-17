@@ -26,6 +26,8 @@ import utils.TOutputStream;
 import utils.TServer;
 import utils.Utils;
 
+import static utils.Utils.MAP_PLAYER;
+
 // Server
 public class Main extends PApplet {
 
@@ -57,9 +59,7 @@ public class Main extends PApplet {
 
 		game_context = Game_Context.getInstance();
 		//building map
-//		map = new ArenaMap(seed, edge, true);
 		map = (new MapBuilder(map)).Build(false).getBuildable();
-//		map = (new MapBuilder(map)).makeLava().makeWater().makeBorders().makeMaze().getBuildable();
 
 	}
 
@@ -161,15 +161,15 @@ public class Main extends PApplet {
 				drop = af.createHealth();
 			}
 
-			int[] cord = new int[2];
+			int[] dropCord = new int[2];
 
 			do {
-				cord[0] = Utils.random().nextInt(Main.edge);
-				cord[1] = Utils.random().nextInt(Main.edge);
-			} while (Main.map.map[cord[1]][cord[0]].value != Utils.MAP_EMPTY);
-			Main.map.map[cord[1]][cord[0]].drop = drop;
+				dropCord[0] = Utils.random().nextInt(Main.edge);
+				dropCord[1] = Utils.random().nextInt(Main.edge);
+			} while (Main.map.map[dropCord[1]][dropCord[0]].value != Utils.MAP_EMPTY);
+			Main.map.map[dropCord[1]][dropCord[0]].drop = drop;
 
-			this_server.write(Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), cord[1], cord[0]);
+			this_server.write(Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), dropCord[1], dropCord[0]);
 		}
 	}
 
@@ -185,5 +185,48 @@ public class Main extends PApplet {
 	public static int GetRandAux() {
 		seedAux = ((seedAux * 1103515245) + 12345) & 0x7fffffff;
 		return seedAux;
+	}
+
+	public static void printMap() {
+		for (int i = 0; i < Main.map.edge; i++) {
+			for (int j = 0; j < Main.map.edge; j++) {
+				if (Main.map.map[i][j].debugValue != 0) {
+					switch (Main.map.map[i][j].debugValue) {
+						case 1:
+							print('+');
+							break;
+						case 2:
+							print('*');
+							break;
+					}
+					Main.map.map[i][j].debugValue = 0;
+				} else {
+					switch (Main.map.map[i][j].value) {
+						case Utils.MAP_WALL:
+							print('▒');
+							break;
+						case Utils.MAP_EMPTY:
+							print('░');
+							break;
+						case Utils.MAP_BORDER:
+							print('▓');
+							break;
+						case Utils.MAP_LAVA:
+							print('^');
+							break;
+						case Utils.MAP_WATER:
+							print('0');
+							break;
+						case MAP_PLAYER:
+							print('X');
+							break;
+						default:
+							print(' ');
+							break;
+					}
+				}
+			}
+			println();
+		}
 	}
 }
