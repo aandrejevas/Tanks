@@ -18,7 +18,6 @@ public class Main extends PApplet {
 
 	public static final int W = 600, H = 600;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
-	public static Map<Byte, PImage> imgMap = new HashMap<>();
 	public static final long timeout = 100_000_000;
 
 	public static PApplet self;
@@ -73,27 +72,32 @@ public class Main extends PApplet {
 		drop_mhealth = loadImage("Drops/Health_Drop/Medium_Health.png");
 		drop_shealth = loadImage("Drops/Health_Drop/Small_Health.png");
 
-		imgMap.put(Utils.MAP_EMPTY, background_box);
-		imgMap.put(Utils.MAP_BORDER, metal_box);
-		imgMap.put(Utils.MAP_WALL, wood_box);
-		imgMap.put(Utils.MAP_WATER, water_box);
-		imgMap.put(Utils.MAP_LAVA, lava_box);
-		imgMap.put(Utils.MAP_T34, t34_tank);
-		imgMap.put(Utils.MAP_SHERMAN, sherman_tank);
-		imgMap.put(Utils.MAP_TIGER, tiger_tank);
-		imgMap.put(Utils.DROP_LAMMO, drop_lammo);
-		imgMap.put(Utils.DROP_MAMMO, drop_mammo);
-		imgMap.put(Utils.DROP_SAMMO, drop_sammo);
-		imgMap.put(Utils.DROP_LARMOR, drop_larmor);
-		imgMap.put(Utils.DROP_MARMOR, drop_marmor);
-		imgMap.put(Utils.DROP_SARMOR, drop_sarmor);
-		imgMap.put(Utils.DROP_LHEALTH, drop_lhealth);
-		imgMap.put(Utils.DROP_MHEALTH, drop_mhealth);
-		imgMap.put(Utils.DROP_SHEALTH, drop_shealth);
-
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_client.output = (this_os = new TOutputStream(this_client));
 		this_os.write(Utils.S_INIT_CLIENT);
+	}
+
+	public static PImage getImage(final byte key) {
+		switch (key) {
+			case Utils.MAP_EMPTY: return background_box;
+			case Utils.MAP_BORDER: return metal_box;
+			case Utils.MAP_WALL: return wood_box;
+			case Utils.MAP_WATER: return water_box;
+			case Utils.MAP_LAVA: return lava_box;
+			case Utils.MAP_T34: return t34_tank;
+			case Utils.MAP_SHERMAN: return sherman_tank;
+			case Utils.MAP_TIGER: return tiger_tank;
+			case Utils.DROP_LAMMO: return drop_lammo;
+			case Utils.DROP_MAMMO: return drop_mammo;
+			case Utils.DROP_SAMMO: return drop_sammo;
+			case Utils.DROP_LARMOR: return drop_larmor;
+			case Utils.DROP_MARMOR: return drop_marmor;
+			case Utils.DROP_SARMOR: return drop_sarmor;
+			case Utils.DROP_LHEALTH: return drop_lhealth;
+			case Utils.DROP_MHEALTH: return drop_mhealth;
+			case Utils.DROP_SHEALTH: return drop_shealth;
+			default: throw new NullPointerException();
+		}
 	}
 
 	@Override
@@ -248,20 +252,16 @@ public class Main extends PApplet {
 //		}
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).setShape(imgMap.get(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).setShape(imgMap.get(map.background[j][i].value));
+				((TextureBlock)(map.map[j][i])).setShape(getImage(map.map[j][i].value));
+				((TextureBlock)(map.background[j][i])).setShape(getImage(map.background[j][i].value));
 			}
 		}
 	}
 
 	public static void handleAddDrop() {
-		final int i1 = Utils.rbuf.getInt(), i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
-		map.map[i3][i4].drop = new TextureDrop(
-			(byte)i1,
-			i2,
-			imgMap.get((byte)i1),
-			i4,
-			i3);
+		final byte i1 = (byte)Utils.rbuf.getInt();
+		final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
+		map.map[i3][i4].drop = new TextureDrop(i1, i2, getImage(i1), i4, i3);
 	}
 
 	public static void sendMove(final byte message) {

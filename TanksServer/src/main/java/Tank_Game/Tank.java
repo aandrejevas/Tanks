@@ -31,8 +31,8 @@ public class Tank implements Cloneable {
 
 	}
 
-	public Tank setAlgorithm(MoveAlgorithm moveAlgorithm){
-		this.moveAlgorithm =  moveAlgorithm;
+	public Tank setAlgorithm(final MoveAlgorithm moveAlgorithm) {
+		this.moveAlgorithm = moveAlgorithm;
 		return this;
 	}
 
@@ -44,26 +44,25 @@ public class Tank implements Cloneable {
 		return shotType;
 	}
 
-	public void setShotType(byte shotType) {
+	public void setShotType(final byte shotType) {
 		this.shotType = shotType;
 	}
 
-	public void move(){
+	public void move() {
 		moveAlgorithm.move(cord, direction, index);
 	}
 
-	public void shoot(){
-
+	public void shoot() {
 	}
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		Tank tank = (Tank)super.clone();
+		final Tank tank = (Tank)super.clone();
 		tank.index = this.index;
 		tank.type = this.type;
-		tank.shotType = this.shotType;
+		tank.setShotType(this.shotType);
 		if (this.moveAlgorithm != null)
-			tank.moveAlgorithm = (MoveAlgorithm) this.moveAlgorithm.clone();
+			tank.setAlgorithm((MoveAlgorithm)this.moveAlgorithm.clone());
 
 		int[] cord = new int[2];
 		cord[0] = this.cord[0];
@@ -74,9 +73,5 @@ public class Tank implements Cloneable {
 		direction[0] = this.direction[0];
 		tank.direction = direction;
 		return tank;
-	}
-
-	public Tank thisTank(){
-		return this;
 	}
 }
