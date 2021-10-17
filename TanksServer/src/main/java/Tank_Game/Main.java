@@ -141,7 +141,7 @@ public class Main extends PApplet {
 	}
 
 	private static void generateDrops() {
-		if (GetRandAux() % 10000 < 20) {
+		if (GetRandAux() % 1000000 < map.edge*map.edge) {
 			int size = GetRandAux() % 300;
 			AbstractFactory af;
 			if (size < 100) {
