@@ -117,19 +117,19 @@ public class Main extends PApplet {
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
 					//handleMove(Tank::moveLeft);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveLeft()).move());
+					handleMove(Tank -> Tank.setAlgorithm(MoveLeft.instance).move());
 					break;
 				case Utils.S_MOVE_RIGHT:
 					//handleMove(Tank::moveRight);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveRight()).move());
+					handleMove(Tank -> Tank.setAlgorithm(MoveRight.instance).move());
 					break;
 				case Utils.S_MOVE_UP:
 					//handleMove(Tank::moveUp);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveUp()).move());
+					handleMove(Tank -> Tank.setAlgorithm(MoveUp.instance).move());
 					break;
 				case Utils.S_MOVE_DOWN:
 					//handleMove(Tank::moveDown);
-					handleMove(Tank -> Tank.setAlgorithm(new MoveDown()).move());
+					handleMove(Tank -> Tank.setAlgorithm(MoveDown.instance).move());
 					break;
 				case Utils.S_SHOOT:
 					break;

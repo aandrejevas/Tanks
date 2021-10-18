@@ -5,6 +5,11 @@ import Tank_Game.Tank;
 import utils.Utils;
 
 public class MoveRight implements MoveAlgorithm {
+	private MoveRight() {
+	}
+
+	public static final MoveAlgorithm instance = new MoveRight();
+
 	@Override
 	public void move(final Tank tank) {
 		if (Main.map.map[tank.y][tank.x + 1].obstacle) {

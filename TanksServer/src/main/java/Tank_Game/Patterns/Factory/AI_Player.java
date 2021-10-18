@@ -27,7 +27,7 @@ public class AI_Player extends Tank {
 
 	public AI_Player(int playerIndex) {
 		super(playerIndex, 1);
-		this.setAlgorithm(new MoveUp());
+		this.setAlgorithm(MoveUp.instance);
 		this.state = new AICompState();
 	}
 

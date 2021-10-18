@@ -15,13 +15,13 @@ public class AIAim implements AIState {
 		int dy = ai.fireTarget.y - ai.y;
 
 		if (dy < 0) {
-			ai.setAlgorithm(new MoveUp());
+			ai.setAlgorithm(MoveUp.instance);
 		} else if (dy > 0) {
-			ai.setAlgorithm(new MoveDown());
+			ai.setAlgorithm(MoveDown.instance);
 		} else if (dx < 0) {
-			ai.setAlgorithm(new MoveLeft());
+			ai.setAlgorithm(MoveLeft.instance);
 		} else if (dx > 0) {
-			ai.setAlgorithm(new MoveRight());
+			ai.setAlgorithm(MoveRight.instance);
 		} else {
 			PApplet.println("aim failed");
 		}

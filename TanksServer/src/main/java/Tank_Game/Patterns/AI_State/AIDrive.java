@@ -24,13 +24,13 @@ public class AIDrive implements AIState {
 		int dx = next[0] - ai.x;
 
 		if (dy == -1) {
-			ai.setAlgorithm(new MoveUp());
+			ai.setAlgorithm(MoveUp.instance);
 		} else if (dy == 1) {
-			ai.setAlgorithm(new MoveDown());
+			ai.setAlgorithm(MoveDown.instance);
 		} else if (dx == -1) {
-			ai.setAlgorithm(new MoveLeft());
+			ai.setAlgorithm(MoveLeft.instance);
 		} else if (dx == 1) {
-			ai.setAlgorithm(new MoveRight());
+			ai.setAlgorithm(MoveRight.instance);
 		} else {
 			PApplet.println("ai failed to move SL:" + ai.path.size() + " dx:" + dx + " dy:" + dy);
 		}
