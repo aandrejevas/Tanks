@@ -22,8 +22,8 @@ public class AIDrive implements AIState
 
         Integer[] next = ai.path.pop();
 
-        int dy = next[1] - ai.cord[1];
-        int dx = next[0] - ai.cord[0];
+        int dy = next[1] - ai.getCordByIndex(1);
+        int dx = next[0] - ai.getCordByIndex(0);
 
         if (dy == -1) {
             ai.setAlgorithm(new MoveUp());

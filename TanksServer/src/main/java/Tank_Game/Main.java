@@ -27,8 +27,8 @@ import utils.Utils;
 public class Main extends PApplet {
 
 	public static final int edge = 30, seed = Utils.random().nextInt();
-	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
-	public static final ArrayList<Tank> enemies = new ArrayList();
+	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
+	public static ArrayList<Invoker> enemies = new ArrayList();
 	public static ArenaMap map = new ArenaMap(edge, true);
 
 	public static Game_Context game_context;
@@ -63,17 +63,17 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		if (this_server.clientCount != clients.size()) {
-			clients.entrySet().removeIf((final Map.Entry<Client, Tank> entry) -> {
+			clients.entrySet().removeIf((final Map.Entry<Client, Invoker> entry) -> {
 				if (!entry.getKey().active()) {
-					this_server.write(Utils.REMOVE_TANK, entry.getValue().index);
+					this_server.write(Utils.REMOVE_TANK, entry.getValue().currentDecorator().getIndex());
 					return true;
 				} else return false;
 			});
 		}
 
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
-			enemies.forEach((final Tank tank) -> {
-				((AI_Player)tank).AIThink();
+			enemies.forEach((final Invoker tank) -> {
+				((AI_Player)tank.undoTank()).AIThink();
 			});
 		}
 
@@ -82,8 +82,9 @@ public class Main extends PApplet {
 			switch (available_client.read()) {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
-					clients.values().forEach((final Tank tank) -> {
-						client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
+					clients.values().forEach((final Invoker tank) -> {
+						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getCordByIndex(0), tank.currentDecorator().getCordByIndex(1), tank.currentDecorator().getType());
+
 					});
 
 					for (int i = 0; i < map.edge; i++) {
@@ -95,16 +96,19 @@ public class Main extends PApplet {
 					}
 
 					if (!enemies.isEmpty()) {
-						enemies.forEach((final Tank tank) -> {
-							client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
+						enemies.forEach((final Invoker tank) -> {
+							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getCordByIndex(0), tank.currentDecorator().getCordByIndex(1), tank.currentDecorator().getType());
 						});
 					}
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
+					Invoker invoker = new Invoker();
+					Command cmd = new NormalShootCommand(new_player);
+					invoker.runCommand(cmd);
 
-					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
+					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getCordByIndex(0), new_player.getCordByIndex(1), new_player.getType());
 					client_os.write(Utils.INITIALIZE);
-					clients.put(available_client, new_player);
+					clients.put(available_client, invoker);
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
@@ -127,15 +131,18 @@ public class Main extends PApplet {
 			}
 			if (clients.size() > enemies.size()) {
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
-				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
-				enemies.add(new_player);
+				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getCordByIndex(0), new_player.getCordByIndex(1), new_player.getType());
+				Invoker invoker = new Invoker();
+				Command cmd = new NormalShootCommand(new_player);
+				invoker.runCommand(cmd);
+				enemies.add(invoker);
 			}
 		}
 		//generate drops randomly
 		generateDrops();
 
 		//Prototype, command and decorator pattern
-		if (test && !enemies.isEmpty()) {
+		/*if (test && !enemies.isEmpty()) {
 			Tank tank = enemies.get(enemies.size() - 1);
 
 			Invoker invoker = new Invoker();
@@ -174,13 +181,11 @@ public class Main extends PApplet {
 				Decorator decUndo4 = invoker.undoCommand();
 				System.out.println("Return First decorator: " + decUndo4.getShotType());
 
-				//Tankas atgaunamas iskyrus pasėmus pirmą dekoratorių iš invoker
-
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
 			test = false;
-		}
+		}*/
 	}
 
 	private static void generateDrops() {
@@ -216,8 +221,8 @@ public class Main extends PApplet {
 		}
 	}
 
-	public static void handleMove(final Consumer<Tank> func) {
-		func.accept(clients.get(available_client));
+	public static void handleMove(final Consumer<Decorator> func) {
+		func.accept(clients.get(available_client).currentDecorator());
 	}
 
 	public static void printMap() {

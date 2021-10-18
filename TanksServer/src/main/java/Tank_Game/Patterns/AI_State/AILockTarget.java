@@ -2,6 +2,7 @@ package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
 import Tank_Game.Patterns.AI_Composite.AICompState;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
 import utils.Utils;
@@ -19,18 +20,18 @@ public class AILockTarget implements AIState
         int bestDist = Integer.MAX_VALUE;
 
         for (int i = 0; i < players.length; i++) {
-            if (isClearSight(ai.cord, ((Tank)players[i]).cord)) {
-                int dist = menhadenDist(ai.cord, ((Tank)players[i]).cord);
+            if (isClearSight(ai.getCord(), ((Invoker)players[i]).currentDecorator().getCord())) {
+                int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getCord());
                 if (dist < bestDist) {
                     bestDist = dist;
-                    best_tank = (Tank)players[i];
+                    best_tank = ((Invoker) players[i]).currentDecorator();
                 }
             }
         }
 
         if (bestDist < ai.sightDist && best_tank != null) {
             ai.state.addState(new AICompState(AICompState.AI_TARGET_LOCKED));
-            ai.fireTarget = best_tank.cord.clone();
+            ai.fireTarget = best_tank.getCord().clone();
             ai.fireTargetDist = bestDist;
             if(isAimed(ai, ai.fireTarget)) {
                 ai.state.addState(new AICompState(AICompState.AI_AIMED));
@@ -80,9 +81,9 @@ public class AILockTarget implements AIState
     }
 
     private boolean isAimed(AI_Player ai, int[] to) {
-        int dx = to[0] - ai.cord[0];
-        int dy = to[1] - ai.cord[1];
-        switch (ai.direction[0]) {
+        int dx = to[0] - ai.getCordByIndex(0);
+        int dy = to[1] - ai.getCordByIndex(1);
+        switch (ai.getDirection()) {
             case Utils.ADD_UP_TANK:
                 return dy < 0;
             case Utils.ADD_DOWN_TANK:

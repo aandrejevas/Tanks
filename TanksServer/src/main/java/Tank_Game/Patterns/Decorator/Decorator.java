@@ -28,7 +28,7 @@ public abstract class Decorator extends Tank {
 
 	@Override
 	public Tank setAlgorithm(MoveAlgorithm moveAlgorithm) {
-		return super.setAlgorithm(moveAlgorithm);
+		return wrapee.setAlgorithm(moveAlgorithm);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public abstract class Decorator extends Tank {
 
 	@Override
 	public void move() {
-		super.move();
+		wrapee.move();
 	}
 
 	@Override
@@ -47,43 +47,38 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void setIndex(int index) {
-		super.setIndex(index);
-	}
-
-	@Override
 	public int getIndex() {
-		return super.getIndex();
+		return wrapee.getIndex();
 	}
 
 	@Override
 	public int getType() {
-		return super.getType();
-	}
-
-	@Override
-	public void setType(int type) {
-		super.setType(type);
+		return wrapee.getType();
 	}
 
 	@Override
 	public void setMoveAlgorithm(MoveAlgorithm moveAlgorithm) {
-		super.setMoveAlgorithm(moveAlgorithm);
+		wrapee.setMoveAlgorithm(moveAlgorithm);
 	}
 
 	@Override
-	public int getCord(int index) {
-		return super.getCord(index);
+	public int[] getCord() {
+		return wrapee.getCord();
+	}
+
+	@Override
+	public int getCordByIndex(int index) {
+		return wrapee.getCordByIndex(index);
 	}
 
 	@Override
 	public void setCord(int index, int cord) {
-		super.setCord(index, cord);
+		wrapee.setCord(index, cord);
 	}
 
 	@Override
-	public byte[] getDirection() {
-		return super.getDirection();
+	public byte getDirection() {
+		return wrapee.getDirection();
 	}
 
 	@Override
@@ -92,9 +87,14 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
+	public byte[] getDir() {
+		return wrapee.getDir();
+	}
+
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Decorator decorator = (Decorator)super.clone();
-		decorator.wrapee = (Tank)this.wrapee.clone();
+		//decorator.wrapee = (Tank)this.wrapee.clone();
 
 		decorator.setShotType(this.getShotType());
 		return decorator;

@@ -7,14 +7,14 @@ public class Tank implements Cloneable {
 
 	protected static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
 
-	public int index;
+	private int index;
 
-	public int type;
+	private int type;
 	private byte shotType = Utils.SHOT_NORMAL;
 
 	private MoveAlgorithm moveAlgorithm;
-	public int[] cord = new int[2];
-	public byte[] direction = new byte[1];
+	private int[] cord = new int[2];
+	private byte[] direction = new byte[1];
 
 	public Tank(int index, int ally_or_enemy) {
 		this.index = index;
@@ -79,7 +79,15 @@ public class Tank implements Cloneable {
 		this.moveAlgorithm = moveAlgorithm;
 	}
 
-	public int getCord(int index) {
+	public int[] getCord() {
+		return cord;
+	}
+
+	public void setCord(int[] cord) {
+		this.cord = cord;
+	}
+
+	public int getCordByIndex(int index) {
 		return cord[index];
 	}
 
@@ -87,18 +95,22 @@ public class Tank implements Cloneable {
 		this.cord[index] = cord;
 	}
 
-	public byte[] getDirection() {
-		return direction;
+	public byte getDirection() {
+		return direction[0];
 	}
 
 	public void setDirection(byte direction) {
 		this.direction[0] = direction;
 	}
 
+	public byte[] getDir() {
+		return this.direction;
+	}
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		final Tank tank = (Tank)super.clone();
-		tank.index = this.index;
+		Tank tank = (Tank)super.clone();
+		/*tank.index = this.index;
 		tank.type = this.type;
 		tank.setShotType(this.shotType);
 		if (this.moveAlgorithm != null)
@@ -111,7 +123,7 @@ public class Tank implements Cloneable {
 
 		byte[] direction = new byte[1];
 		direction[0] = this.direction[0];
-		tank.direction = direction;
+		tank.direction = direction;*/
 		return tank;
 	}
 }

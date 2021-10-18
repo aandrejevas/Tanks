@@ -3,6 +3,7 @@ package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
 import Tank_Game.Patterns.AI_Composite.AICompState;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
 
@@ -19,17 +20,17 @@ public class AIEnemyScan implements AIState
         int bestDist = Integer.MAX_VALUE;
 
         for (int i = 0; i < players.length; i++) {
-            int dist = menhadenDist(ai.cord, ((Tank)players[i]).cord);
+            int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getCord());
             if (dist < bestDist) {
                 bestDist = dist;
-                best_tank = (Tank) players[i];
+                best_tank = ((Invoker) players[i]).currentDecorator();
             }
         }
 
         if (bestDist < ai.scanDist && best_tank != null) {
             ai.state.addState(new AICompState(AICompState.AI_TARGET_FOUND));
             ai.state.addState(new AICompState(AICompState.AI_ROAM_FOUND));
-            ai.pursueTarget = best_tank.cord.clone();
+            ai.pursueTarget = best_tank.getCord().clone();
         } else {
             ai.state.removeState(new AICompState(AICompState.AI_TARGET_FOUND));
         }

@@ -19,7 +19,7 @@ public class AIPursueTarget implements AIState
 //        println("AI pursue");
         if (ai.path.empty()) {
             boolean[][] vis = new boolean[Main.map.edge][Main.map.edge];
-            ai.path = BFS(Main.map.map, vis, toCord(ai.cord), ai.pursueTarget);
+            ai.path = BFS(Main.map.map, vis, toCord(ai.getCord()), ai.pursueTarget);
         }
 
         ai.state.addState(new AICompState(AICompState.AI_PURSUING));

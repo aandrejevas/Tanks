@@ -12,8 +12,8 @@ import static processing.core.PApplet.println;
 public class AIAim implements AIState
 {
     public void perform(AI_Player ai) {
-        int dx = ai.fireTarget[0] - ai.cord[0];
-        int dy = ai.fireTarget[1] - ai.cord[1];
+        int dx = ai.fireTarget[0] - ai.getCordByIndex(0);
+        int dy = ai.fireTarget[1] - ai.getCordByIndex(1);
 
         if (dy < 0) {
             ai.setAlgorithm(new MoveUp());
