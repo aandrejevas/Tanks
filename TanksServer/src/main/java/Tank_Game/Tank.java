@@ -1,6 +1,7 @@
 package Tank_Game;
 
 import Tank_Game.Patterns.Strategy.MoveAlgorithm;
+import utils.ArenaBlock;
 import utils.Utils;
 
 public class Tank implements Cloneable {
@@ -23,7 +24,9 @@ public class Tank implements Cloneable {
 			x = Utils.random().nextInt(Main.edge);
 			y = Utils.random().nextInt(Main.edge);
 		} while (Main.map.map[y][x].value < Utils.MAP_NON_OBSTACLE);
-		Main.map.map[y][x].value = Utils.MAP_PLAYER;
+		final ArenaBlock block = Main.map.map[y][x];
+		block.value = Utils.MAP_PLAYER;
+		block.obstacle = true;
 		direction = UP;
 	}
 

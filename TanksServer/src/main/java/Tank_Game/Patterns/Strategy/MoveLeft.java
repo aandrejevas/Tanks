@@ -2,6 +2,7 @@ package Tank_Game.Patterns.Strategy;
 
 import Tank_Game.Main;
 import Tank_Game.Tank;
+import utils.ArenaBlock;
 import utils.Utils;
 
 public class MoveLeft implements MoveAlgorithm {
@@ -12,7 +13,8 @@ public class MoveLeft implements MoveAlgorithm {
 
 	@Override
 	public void move(final Tank tank) {
-		if (Main.map.map[tank.y][tank.x - 1].obstacle) {
+		final ArenaBlock next_block = Main.map.map[tank.y][tank.x - 1];
+		if (next_block.obstacle) {
 			switch (tank.direction) {
 				default:
 					tank.direction = Tank.LEFT;
@@ -20,10 +22,11 @@ public class MoveLeft implements MoveAlgorithm {
 				case Tank.LEFT: return;
 			}
 		} else {
-			Main.map.map[tank.y][tank.x - 1].value = Main.map.map[tank.y][tank.x].value;
-			Main.map.map[tank.y][tank.x].value = Main.map.map[tank.y][tank.x].defValue;
-			Main.map.map[tank.y][tank.x].obstacle = false;
-			Main.map.map[tank.y][tank.x - 1].obstacle = true;
+			final ArenaBlock block = Main.map.map[tank.y][tank.x];
+			next_block.value = block.value;
+			block.value = block.defValue;
+			block.obstacle = false;
+			next_block.obstacle = true;
 			--tank.x;
 			switch (tank.direction) {
 				default:

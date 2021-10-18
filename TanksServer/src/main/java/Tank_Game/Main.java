@@ -20,10 +20,12 @@ import Tank_Game.Patterns.Strategy.MoveUp;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
+import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
 import utils.MapBuilder;
@@ -36,7 +38,7 @@ public class Main extends PApplet {
 
 	public static final int edge = 30, seed = Utils.random().nextInt();
 	public static final Map<Client, Tank> clients = new IdentityHashMap<>();
-	public static final ArrayList<Tank> enemies = new ArrayList();
+	public static final List<Tank> enemies = new ArrayList();
 	public static ArenaMap map = new ArenaMap(edge, true);
 
 	public static Game_Context game_context;
@@ -46,7 +48,7 @@ public class Main extends PApplet {
 	public static Client available_client;
 	public static TOutputStream client_os;
 
-	public static boolean test = true;
+	public static boolean test = false;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -73,7 +75,11 @@ public class Main extends PApplet {
 		if (this_server.clientCount != clients.size()) {
 			clients.entrySet().removeIf((final Map.Entry<Client, Tank> entry) -> {
 				if (!entry.getKey().active()) {
-					this_server.write(Utils.REMOVE_TANK, entry.getValue().index);
+					final Tank tank = entry.getValue();
+					final ArenaBlock block = map.map[tank.y][tank.x];
+					block.value = block.defValue;
+					block.obstacle = false;
+					this_server.write(Utils.REMOVE_TANK, tank.index);
 					return true;
 				} else return false;
 			});
@@ -102,11 +108,9 @@ public class Main extends PApplet {
 						}
 					}
 
-					if (!enemies.isEmpty()) {
-						enemies.forEach((final Tank tank) -> {
-							client_os.write(tank.direction, tank.index, tank.x, tank.y, tank.type);
-						});
-					}
+					enemies.forEach((final Tank tank) -> {
+						client_os.write(tank.direction, tank.index, tank.x, tank.y, tank.type);
+					});
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 
