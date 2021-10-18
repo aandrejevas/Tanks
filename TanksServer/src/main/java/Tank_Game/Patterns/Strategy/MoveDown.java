@@ -13,28 +13,28 @@ public class MoveDown implements MoveAlgorithm {
 
 	@Override
 	public void move(final Tank tank) {
-		final ArenaBlock next_block = Main.map.map[tank.y + 1][tank.x];
+		final ArenaBlock next_block = Main.map.map[tank.getY() + 1][tank.getX()];
 		if (next_block.obstacle) {
-			switch (tank.direction) {
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.DOWN;
-					sendMove(Utils.POINT_DOWN, tank.index);
+					tank.setDirection(Tank.DOWN);
+					sendMove(Utils.POINT_DOWN, tank.getIndex());
 				case Tank.DOWN: return;
 			}
 		} else {
-			final ArenaBlock block = Main.map.map[tank.y][tank.x];
+			final ArenaBlock block = Main.map.map[tank.getY()][tank.getX()];
 			next_block.value = block.value;
 			block.value = block.defValue;
 			block.obstacle = false;
 			next_block.obstacle = true;
-			++tank.y;
-			switch (tank.direction) {
+			tank.setY(tank.getY()+1);
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.DOWN;
-					sendMove(Utils.TURN_DOWN, tank.index);
+					tank.setDirection(Tank.DOWN);
+					sendMove(Utils.TURN_DOWN, tank.getIndex());
 					return;
 				case Tank.DOWN:
-					sendMove(Utils.MOVE_DOWN, tank.index);
+					sendMove(Utils.MOVE_DOWN, tank.getIndex());
 					return;
 			}
 		}

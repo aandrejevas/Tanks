@@ -13,28 +13,28 @@ public class MoveLeft implements MoveAlgorithm {
 
 	@Override
 	public void move(final Tank tank) {
-		final ArenaBlock next_block = Main.map.map[tank.y][tank.x - 1];
+		final ArenaBlock next_block = Main.map.map[tank.getY()][tank.getX() - 1];
 		if (next_block.obstacle) {
-			switch (tank.direction) {
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.LEFT;
-					sendMove(Utils.POINT_LEFT, tank.index);
+					tank.setDirection(Tank.LEFT);
+					sendMove(Utils.POINT_LEFT, tank.getIndex());
 				case Tank.LEFT: return;
 			}
 		} else {
-			final ArenaBlock block = Main.map.map[tank.y][tank.x];
+			final ArenaBlock block = Main.map.map[tank.getY()][tank.getX()];
 			next_block.value = block.value;
 			block.value = block.defValue;
 			block.obstacle = false;
 			next_block.obstacle = true;
-			--tank.x;
-			switch (tank.direction) {
+			tank.setX(tank.getX()-1);
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.LEFT;
-					sendMove(Utils.TURN_LEFT, tank.index);
+					tank.setDirection(Tank.LEFT);
+					sendMove(Utils.TURN_LEFT, tank.getIndex());
 					return;
 				case Tank.LEFT:
-					sendMove(Utils.MOVE_LEFT, tank.index);
+					sendMove(Utils.MOVE_LEFT, tank.getIndex());
 					return;
 			}
 		}

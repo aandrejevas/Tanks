@@ -11,8 +11,8 @@ import processing.core.PApplet;
 public class AIAim implements AIState {
 	@Override
 	public void perform(final AI_Player ai) {
-		int dx = ai.fireTarget.x - ai.x;
-		int dy = ai.fireTarget.y - ai.y;
+		int dx = ai.fireTarget.undoTank().getX() - ai.getX();
+		int dy = ai.fireTarget.undoTank().getY() - ai.getY();
 
 		if (dy < 0) {
 			ai.setAlgorithm(MoveUp.instance);

@@ -2,6 +2,7 @@ package Tank_Game.Patterns.AI_State;
 
 import Tank_Game.Main;
 import Tank_Game.Patterns.AI_Composite.AICompState;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
 import utils.Utils;
@@ -10,8 +11,8 @@ public class AILockTarget implements AIState {
 	@Override
 	public void perform(AI_Player ai) {
 		final int[] best_dist = { Integer.MAX_VALUE };
-		final Tank best_tank = Main.clients.values().stream().reduce(null, (final Tank best, final Tank tank) -> {
-			final int dist = distSq(ai, tank);
+		final Invoker best_tank = Main.clients.values().stream().reduce(null, (final Invoker best, final Invoker tank) -> {
+			final int dist = distSq(ai, tank.currentDecorator());
 			if (best_dist[0] > dist) {
 				best_dist[0] = dist;
 				return tank;
@@ -23,7 +24,7 @@ public class AILockTarget implements AIState {
 			ai.state.addState(AICompState.AI_TARGET_LOCKED);
 			ai.fireTarget = best_tank;
 			ai.fireTargetDist = best_dist[0];
-			if (isAimed(ai, ai.fireTarget)) {
+			if (isAimed(ai, ai.fireTarget.currentDecorator())) {
 				ai.state.addState(AICompState.AI_AIMED);
 			}
 		}
@@ -67,15 +68,15 @@ public class AILockTarget implements AIState {
 	}
 
 	private boolean isAimed(final Tank ai, final Tank to) {
-		switch (ai.direction) {
+		switch (ai.getDirection()) {
 			case Utils.ADD_UP_TANK:
-				return (to.y - ai.y) < 0;
+				return (to.getY() - ai.getY()) < 0;
 			case Utils.ADD_DOWN_TANK:
-				return (to.y - ai.y) > 0;
+				return (to.getY() - ai.getY()) > 0;
 			case Utils.ADD_LEFT_TANK:
-				return (to.x - ai.x) < 0;
+				return (to.getX() - ai.getX()) < 0;
 			case Utils.ADD_RIGHT_TANK:
-				return (to.x - ai.x) > 0;
+				return (to.getX() - ai.getX()) > 0;
 			default: return false;
 		}
 	}

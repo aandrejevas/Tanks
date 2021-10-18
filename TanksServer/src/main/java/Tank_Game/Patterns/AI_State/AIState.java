@@ -8,6 +8,6 @@ public interface AIState {
 	void perform(final AI_Player ai);
 
 	default int distSq(final Tank from, final Tank to) {
-		return Utils.sq(from.x - to.x) + Math.abs(from.y - to.y);
+		return Utils.sq(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY());
 	}
 }

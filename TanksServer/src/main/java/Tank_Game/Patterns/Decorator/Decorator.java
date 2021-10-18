@@ -21,11 +21,82 @@ public abstract class Decorator extends Tank {
 		return super.getMoveAlgorithm();
 	}
 
+	/*@Override
+	public Tank thisTank() {
+		return super.thisTank();
+	}*/
+
+	@Override
+	public Tank setAlgorithm(MoveAlgorithm moveAlgorithm) {
+		return wrapee.setAlgorithm(moveAlgorithm);
+	}
+
+	@Override
+	public int getX() {
+		return wrapee.getX();
+	}
+
+	@Override
+	public void setX(int x) {
+		wrapee.setX(x);
+	}
+
+	@Override
+	public int getY() {
+		return wrapee.getY();
+	}
+
+	@Override
+	public void setY(int y) {
+		wrapee.setY(y);
+	}
+
+	@Override
+	public byte getShotType() {
+		return wrapee.getShotType();
+	}
+
+	@Override
+	public void move() {
+		wrapee.move();
+	}
+
+	@Override
+	public void shoot() {
+		wrapee.shoot();
+	}
+
+	@Override
+	public int getIndex() {
+		return wrapee.getIndex();
+	}
+
+	@Override
+	public int getType() {
+		return wrapee.getType();
+	}
+
+	@Override
+	public void setMoveAlgorithm(MoveAlgorithm moveAlgorithm) {
+		wrapee.setMoveAlgorithm(moveAlgorithm);
+	}
+
+	@Override
+	public byte getDirection() {
+		return wrapee.getDirection();
+	}
+
+	@Override
+	public void setDirection(byte direction) {
+		wrapee.setDirection(direction);
+	}
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		final Decorator decorator = (Decorator)super.clone();
-		decorator.wrapee = (Tank)this.wrapee.clone();
-		//decorator.wrapee = (Tank) super.thisTank().clone();
+		Decorator decorator = (Decorator)super.clone();
+		//decorator.wrapee = (Tank)this.wrapee.clone();
+
+		decorator.setShotType(this.getShotType());
 		return decorator;
 	}
 }

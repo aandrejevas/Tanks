@@ -14,16 +14,20 @@ public class RedShootCommand extends Command
 	public RedShootCommand(Tank tank) {
 		super();
 		this.tank = tank;
-		this.target = new NormalShoot(tank);
+		//this.target = new NormalShoot(tank);
 	}
 
 	public RedShootCommand(Decorator target) throws CloneNotSupportedException {
-		super(target);
+		//this.target = (Decorator) target.clone();
+		this.target = target;
 	}
 
 	@Override
 	public Decorator execute() {
-
+		if(this.target == null){
+			this.target = new RedShoot(this.tank);
+			return this.target;
+		}
 		try {
 			this.laterDecorator = (Decorator) this.target.clone();
 		} catch (CloneNotSupportedException e) {
@@ -39,10 +43,4 @@ public class RedShootCommand extends Command
 		this.target = this.laterDecorator;
 		return this.laterDecorator;
 	}
-
-	@Override
-	public Tank undoTank() {
-		return super.tank;
-	}
-
 }

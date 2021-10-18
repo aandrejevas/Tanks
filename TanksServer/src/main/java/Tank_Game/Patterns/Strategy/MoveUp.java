@@ -13,28 +13,28 @@ public class MoveUp implements MoveAlgorithm {
 
 	@Override
 	public void move(final Tank tank) {
-		final ArenaBlock next_block = Main.map.map[tank.y - 1][tank.x];
+		final ArenaBlock next_block = Main.map.map[tank.getY() - 1][tank.getX()];
 		if (next_block.obstacle) {
-			switch (tank.direction) {
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.UP;
-					sendMove(Utils.POINT_UP, tank.index);
+					tank.setDirection(Tank.UP);
+					sendMove(Utils.POINT_UP, tank.getIndex());
 				case Tank.UP: return;
 			}
 		} else {
-			final ArenaBlock block = Main.map.map[tank.y][tank.x];
+			final ArenaBlock block = Main.map.map[tank.getY()][tank.getX()];
 			next_block.value = block.value;
 			block.value = block.defValue;
 			block.obstacle = false;
 			next_block.obstacle = true;
-			--tank.y;
-			switch (tank.direction) {
+			tank.setY(tank.getY()-1);
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.UP;
-					sendMove(Utils.TURN_UP, tank.index);
+					tank.setDirection(Tank.UP);
+					sendMove(Utils.TURN_UP, tank.getIndex());
 					return;
 				case Tank.UP:
-					sendMove(Utils.MOVE_UP, tank.index);
+					sendMove(Utils.MOVE_UP, tank.getIndex());
 					return;
 			}
 		}

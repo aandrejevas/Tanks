@@ -8,6 +8,7 @@ import Tank_Game.Patterns.AI_State.AILockTarget;
 import Tank_Game.Patterns.AI_State.AIPursueTarget;
 import Tank_Game.Patterns.AI_State.AIRoamScan;
 import Tank_Game.Patterns.AI_State.AIShoot;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import Tank_Game.Tank;
 import java.util.Stack;
@@ -18,8 +19,8 @@ public class AI_Player extends Tank {
 	public int shotChangeDist = 8;
 	public int scanDist = 7;
 
-	public Tank pursueTarget;
-	public Tank fireTarget;
+	public Invoker pursueTarget;
+	public Invoker fireTarget;
 
 	public int fireTargetDist = 0;
 

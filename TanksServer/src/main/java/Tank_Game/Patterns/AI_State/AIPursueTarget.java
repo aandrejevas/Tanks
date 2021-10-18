@@ -16,7 +16,7 @@ public class AIPursueTarget implements AIState {
 //        println("AI pursue");
 		if (ai.path.empty() && ai.pursueTarget != null) {
 			boolean[][] vis = new boolean[Main.map.edge][Main.map.edge];
-			ai.path = BFS(Main.map.map, vis, toCord(ai), toCord(ai.pursueTarget));
+			ai.path = BFS(Main.map.map, vis, toCord(ai), toCord(ai.pursueTarget.undoTank()));
 		}
 
 		ai.state.addState(AICompState.AI_PURSUING);
@@ -47,7 +47,7 @@ public class AIPursueTarget implements AIState {
 	}
 
 	private Integer[] toCord(final Tank tank) {
-		return new Integer[] { tank.x, tank.y };
+		return new Integer[] { tank.getX(), tank.getY() };
 	}
 
 	private Integer[] toCord(final int x, final int y) {

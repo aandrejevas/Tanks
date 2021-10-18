@@ -20,8 +20,8 @@ public class AIDrive implements AIState {
 
 		Integer[] next = ai.path.pop();
 
-		int dy = next[1] - ai.y;
-		int dx = next[0] - ai.x;
+		int dy = next[1] - ai.getY();
+		int dx = next[0] - ai.getX();
 
 		if (dy == -1) {
 			ai.setAlgorithm(MoveUp.instance);

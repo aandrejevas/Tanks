@@ -1,6 +1,7 @@
 package Tank_Game.Patterns.Decorator;
 
 import Tank_Game.Tank;
+import utils.Utils;
 
 public class NormalShoot extends Decorator {
 	public NormalShoot(final Tank wrapee) {
@@ -11,8 +12,8 @@ public class NormalShoot extends Decorator {
 	}
 
 	@Override
-	public int getShotType() {
-		return this.wrapee.getShotType();
+	public byte getShotType() {
+		return Utils.SHOT_NORMAL;
 	}
 
 	@Override

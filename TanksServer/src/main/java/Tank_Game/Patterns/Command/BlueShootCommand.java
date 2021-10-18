@@ -14,16 +14,21 @@ public class BlueShootCommand extends Command implements Cloneable
 
 	public BlueShootCommand(Tank tank) {
 		this.tank = tank;
-		this.target = new NormalShoot(tank);
+		//this.target = new NormalShoot(tank);
 	}
 
 	public BlueShootCommand(Decorator target) throws CloneNotSupportedException {
-		super(target);
+		//super(target);
+		//this.target = (Decorator) target.clone();
+		this.target = target;
 	}
 
 	@Override
 	public Decorator execute() {
-
+		if(this.target == null){
+			this.target = new BlueShoot(this.tank);
+			return this.target;
+		}
 		try {
 			this.laterDecorator = (Decorator) this.target.clone();
 		} catch (CloneNotSupportedException e) {
@@ -41,10 +46,4 @@ public class BlueShootCommand extends Command implements Cloneable
 		this.target = this.laterDecorator;
 		return this.laterDecorator;
 	}
-
-	@Override
-	public Tank undoTank() {
-		return super.tank;
-	}
-
 }

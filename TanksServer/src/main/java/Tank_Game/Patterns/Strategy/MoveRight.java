@@ -13,28 +13,28 @@ public class MoveRight implements MoveAlgorithm {
 
 	@Override
 	public void move(final Tank tank) {
-		final ArenaBlock next_block = Main.map.map[tank.y][tank.x + 1];
+		final ArenaBlock next_block = Main.map.map[tank.getY()][tank.getX() + 1];
 		if (next_block.obstacle) {
-			switch (tank.direction) {
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.RIGHT;
-					sendMove(Utils.POINT_RIGHT, tank.index);
+					tank.setDirection(Tank.RIGHT);
+					sendMove(Utils.POINT_RIGHT, tank.getIndex());
 				case Tank.RIGHT: return;
 			}
 		} else {
-			final ArenaBlock block = Main.map.map[tank.y][tank.x];
+			final ArenaBlock block = Main.map.map[tank.getY()][tank.getX()];
 			next_block.value = block.value;
 			block.value = block.defValue;
 			block.obstacle = false;
 			next_block.obstacle = true;
-			++tank.x;
-			switch (tank.direction) {
+			tank.setX(tank.getX()+1);
+			switch (tank.getDirection()) {
 				default:
-					tank.direction = Tank.RIGHT;
-					sendMove(Utils.TURN_RIGHT, tank.index);
+					tank.setDirection(Tank.RIGHT);
+					sendMove(Utils.TURN_RIGHT, tank.getIndex());
 					return;
 				case Tank.RIGHT:
-					sendMove(Utils.MOVE_RIGHT, tank.index);
+					sendMove(Utils.MOVE_RIGHT, tank.getIndex());
 					return;
 			}
 		}
