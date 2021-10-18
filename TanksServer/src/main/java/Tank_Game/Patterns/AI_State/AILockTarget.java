@@ -20,11 +20,11 @@ public class AILockTarget implements AIState {
 		});
 
 		if (best_dist[0] < ai.sightDist && best_tank != null) {
-			ai.state.addState(new AICompState(AICompState.AI_TARGET_LOCKED));
+			ai.state.addState(AICompState.AI_TARGET_LOCKED);
 			ai.fireTarget = best_tank;
 			ai.fireTargetDist = best_dist[0];
 			if (isAimed(ai, ai.fireTarget)) {
-				ai.state.addState(new AICompState(AICompState.AI_AIMED));
+				ai.state.addState(AICompState.AI_AIMED);
 			}
 		}
 	}

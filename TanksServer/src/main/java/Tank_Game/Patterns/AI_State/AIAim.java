@@ -6,7 +6,7 @@ import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
-import static processing.core.PApplet.println;
+import processing.core.PApplet;
 
 public class AIAim implements AIState {
 	@Override
@@ -23,10 +23,10 @@ public class AIAim implements AIState {
 		} else if (dx > 0) {
 			ai.setAlgorithm(new MoveRight());
 		} else {
-			println("aim failed");
+			PApplet.println("aim failed");
 		}
 
-		ai.state.addState(new AICompState(AICompState.AI_AIMED));
+		ai.state.addState(AICompState.AI_AIMED);
 		ai.move();
 	}
 }

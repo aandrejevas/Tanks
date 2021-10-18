@@ -19,7 +19,7 @@ public class AIPursueTarget implements AIState {
 			ai.path = BFS(Main.map.map, vis, toCord(ai), toCord(ai.pursueTarget));
 		}
 
-		ai.state.addState(new AICompState(AICompState.AI_PURSUING));
+		ai.state.addState(AICompState.AI_PURSUING);
 	}
 
 	static int[] dRow = { -1, 0, 1, 0 };

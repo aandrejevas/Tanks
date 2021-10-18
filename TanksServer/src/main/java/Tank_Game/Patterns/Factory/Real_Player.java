@@ -1,15 +1,9 @@
-/**
- * @(#) Real_Player.java
- */
-
 package Tank_Game.Patterns.Factory;
 
-import Tank_Game.*;
+import Tank_Game.Tank;
 
-public class Real_Player extends Tank
-{
-
-	public Real_Player(int playerIndex) {
-		super(playerIndex, 0);
+public class Real_Player extends Tank {
+	public Real_Player(final int player_index) {
+		super(player_index, 0);
 	}
 }

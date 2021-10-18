@@ -1,7 +1,13 @@
 package Tank_Game;
 
-import Tank_Game.Patterns.AbstractFactory.*;
-import Tank_Game.Patterns.Command.*;
+import Tank_Game.Patterns.AbstractFactory.AbstractFactory;
+import Tank_Game.Patterns.AbstractFactory.LargeFactory;
+import Tank_Game.Patterns.AbstractFactory.MediumFactory;
+import Tank_Game.Patterns.AbstractFactory.SmallFactory;
+import Tank_Game.Patterns.Command.BlueShootCommand;
+import Tank_Game.Patterns.Command.Command;
+import Tank_Game.Patterns.Command.Invoker;
+import Tank_Game.Patterns.Command.RedShootCommand;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
@@ -177,23 +183,10 @@ public class Main extends PApplet {
 	private static void generateDrops() {
 		if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
 			final int size = Utils.random().nextInt(300);
-			AbstractFactory af;
-			if (size < 100) {
-				af = new SmallFactory();
-			} else if (size < 200) {
-				af = new MediumFactory();
-			} else {
-				af = new LargeFactory();
-			}
+			final AbstractFactory af = (size < 100 ? new SmallFactory() : (size < 200 ? new MediumFactory() : new LargeFactory()));
+
 			final int dropType = Utils.random().nextInt(300);
-			Drop drop;
-			if (dropType < 100) {
-				drop = af.createAmmo();
-			} else if (dropType < 200) {
-				drop = af.createArmor();
-			} else {
-				drop = af.createHealth();
-			}
+			final Drop drop = (dropType < 100 ? af.createAmmo() : (dropType < 200 ? af.createArmor() : af.createHealth()));
 
 			final int[] dropCord = new int[2];
 

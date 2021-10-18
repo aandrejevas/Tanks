@@ -8,7 +8,7 @@ public class AIShoot implements AIState {
 	public void perform(final AI_Player ai) {
 		//println("AI shoot at x:" + ai.fireTarget[0] + " y:" + ai.fireTarget[1]);
 
-		ai.state.removeState(new AICompState(AICompState.AI_AIMED));
-		ai.state.removeState(new AICompState(AICompState.AI_TARGET_LOCKED));
+		ai.state.removeState(AICompState.AI_AIMED);
+		ai.state.removeState(AICompState.AI_TARGET_LOCKED);
 	}
 }

@@ -13,7 +13,7 @@ import Tank_Game.Tank;
 import java.util.Stack;
 
 public class AI_Player extends Tank {
-	public AICompState state;
+	public final AICompState state;
 	public int sightDist = 20;
 	public int shotChangeDist = 8;
 	public int scanDist = 7;

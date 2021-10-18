@@ -19,11 +19,11 @@ public class AIEnemyScan implements AIState {
 		});
 
 		if (best_dist[0] < ai.scanDist && best_tank != null) {
-			ai.state.addState(new AICompState(AICompState.AI_TARGET_FOUND));
-			ai.state.addState(new AICompState(AICompState.AI_ROAM_FOUND));
+			ai.state.addState(AICompState.AI_TARGET_FOUND);
+			ai.state.addState(AICompState.AI_ROAM_FOUND);
 			ai.pursueTarget = best_tank;
 		} else {
-			ai.state.removeState(new AICompState(AICompState.AI_TARGET_FOUND));
+			ai.state.removeState(AICompState.AI_TARGET_FOUND);
 		}
 	}
 }

@@ -37,11 +37,11 @@ public abstract class Utils {
 		return ThreadLocalRandom.current();
 	}
 
-	public static int sq(final int x) {
-		return x * x;
-	}
-
 	public static <T> T random(final T[] array) {
 		return array[random().nextInt(array.length)];
+	}
+
+	public static int sq(final int x) {
+		return x * x;
 	}
 }
