@@ -3,7 +3,9 @@ package Tank_Game;
 import Tank_Game.Patterns.AbstractFactory.*;
 import Tank_Game.Patterns.Command.*;
 import Tank_Game.Patterns.Decorator.Decorator;
-import Tank_Game.Patterns.Factory.*;
+import Tank_Game.Patterns.Factory.AI_Player;
+import Tank_Game.Patterns.Factory.Creator;
+import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Singletone.Game_Context;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
@@ -32,7 +34,7 @@ public class Main extends PApplet {
 	public static ArenaMap map = new ArenaMap(edge, true);
 
 	public static Game_Context game_context;
-	public static Creator ctr = new PlayerCreator();
+	public static final Creator ctr = new PlayerCreator();
 
 	public static TServer this_server;
 	public static Client available_client;
@@ -83,7 +85,7 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 					clients.values().forEach((final Tank tank) -> {
-						client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
+						client_os.write(tank.direction, tank.index, tank.x, tank.y, tank.type);
 					});
 
 					for (int i = 0; i < map.edge; i++) {
@@ -96,13 +98,13 @@ public class Main extends PApplet {
 
 					if (!enemies.isEmpty()) {
 						enemies.forEach((final Tank tank) -> {
-							client_os.write(tank.direction[0], tank.index, tank.cord[0], tank.cord[1], tank.type);
+							client_os.write(tank.direction, tank.index, tank.x, tank.y, tank.type);
 						});
 					}
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 
-					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
+					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.type);
 					client_os.write(Utils.INITIALIZE);
 					clients.put(available_client, new_player);
 					break;
@@ -123,11 +125,13 @@ public class Main extends PApplet {
 					//handleMove(Tank::moveDown);
 					handleMove(Tank -> Tank.setAlgorithm(new MoveDown()).move());
 					break;
+				case Utils.S_SHOOT:
+					break;
 				default: throw new AssertionError();
 			}
 			if (clients.size() > enemies.size()) {
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
-				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.cord[0], new_player.cord[1], new_player.type);
+				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.x, new_player.y, new_player.type);
 				enemies.add(new_player);
 			}
 		}

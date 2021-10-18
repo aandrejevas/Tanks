@@ -7,17 +7,14 @@ import utils.Utils;
 
 public class AIRoamScan implements AIState {
 	@Override
-	public void perform(AI_Player ai) {
+	public void perform(final AI_Player ai) {
 //        println("AI roam scan");
-		int minX = Math.max(0, ai.cord[0] - ai.scanDist);
-		int maxX = Math.min(Main.map.edge - 1, ai.cord[0] + ai.scanDist);
-		int minY = Math.max(0, ai.cord[1] - ai.scanDist);
-		int maxY = Math.min(Main.map.edge - 1, ai.cord[1] + ai.scanDist);
+		int minX = Math.max(0, ai.x - ai.scanDist);
+		int maxX = Math.min(Main.map.edge - 1, ai.x + ai.scanDist);
+		int minY = Math.max(0, ai.y - ai.scanDist);
+		int maxY = Math.min(Main.map.edge - 1, ai.y + ai.scanDist);
 
-		do {
-			ai.pursueTarget[0] = Utils.random().nextInt(minX, maxX);
-			ai.pursueTarget[1] = Utils.random().nextInt(minY, maxY);
-		} while (Main.map.getBlockValue(ai.pursueTarget) < Utils.MAP_NON_OBSTACLE);
+		ai.pursueTarget = Main.clients.get(Utils.random(Main.this_server.clients));
 		ai.state.addState(new AICompState(AICompState.AI_ROAM_FOUND));
 	}
 }

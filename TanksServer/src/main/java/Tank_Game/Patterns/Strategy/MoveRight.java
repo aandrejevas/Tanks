@@ -1,39 +1,34 @@
-/**
- * @(#) MoveRight.java
- */
-
 package Tank_Game.Patterns.Strategy;
 
 import Tank_Game.Main;
+import Tank_Game.Tank;
 import utils.Utils;
 
-public class MoveRight extends MoveAlgorithm
-{
-
-    @Override
-    public void move(int[] cord, byte[] direction, int index) {
-        if (Main.map.map[cord[1]][cord[0] + 1].obstacle) {
-            switch (direction[0]) {
-                default:
-                    direction[0] = RIGHT;
-                    sendMove(Utils.POINT_RIGHT, index);
-                case RIGHT: return;
-            }
-        } else {
-            Main.map.map[cord[1]][cord[0]+1].value = Main.map.map[cord[1]][cord[0]].value;
-            Main.map.map[cord[1]][cord[0]].value = Main.map.map[cord[1]][cord[0]].defValue;
-            Main.map.map[cord[1]][cord[0]].obstacle = false;
-            Main.map.map[cord[1]][cord[0]+1].obstacle = true;
-            cord[0]++;
-            switch (direction[0]) {
-                default:
-                    direction[0] = RIGHT;
-                    sendMove(Utils.TURN_RIGHT, index);
-                    return;
-                case RIGHT:
-                    sendMove(Utils.MOVE_RIGHT, index);
-                    return;
-            }
-        }
-    }
+public class MoveRight implements MoveAlgorithm {
+	@Override
+	public void move(final Tank tank) {
+		if (Main.map.map[tank.y][tank.x + 1].obstacle) {
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.RIGHT;
+					sendMove(Utils.POINT_RIGHT, tank.index);
+				case Tank.RIGHT: return;
+			}
+		} else {
+			Main.map.map[tank.y][tank.x + 1].value = Main.map.map[tank.y][tank.x].value;
+			Main.map.map[tank.y][tank.x].value = Main.map.map[tank.y][tank.x].defValue;
+			Main.map.map[tank.y][tank.x].obstacle = false;
+			Main.map.map[tank.y][tank.x + 1].obstacle = true;
+			++tank.x;
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.RIGHT;
+					sendMove(Utils.TURN_RIGHT, tank.index);
+					return;
+				case Tank.RIGHT:
+					sendMove(Utils.MOVE_RIGHT, tank.index);
+					return;
+			}
+		}
+	}
 }

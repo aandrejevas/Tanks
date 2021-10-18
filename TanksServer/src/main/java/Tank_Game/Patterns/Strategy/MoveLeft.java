@@ -1,39 +1,34 @@
-/**
- * @(#) MoveLeft.java
- */
-
 package Tank_Game.Patterns.Strategy;
 
 import Tank_Game.Main;
+import Tank_Game.Tank;
 import utils.Utils;
 
-public class MoveLeft extends MoveAlgorithm
-{
-
-    @Override
-    public void move(int[] cord, byte[] direction, int index) {
-        if (Main.map.map[cord[1]][cord[0] - 1].obstacle) {
-            switch (direction[0]) {
-                default:
-                    direction[0] = LEFT;
-                    sendMove(Utils.POINT_LEFT, index);
-                case LEFT: return;
-            }
-        } else {
-            Main.map.map[cord[1]][cord[0]-1].value = Main.map.map[cord[1]][cord[0]].value;
-            Main.map.map[cord[1]][cord[0]].value = Main.map.map[cord[1]][cord[0]].defValue;
-            Main.map.map[cord[1]][cord[0]].obstacle = false;
-            Main.map.map[cord[1]][cord[0]-1].obstacle = true;
-            cord[0]--;
-            switch (direction[0]) {
-                default:
-                    direction[0] = LEFT;
-                    sendMove(Utils.TURN_LEFT, index);
-                    return;
-                case LEFT:
-                    sendMove(Utils.MOVE_LEFT, index);
-                    return;
-            }
-        }
-    }
+public class MoveLeft implements MoveAlgorithm {
+	@Override
+	public void move(final Tank tank) {
+		if (Main.map.map[tank.y][tank.x - 1].obstacle) {
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.LEFT;
+					sendMove(Utils.POINT_LEFT, tank.index);
+				case Tank.LEFT: return;
+			}
+		} else {
+			Main.map.map[tank.y][tank.x - 1].value = Main.map.map[tank.y][tank.x].value;
+			Main.map.map[tank.y][tank.x].value = Main.map.map[tank.y][tank.x].defValue;
+			Main.map.map[tank.y][tank.x].obstacle = false;
+			Main.map.map[tank.y][tank.x - 1].obstacle = true;
+			--tank.x;
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.LEFT;
+					sendMove(Utils.TURN_LEFT, tank.index);
+					return;
+				case Tank.LEFT:
+					sendMove(Utils.MOVE_LEFT, tank.index);
+					return;
+			}
+		}
+	}
 }

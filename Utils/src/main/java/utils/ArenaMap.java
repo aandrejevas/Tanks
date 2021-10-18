@@ -37,17 +37,8 @@ public class ArenaMap {
 		return map[y][x].value;
 	}
 
-	public byte getBlockValue(int[] cord) {
-		return map[cord[1]][cord[0]].value;
-	}
-
 	public boolean hasPlayer(int x, int y) {
 		byte val = map[y][x].value;
-		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_TIGER;
-	}
-
-	public boolean hasPlayer(int[] cord) {
-		byte val = map[cord[1]][cord[0]].value;
 		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_TIGER;
 	}
 
@@ -56,17 +47,7 @@ public class ArenaMap {
 		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_SHERMAN;
 	}
 
-	public boolean hasAlly(int[] cord) {
-		byte val = map[cord[1]][cord[0]].value;
-		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_SHERMAN;
-	}
-
 	public boolean hasEnemy(int x, int y) {
 		return map[y][x].value == Utils.MAP_TIGER;
 	}
-
-	public boolean hasEnemy(int[] cord) {
-		return map[cord[1]][cord[0]].value == Utils.MAP_TIGER;
-	}
-
 }

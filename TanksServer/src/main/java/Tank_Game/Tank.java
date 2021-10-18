@@ -5,7 +5,7 @@ import utils.Utils;
 
 public class Tank implements Cloneable {
 
-	protected static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
+	public static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
 
 	public int index;
 
@@ -13,18 +13,18 @@ public class Tank implements Cloneable {
 	private byte shotType = Utils.SHOT_NORMAL;
 
 	private MoveAlgorithm moveAlgorithm;
-	public int[] cord = new int[2];
-	public byte[] direction = new byte[1];
+	public int x, y;
+	public byte direction;
 
 	public Tank(int index, int ally_or_enemy) {
 		this.index = index;
 		this.type = ally_or_enemy;
 		do {
-			cord[0] = Utils.random().nextInt(Main.edge);
-			cord[1] = Utils.random().nextInt(Main.edge);
-		} while (Main.map.map[cord[1]][cord[0]].value < Utils.MAP_NON_OBSTACLE);
-		Main.map.map[cord[1]][cord[0]].value = Utils.MAP_PLAYER;
-		direction[0] = UP;
+			x = Utils.random().nextInt(Main.edge);
+			y = Utils.random().nextInt(Main.edge);
+		} while (Main.map.map[y][x].value < Utils.MAP_NON_OBSTACLE);
+		Main.map.map[y][x].value = Utils.MAP_PLAYER;
+		direction = UP;
 	}
 
 	public Tank() {
@@ -49,7 +49,7 @@ public class Tank implements Cloneable {
 	}
 
 	public void move() {
-		moveAlgorithm.move(cord, direction, index);
+		moveAlgorithm.move(this);
 	}
 
 	public void shoot() {
@@ -62,15 +62,10 @@ public class Tank implements Cloneable {
 		tank.type = this.type;
 		tank.setShotType(this.shotType);
 		if (this.moveAlgorithm != null)
-			tank.setAlgorithm((MoveAlgorithm)this.moveAlgorithm.clone());
+			tank.setAlgorithm(this.moveAlgorithm);
 
-		int[] cord = new int[2];
-		cord[0] = this.cord[0];
-		cord[1] = this.cord[1];
-		tank.cord = cord;
-
-		byte[] direction = new byte[1];
-		direction[0] = this.direction[0];
+		tank.x = x;
+		tank.y = y;
 		tank.direction = direction;
 		return tank;
 	}

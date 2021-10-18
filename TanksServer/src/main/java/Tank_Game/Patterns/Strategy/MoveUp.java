@@ -1,40 +1,34 @@
-/**
- * @(#) MoveUp.java
- */
-
 package Tank_Game.Patterns.Strategy;
 
 import Tank_Game.Main;
+import Tank_Game.Tank;
 import utils.Utils;
 
-public class MoveUp extends MoveAlgorithm
-{
-
-    @Override
-    public void move(int[] cord, byte[] direction, final int index) {
-//        if (Main.map.map[cord[1] - 1][cord[0]].value < Utils.MAP_NON_OBSTACLE) {
-        if (Main.map.map[cord[1] - 1][cord[0]].obstacle) {
-            switch (direction[0]) {
-                default:
-                    direction[0] = UP;
-                    sendMove(Utils.POINT_UP, index);
-                case UP: return;
-            }
-        } else {
-            Main.map.map[cord[1]-1][cord[0]].value = Main.map.map[cord[1]][cord[0]].value;
-            Main.map.map[cord[1]][cord[0]].value = Main.map.map[cord[1]][cord[0]].defValue;
-            Main.map.map[cord[1]][cord[0]].obstacle = false;
-            Main.map.map[cord[1]-1][cord[0]].obstacle = true;
-            cord[1]--;
-            switch (direction[0]) {
-                default:
-                    direction[0] = UP;
-                    sendMove(Utils.TURN_UP, index);
-                    return;
-                case UP:
-                    sendMove(Utils.MOVE_UP, index);
-                    return;
-            }
-        }
-    }
+public class MoveUp implements MoveAlgorithm {
+	@Override
+	public void move(final Tank tank) {
+		if (Main.map.map[tank.y - 1][tank.x].obstacle) {
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.UP;
+					sendMove(Utils.POINT_UP, tank.index);
+				case Tank.UP: return;
+			}
+		} else {
+			Main.map.map[tank.y - 1][tank.x].value = Main.map.map[tank.y][tank.x].value;
+			Main.map.map[tank.y][tank.x].value = Main.map.map[tank.y][tank.x].defValue;
+			Main.map.map[tank.y][tank.x].obstacle = false;
+			Main.map.map[tank.y - 1][tank.x].obstacle = true;
+			--tank.y;
+			switch (tank.direction) {
+				default:
+					tank.direction = Tank.UP;
+					sendMove(Utils.TURN_UP, tank.index);
+					return;
+				case Tank.UP:
+					sendMove(Utils.MOVE_UP, tank.index);
+					return;
+			}
+		}
+	}
 }

@@ -18,7 +18,7 @@ public class Main extends PApplet {
 
 	public static final int D = 800;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
-	public static final long timeout = 100_000_000;
+	public static final long move_timeout = 100_000_000, shoot_timeout = 1_000_000;
 
 	public static PApplet self;
 	public static Client this_client;
@@ -31,7 +31,7 @@ public class Main extends PApplet {
 	public static float scale;
 	public static boolean initialized = false;
 	public static int move_state = 0;
-	public static long start_time = System.nanoTime();
+	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 
 	public static int edge;
 	public static ArenaMap map = null;
@@ -179,7 +179,7 @@ public class Main extends PApplet {
 		}
 
 		if (initialized) {
-			if (System.nanoTime() - start_time > timeout) {
+			if (System.nanoTime() - move_start > move_timeout) {
 				switch (move_state) {
 					case 0b0001:
 						sendMove(Utils.S_MOVE_LEFT);
@@ -265,7 +265,7 @@ public class Main extends PApplet {
 
 	public static void sendMove(final byte message) {
 		this_os.write(message);
-		start_time = System.nanoTime();
+		move_start = System.nanoTime();
 	}
 
 	public static void handleAdd(final UnaryOperator<Tank> func) {
@@ -279,6 +279,14 @@ public class Main extends PApplet {
 	@Override
 	public void keyPressed() {
 		updateMoveState((final int bit) -> move_state |= bit);
+		switch (keyCode) {
+			case ' ':
+				if (System.nanoTime() - shoot_start > shoot_timeout) {
+					this_os.write(Utils.S_SHOOT);
+					shoot_start = System.nanoTime();
+				}
+				return;
+		}
 	}
 
 	@Override
