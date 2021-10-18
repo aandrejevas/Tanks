@@ -1,32 +1,31 @@
 /**
- * @(#) BlueShootCommand.java
+ * @(#) RedShootCommand.java
  */
 
 package Tank_Game.Patterns.Command;
 
-import Tank_Game.Patterns.Decorator.BlueShoot;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Decorator.NormalShoot;
+import Tank_Game.Patterns.Decorator.RedShoot;
 import Tank_Game.Tank;
 
-public class BlueShootCommand extends Command implements Cloneable
+public class NormalShootCommand extends Command
 {
-
-	public BlueShootCommand(Tank tank) {
+	public NormalShootCommand(Tank tank) {
+		super();
 		this.tank = tank;
 		//this.target = new NormalShoot(tank);
 	}
 
-	public BlueShootCommand(Decorator target) throws CloneNotSupportedException {
-		//super(target);
-		//this.target = (Decorator) target.clone();
+	public NormalShootCommand(Decorator target) throws CloneNotSupportedException {
+	//	this.target = (Decorator) target.clone();
 		this.target = target;
 	}
 
 	@Override
 	public Decorator execute() {
 		if(this.target == null){
-			this.target = new BlueShoot(this.tank);
+			this.target = new NormalShoot(this.tank);
 			return this.target;
 		}
 		try {
@@ -35,15 +34,18 @@ public class BlueShootCommand extends Command implements Cloneable
 			e.printStackTrace();
 		}
 
-		this.target = new BlueShoot(this.target);
+		this.target = new NormalShoot(target);
 		return this.target;
 	}
 
 	@Override
 	public Decorator undo() {
-		if (this.laterDecorator == null)
-			return null;
 		this.target = this.laterDecorator;
 		return this.laterDecorator;
 	}
+
+	public Tank thisTank(){
+		return this.tank;
+	}
+
 }

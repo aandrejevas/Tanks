@@ -24,10 +24,4 @@ public abstract class Command implements Cloneable
 	
 	public abstract Decorator undo( );
 
-	public abstract Tank undoTank();
-
-	public Command(Decorator target) throws CloneNotSupportedException {
-		this.target = new NormalShoot(target); //this.laterDecorator.clone();
-	}
-
 }

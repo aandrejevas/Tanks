@@ -40,7 +40,7 @@ public class Tank implements Cloneable {
 		return moveAlgorithm;
 	}
 
-	public int getShotType() {
+	public byte getShotType() {
 		return shotType;
 	}
 
@@ -53,6 +53,46 @@ public class Tank implements Cloneable {
 	}
 
 	public void shoot() {
+	}
+
+	/*public Tank thisTank() {
+		return this;
+	}*/
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public void setMoveAlgorithm(MoveAlgorithm moveAlgorithm) {
+		this.moveAlgorithm = moveAlgorithm;
+	}
+
+	public int getCord(int index) {
+		return cord[index];
+	}
+
+	public void setCord(int index, int cord) {
+		this.cord[index] = cord;
+	}
+
+	public byte[] getDirection() {
+		return direction;
+	}
+
+	public void setDirection(byte direction) {
+		this.direction[0] = direction;
 	}
 
 	@Override

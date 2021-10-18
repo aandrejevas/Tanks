@@ -12,7 +12,7 @@ public class RedShoot extends Decorator {
 	}
 
 	@Override
-	public int getShotType() {
+	public byte getShotType() {
 		return Utils.SHOT_RED;
 	}
 

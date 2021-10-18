@@ -140,7 +140,11 @@ public class Main extends PApplet {
 
 			Invoker invoker = new Invoker();
 			try {
-				Command cmd = new RedShootCommand(tank);
+				Command cmd0 = new NormalShootCommand(tank);
+				Decorator dec0 = invoker.runCommand(cmd0);
+				System.out.println("Zero normal decoration: " + dec0.getShotType());
+
+				Command cmd = new RedShootCommand(dec0);
 				Decorator dec = invoker.runCommand(cmd);
 				System.out.println("First red decoration: " + dec.getShotType());
 
@@ -152,16 +156,25 @@ public class Main extends PApplet {
 				Decorator dec3 = invoker.runCommand(cmd3);
 				System.out.println("Third red decorator" + dec3.getShotType());
 
+				Command cmd4 = new NormalShootCommand(dec3);
+				Decorator dec4 = invoker.runCommand(cmd4);
+				System.out.println("Third red decorator" + dec4.getShotType());
+
 				Decorator decUndo = invoker.undoCommand();
 				System.out.println("Undo last decorator: " + decUndo.getShotType());
 
 				Decorator decUndo2 = invoker.undoCommand();
-				System.out.println("Undo previous decorator: " + decUndo2.getShotType());
+				System.out.println("Undo Third decorator: " + decUndo2.getShotType());
 
 				Decorator decUndo3 = invoker.undoCommand();
-				System.out.println("Undo first decorator: " + decUndo3.getShotType());
+				System.out.println("Undo Second decorator: " + decUndo3.getShotType());
 
-				System.out.println("Tank without decorations: " + cmd.undoTank().getShotType());
+				System.out.println("Tank without decorations: " + invoker.undoTank().getShotType());
+
+				Decorator decUndo4 = invoker.undoCommand();
+				System.out.println("Return First decorator: " + decUndo4.getShotType());
+
+				//Tankas atgaunamas iskyrus pasėmus pirmą dekoratorių iš invoker
 
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();

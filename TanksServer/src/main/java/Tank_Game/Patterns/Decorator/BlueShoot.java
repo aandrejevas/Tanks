@@ -12,7 +12,7 @@ public class BlueShoot extends Decorator {
 	}
 
 	@Override
-	public int getShotType() {
+	public byte getShotType() {
 		return Utils.SHOT_BLUE;
 	}
 
