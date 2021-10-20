@@ -17,7 +17,7 @@ public class Tank implements Cloneable {
 	private int x, y;
 	private byte direction;
 
-	public Tank(int index, int ally_or_enemy) {
+	public Tank(final int index, final int ally_or_enemy) {
 		this.index = index;
 		this.type = ally_or_enemy;
 		do {

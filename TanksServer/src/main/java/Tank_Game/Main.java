@@ -4,7 +4,9 @@ import Tank_Game.Patterns.AbstractFactory.AbstractFactory;
 import Tank_Game.Patterns.AbstractFactory.LargeFactory;
 import Tank_Game.Patterns.AbstractFactory.MediumFactory;
 import Tank_Game.Patterns.AbstractFactory.SmallFactory;
-import Tank_Game.Patterns.Command.*;
+import Tank_Game.Patterns.Command.Command;
+import Tank_Game.Patterns.Command.Invoker;
+import Tank_Game.Patterns.Command.NormalShootCommand;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
@@ -17,6 +19,8 @@ import Tank_Game.Patterns.Strategy.MoveUp;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -35,7 +39,8 @@ public class Main extends PApplet {
 
 	public static final int edge = 30, seed = Utils.random().nextInt();
 	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
-	public static final List<Invoker> enemies = new ArrayList();
+	public static final List<Bullet> bullets = new LinkedList<>();
+	public static final List<Invoker> enemies = new ArrayList<>();
 	public static ArenaMap map = new ArenaMap(edge, true);
 
 	public static Game_Context game_context;
@@ -46,7 +51,6 @@ public class Main extends PApplet {
 	public static TOutputStream client_os;
 
 	//public static boolean test = false;
-
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
 	}
@@ -88,6 +92,15 @@ public class Main extends PApplet {
 			});
 		}
 
+		final Iterator<Bullet> iter = bullets.iterator();
+		while (iter.hasNext()) {
+			final Bullet bullet = iter.next();
+			if (bullet.move()) {
+				this_server.write(Utils.REMOVE_BULLET, bullet.index);
+				iter.remove();
+			}
+		}
+
 		while ((available_client = this_server.available()) != null) {
 			client_os = (TOutputStream)available_client.output;
 			switch (available_client.read()) {
@@ -113,8 +126,8 @@ public class Main extends PApplet {
 
 					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
 					client_os.write(Utils.INITIALIZE);
-					Invoker invoker = new Invoker();
-					Command cmd = new NormalShootCommand(new_player);
+					final Invoker invoker = new Invoker();
+					final Command cmd = new NormalShootCommand(new_player);
 					invoker.runCommand(cmd);
 					clients.put(available_client, invoker);
 					break;
@@ -136,14 +149,29 @@ public class Main extends PApplet {
 					handleMove(Tank -> Tank.setAlgorithm(MoveDown.instance).move());
 					break;
 				case Utils.S_SHOOT:
+					final Tank tank = clients.get(available_client).currentDecorator();
+					switch (tank.getDirection()) {
+						case Tank.LEFT:
+							if (!map.map[tank.getX() - 1][tank.getY()].obstacle) bullets.add(new Bullet.Left(tank));
+							break;
+						case Tank.RIGHT:
+							if (!map.map[tank.getX() + 1][tank.getY()].obstacle) bullets.add(new Bullet.Right(tank));
+							break;
+						case Tank.UP:
+							if (!map.map[tank.getX()][tank.getY() - 1].obstacle) bullets.add(new Bullet.Up(tank));
+							break;
+						case Tank.DOWN:
+							if (!map.map[tank.getX()][tank.getY() + 1].obstacle) bullets.add(new Bullet.Down(tank));
+							break;
+					}
 					break;
 				default: throw new AssertionError();
 			}
 			if (clients.size() > enemies.size()) {
 				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
 				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
-				Invoker invoker = new Invoker();
-				Command cmd = new NormalShootCommand(new_player);
+				final Invoker invoker = new Invoker();
+				final Command cmd = new NormalShootCommand(new_player);
 				invoker.runCommand(cmd);
 				enemies.add(invoker);
 			}

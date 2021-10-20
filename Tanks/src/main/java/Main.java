@@ -18,12 +18,14 @@ public class Main extends PApplet {
 
 	public static final int D = 800;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
+	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 1_000_000;
 
 	public static PApplet self;
 	public static Client this_client;
 	public static TOutputStream this_os;
 	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
+		bullet_blue,
 		background_box, water_box, lava_box, metal_box, wood_box,
 		drop_sammo, drop_mammo, drop_lammo,
 		drop_sarmor, drop_marmor, drop_larmor,
@@ -56,6 +58,7 @@ public class Main extends PApplet {
 		t34_tank = loadImage("t-34.png");
 		tiger_tank = loadImage("tiger-1.png");
 		sherman_tank = loadImage("sherman.png");
+		bullet_blue = loadImage("Bullet_Blue_3.png");
 		background_box = loadImage("Backgound_box.png");
 		metal_box = loadImage("metal_box.png");
 		wood_box = loadImage("wood_box.png");
@@ -115,7 +118,7 @@ public class Main extends PApplet {
 
 						handleGenMap();
 						break;
-					// <><><><><><><><><><><><><><><> ADD <><><><><><><><><><><><><><><>
+					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
 					case Utils.ADD_LEFT_TANK:
 						handleAdd(Tank::initLeft);
 						break;
@@ -173,6 +176,26 @@ public class Main extends PApplet {
 					case Utils.TURN_DOWN:
 						handleMove(Tank::turnDown);
 						break;
+					// <><><><><><><><><><><><><><><> BULLET MOVE <><><><><><><><><><><><><><><>
+					case Utils.BULLET_LEFT:
+						handleBulletMove(Bullet::moveLeft);
+						break;
+					case Utils.BULLET_RIGHT:
+						handleBulletMove(Bullet::moveRight);
+						break;
+					case Utils.BULLET_UP:
+						handleBulletMove(Bullet::moveUp);
+						break;
+					case Utils.BULLET_DOWN:
+						handleBulletMove(Bullet::moveDown);
+						break;
+					// <><><><><><><><><><><><><><><> ADD/REMOVE BULLET <><><><><><><><><><><><><><><>
+					case Utils.ADD_BULLET:
+						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt()));
+						break;
+					case Utils.REMOVE_BULLET:
+						bullets.remove(Utils.rbuf.getInt());
+						break;
 					default: throw new AssertionError();
 				}
 			} while (Utils.rbuf.hasRemaining());
@@ -208,9 +231,8 @@ public class Main extends PApplet {
 				}
 			}
 
-			tanks.values().forEach((final Tank tank) -> {
-				tank.shape.draw(g);
-			});
+			bullets.values().forEach((final Bullet bullet) -> bullet.shape.draw(g));
+			tanks.values().forEach((final Tank tank) -> tank.shape.draw(g));
 		}
 	}
 
@@ -274,6 +296,10 @@ public class Main extends PApplet {
 
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(tanks.get(Utils.rbuf.getInt()));
+	}
+
+	public static void handleBulletMove(final Consumer<Bullet> func) {
+		func.accept(bullets.get(Utils.rbuf.getInt()));
 	}
 
 	@Override
