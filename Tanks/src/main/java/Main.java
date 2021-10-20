@@ -19,7 +19,7 @@ public class Main extends PApplet {
 	public static final int D = 800;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
-	public static final long move_timeout = 100_000_000, shoot_timeout = 1_000_000;
+	public static final long move_timeout = 100_000_000, shoot_timeout = 10_000_000;
 
 	public static PApplet self;
 	public static Client this_client;

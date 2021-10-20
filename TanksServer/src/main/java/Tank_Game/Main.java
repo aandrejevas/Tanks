@@ -152,16 +152,16 @@ public class Main extends PApplet {
 					final Tank tank = clients.get(available_client).currentDecorator();
 					switch (tank.getDirection()) {
 						case Tank.LEFT:
-							if (!map.map[tank.getX() - 1][tank.getY()].obstacle) bullets.add(new Bullet.Left(tank));
+							if (!map.map[tank.getY()][tank.getX() - 1].obstacle) bullets.add(new Bullet.Left(tank));
 							break;
 						case Tank.RIGHT:
-							if (!map.map[tank.getX() + 1][tank.getY()].obstacle) bullets.add(new Bullet.Right(tank));
+							if (!map.map[tank.getY()][tank.getX() + 1].obstacle) bullets.add(new Bullet.Right(tank));
 							break;
 						case Tank.UP:
-							if (!map.map[tank.getX()][tank.getY() - 1].obstacle) bullets.add(new Bullet.Up(tank));
+							if (!map.map[tank.getY() - 1][tank.getX()].obstacle) bullets.add(new Bullet.Up(tank));
 							break;
 						case Tank.DOWN:
-							if (!map.map[tank.getX()][tank.getY() + 1].obstacle) bullets.add(new Bullet.Down(tank));
+							if (!map.map[tank.getY() + 1][tank.getX()].obstacle) bullets.add(new Bullet.Down(tank));
 							break;
 					}
 					break;

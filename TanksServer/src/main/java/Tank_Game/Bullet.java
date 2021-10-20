@@ -13,7 +13,7 @@ public abstract class Bullet {
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[x - 1][y].obstacle) {
+			if (Main.map.map[y][x - 1].obstacle) {
 				return true;
 			} else {
 				--x;
@@ -32,7 +32,7 @@ public abstract class Bullet {
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[x + 1][y].obstacle) {
+			if (Main.map.map[y][x + 1].obstacle) {
 				return true;
 			} else {
 				++x;
@@ -51,7 +51,7 @@ public abstract class Bullet {
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[x][y - 1].obstacle) {
+			if (Main.map.map[y - 1][x].obstacle) {
 				return true;
 			} else {
 				--y;
@@ -70,7 +70,7 @@ public abstract class Bullet {
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[x][y + 1].obstacle) {
+			if (Main.map.map[y + 1][x].obstacle) {
 				return true;
 			} else {
 				++y;
@@ -82,7 +82,7 @@ public abstract class Bullet {
 
 	private static int count = 0;
 
-	private final long timeout = 100_000_000;
+	private final long timeout = 50_000_000;
 	private long start_time;
 	public final int index;
 	protected int x, y;
