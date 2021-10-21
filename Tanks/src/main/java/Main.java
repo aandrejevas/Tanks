@@ -59,8 +59,8 @@ public class Main extends PApplet {
 		tiger_tank = loadImage("tiger-1.png");
 		sherman_tank = loadImage("sherman.png");
 		bullet_blue = loadImage("Bullet_Blue_3.png");
-		bullet_red = loadImage("Bullet_Green_2.png");
-		bullet_normal = loadImage("Bullet_Red_2.png");
+		bullet_normal = loadImage("Bullet_Green_2.png");
+		bullet_red = loadImage("Bullet_Red_2.png");
 		background_box = loadImage("Backgound_box.png");
 		metal_box = loadImage("metal_box.png");
 		wood_box = loadImage("wood_box.png");

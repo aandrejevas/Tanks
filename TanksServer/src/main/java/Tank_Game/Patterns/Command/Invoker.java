@@ -16,9 +16,9 @@ public class Invoker {
 	}
 
 	public Decorator undoCommand() {
-		if (commands.isEmpty())
-			return null;
-		final Command cmd = commands.remove(commands.size() - 1);
+//		if (commands.isEmpty())
+//			return null;
+		Command cmd = commands.remove(commands.size() - 1);
 		/*if (commands.size() == 1){
 			commands.clear();
 		}*/
@@ -30,24 +30,24 @@ public class Invoker {
 	}
 
 	public Tank undoTank() {
-		if (commands.isEmpty())
-			return null;
+//		if (commands.isEmpty())
+//			return null;
 
 		final Command cmd = commands.get(0);
 		return cmd.tank;
 	}
 
 	public Command popCommand() {
-		if (commands.isEmpty()) {
-			return null;
-		}
+//		if (commands.isEmpty()) {
+//			return null;
+//		}
 		return commands.remove(commands.size() - 1);
 	}
 
 	public Command currentCommand() {
-		if (commands.isEmpty()) {
-			return null;
-		}
+//		if (commands.isEmpty()) {
+//			return null;
+//		}
 		return commands.get(commands.size() - 1);
 	}
 

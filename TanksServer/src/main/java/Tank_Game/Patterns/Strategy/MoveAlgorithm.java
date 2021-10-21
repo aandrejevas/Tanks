@@ -3,6 +3,7 @@ package Tank_Game.Patterns.Strategy;
 import Tank_Game.Main;
 import Tank_Game.Patterns.Command.BlueShootCommand;
 import Tank_Game.Patterns.Command.Command;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Command.RedShootCommand;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
@@ -23,35 +24,52 @@ public interface MoveAlgorithm {
 			moveUnblocked(tank);
 			if (next_block.drop != null && tank.getType() != 1) {
 				System.out.println("drop:" + next_block.drop.getName());
-				//Main.clients.get(Main.available_client); //todo
 
 				Command command = null;
 
-				Decorator decorator = Main.clients.get(Main.available_client).currentDecorator();
+				Invoker inv = Main.clients.get(Main.available_client);
+				Decorator decorator = inv.currentDecorator();
+				byte st = inv.currentDecorator().getShotType();
+
 				System.out.println(tank.getType());
+
 
 				switch (next_block.drop.getName()) {
 					case Utils.DROP_SAMMO:
-						if (Main.clients.get(Main.available_client).currentDecorator().getShotType() != Utils.SHOT_NORMAL){
-							Main.clients.get(Main.available_client).undoCommand();
+						if (st == Utils.SHOT_NORMAL){
+							break;
+						} else {
+							inv.undoCommand();
 						}
 						//tank.setShotType(Utils.SHOT_NORMAL);
 						break;
 					case Utils.DROP_MAMMO:
-						if (Main.clients.get(Main.available_client).currentDecorator().getShotType() != Utils.SHOT_NORMAL){
-							Main.clients.get(Main.available_client).undoCommand();
+						if (st == Utils.SHOT_BLUE) {
+							break;
+						} else if (st == Utils.SHOT_NORMAL) {
+							command = new BlueShootCommand(decorator);
+							//tank.setShotType(Utils.SHOT_BLUE);
+							inv.runCommand(command);
+						} else {
+							inv.undoCommand();
+							command = new BlueShootCommand(decorator);
+							//tank.setShotType(Utils.SHOT_BLUE);
+							inv.runCommand(command);
 						}
-						command = new BlueShootCommand(decorator);
-						//tank.setShotType(Utils.SHOT_BLUE);
-						Main.clients.get(Main.available_client).runCommand(command);
 						break;
 					case Utils.DROP_LAMMO:
-						if (Main.clients.get(Main.available_client).currentDecorator().getShotType() != Utils.SHOT_NORMAL){
-							Main.clients.get(Main.available_client).undoCommand();
+						if (st == Utils.SHOT_RED) {
+							break;
+						} else if (st == Utils.SHOT_NORMAL) {
+							command = new RedShootCommand(decorator);
+							//tank.setShotType(Utils.SHOT_RED);
+							inv.runCommand(command);
+						} else {
+							inv.undoCommand();
+							command = new RedShootCommand(decorator);
+							//tank.setShotType(Utils.SHOT_RED);
+							inv.runCommand(command);
 						}
-						command = new RedShootCommand(decorator);
-						//tank.setShotType(Utils.SHOT_RED);
-						Main.clients.get(Main.available_client).runCommand(command);
 						break;
 				}
 
