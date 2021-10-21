@@ -20,6 +20,11 @@ public class NormalShootCommand extends Command {
 	public Decorator execute() {
 		if (this.target == null) {
 			this.target = new NormalShoot(this.tank);
+			try {
+				this.laterDecorator = (Decorator)this.target.clone();
+			} catch (final CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 			return this.target;
 		}
 		try {
