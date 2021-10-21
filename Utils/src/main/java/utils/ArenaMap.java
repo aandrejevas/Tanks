@@ -37,6 +37,10 @@ public class ArenaMap {
 		return map[y][x].value;
 	}
 
+	public byte getBlockValue(int[] cord) {
+		return map[cord[0]][cord[1]].value;
+	}
+
 	public boolean hasPlayer(final int x, final int y) {
 		byte val = map[y][x].value;
 		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_TIGER;

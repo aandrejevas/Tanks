@@ -86,6 +86,13 @@ public class Tank implements Cloneable {
 		this.y = y;
 	}
 
+	public int[] getCord() {
+		int[] c = new int[2];
+		c[0] = x;
+		c[1] = y;
+		return c;
+	}
+
 	public byte getDirection() {
 		return direction;
 	}

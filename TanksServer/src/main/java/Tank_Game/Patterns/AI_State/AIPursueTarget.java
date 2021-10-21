@@ -3,124 +3,145 @@ package Tank_Game.Patterns.AI_State;
 import Tank_Game.Main;
 import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Factory.AI_Player;
-import Tank_Game.Tank;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 import utils.ArenaBlock;
 import utils.Utils;
 
-public class AIPursueTarget implements AIState {
-	@Override
-	public void perform(final AI_Player ai) {
+import java.util.*;
+
+import static processing.core.PApplet.print;
+import static processing.core.PApplet.println;
+import static utils.Utils.*;
+
+public class AIPursueTarget implements AIState
+{
+    @Override
+    public void perform(AI_Player ai) {
 //        println("AI pursue");
-		if (ai.path.empty() && ai.pursueTarget != null) {
-			boolean[][] vis = new boolean[Main.map.edge][Main.map.edge];
-			ai.path = BFS(Main.map.map, vis, toCord(ai), toCord(ai.pursueTarget.undoTank()));
-		}
+        if (ai.path.empty()) {
+            boolean[][] vis = new boolean[Main.map.edge][Main.map.edge];
+            ai.path = BFS(Main.map.map, vis, toCord(ai.getCord()), ai.pursueTarget);
+        }
 
-		ai.state.addState(AICompState.AI_PURSUING);
-	}
+        ai.state.addState(new AICompState(AICompState.AI_PURSUING));
+    }
 
-	static int[] dRow = { -1, 0, 1, 0 };
-	static int[] dCol = { 0, 1, 0, -1 };
+    static int[] dRow = { -1, 0, 1, 0 };
+    static int[] dCol = { 0, 1, 0, -1 };
 
-	static boolean isValid(final ArenaBlock[][] grid, final boolean[][] vis, final int y, final int x) {
-		if (y < 0 || x < 0 || y >= Main.map.edge || x >= Main.map.edge) {
-			return false;
-		}
+    static boolean isValid(ArenaBlock[][] grid, boolean[][] vis, int y, int x) {
+        if (y < 0 || x < 0 || y >= Main.map.edge || x >= Main.map.edge) {
+            return false;
+        }
 
-		byte val = Main.map.getBlockValue(x, y);
-		if (val < Utils.MAP_NON_OBSTACLE) {
-			return false;
-		}
+        byte val = Main.map.getBlockValue(x, y);
+        if (val < MAP_NON_OBSTACLE) {
+            return false;
+        }
 
-		return !vis[y][x];
-	}
+        if (vis[y][x]) {
+            return false;
+        }
 
-	private boolean cordEqual(final Integer[] a, final Integer[] b) {
-		return a[0] == b[0] && a[1] == b[1];
-	}
+        return true;
+    }
 
-	private Integer[] toCord(final int idx) {
-		return new Integer[] { idx % Main.map.edge, idx / Main.map.edge };
-	}
+    private boolean cordEqual(Integer[] a, Integer[] b) {
+        return a[0] == b[0] && a[1] == b[1];
+    }
 
-	private Integer[] toCord(final Tank tank) {
-		return new Integer[] { tank.getX(), tank.getY() };
-	}
+    private Integer[] toCord(int idx) {
+        Integer[] arr = new Integer[2];
+        arr[0] = idx % Main.map.edge;
+        arr[1] = idx / Main.map.edge;
+        return arr;
+    }
 
-	private Integer[] toCord(final int x, final int y) {
-		return new Integer[] { x, y };
-	}
+    private Integer[] toCord(int[] def) {
+        Integer[] arr = new Integer[2];
+        arr[0] = def[0];
+        arr[1] = def[1];
+        return arr;
+    }
 
-	private int toIdx(final Integer[] arr) {
-		return Main.map.edge * arr[1] + arr[0];
-	}
+    private Integer[] toCord(int x, int y) {
+        Integer[] arr = new Integer[2];
+        arr[0] = x;
+        arr[1] = y;
+        return arr;
+    }
 
-	private int toIdx(final int x, final int y) {
-		return Main.map.edge * y + x;
-	}
+    private int toIdx(Integer[] arr) {
+        return Main.map.edge*arr[1] + arr[0];
+    }
 
-	private Stack<Integer[]> BFS(final ArenaBlock[][] grid, final boolean[][] vis, final Integer[] start, final Integer[] target) {
-		int e = Main.map.edge;
-		Integer[] map = new Integer[e * e];
-		int adjx;
-		int adjy;
-		int x = -1;
-		int y = -1;
-		Queue<Integer[]> q = new LinkedList<>();
+    private int toIdx(int x, int y) {
+        return Main.map.edge*y + x;
+    }
 
-		q.add(toCord(start[0], start[1]));
-		map[toIdx(start)] = toIdx(start);
 
-		vis[start[1]][start[0]] = true;
+    private Stack<Integer[]> BFS(ArenaBlock[][] grid, boolean[][] vis, Integer[] start, int[] target) {
+        int e = Main.map.edge;
+        Integer[] map = new Integer[e*e];
+        int adjx = -1;
+        int adjy = -1;
+        int x = -1;
+        int y = -1;
+        Queue<Integer[] > q = new LinkedList<>();
 
-		while (!q.isEmpty()) {
-			Integer[] cell = q.peek();
-			x = cell[0];
-			y = cell[1];
-			q.remove();
+        q.add(toCord(start[0], start[1]));
+        map[toIdx(start)] = toIdx(start);
 
-			for (int i = 0; i < 4; i++) {
-				adjx = x + dCol[i];
-				adjy = y + dRow[i];
+        vis[start[1]][start[0]] = true;
 
-				if (isValid(grid, vis, adjy, adjx)) {
-					q.add(toCord(adjx, adjy));
-					map[toIdx(adjx, adjy)] = toIdx(x, y);
-					vis[adjy][adjx] = true;
-					Main.map.map[adjy][adjx].debugValue = 1;
-				}
+        while (!q.isEmpty()) {
+            Integer[] cell = q.peek();
+            x = cell[0];
+            y = cell[1];
+            q.remove();
 
-				if (target[0] == adjx && target[1] == adjy) {
-					return mapToPath(map, start, toCord(x, y));
-				}
-			}
-		}
-		return mapToPath(map, start, toCord(x, y));
-	}
+            for(int i = 0; i < 4; i++) {
+                adjx = x + dCol[i];
+                adjy = y + dRow[i];
 
-	private Stack<Integer[]> mapToPath(final Integer[] map, final Integer[] base, final Integer[] dest) {
-		Integer[] cord = toCord(dest[0], dest[1]);
-		int idx = toIdx(cord);
-		final Stack<Integer[]> stack = new Stack<>();
+                if (isValid(grid, vis, adjy, adjx)) {
+                    q.add(toCord(adjx, adjy));
+                    map[toIdx(adjx, adjy)] = toIdx(x, y);
+                    vis[adjy][adjx] = true;
+                    Main.map.map[adjy][adjx].debugValue = 1;
+                }
 
-		while (!cordEqual(base, cord)) {
-			if (idx == map[idx]) {
-				break;
-			}
-			stack.push(cord);
-			Main.map.map[cord[1]][cord[0]].debugValue = 2;
-			idx = map[idx];
-			cord = toCord(idx);
-		}
+                if (target[0] == adjx && target[1] == adjy) {
+                    return mapToPath(map, start, toCord(x, y));
+                }
+            }
+        }
+        return mapToPath(map, start, toCord(x, y));
+    }
+
+    private Stack<Integer[]> mapToPath(Integer[] map, Integer[] base, Integer[] dest) {
+        Integer[] cord = toCord(dest[0], dest[1]);
+        int idx = toIdx(cord);
+        Stack<Integer[]> stack = new Stack<Integer[]>();
+
+        while(!cordEqual(base, cord)) {
+            if (idx == map[idx]) {
+                break;
+            }
+            stack.push(cord);
+            Main.map.map[cord[1]][cord[0]].debugValue = 2;
+            idx = map[idx];
+            cord = toCord(idx);
+        }
 
 //        Main.printMap();
-		return stack;
-	}
+        return stack;
+    }
 
-	private boolean isClearSight(final int[] from, final int[] to) {
-		return from[0] == to[0] || from[1] == to[1];
-	}
+    private int menhadenDist(int[] from, int[] to) {
+        return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
+    }
+
+    private boolean isClearSight(int[] from, int[] to) {
+        return from[0] == to[0] || from[1] == to[1];
+    }
 }
