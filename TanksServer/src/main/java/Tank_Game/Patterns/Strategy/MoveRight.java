@@ -12,31 +12,31 @@ public class MoveRight implements MoveAlgorithm {
 	public static final MoveAlgorithm instance = new MoveRight();
 
 	@Override
-	public void move(final Tank tank) {
-		final ArenaBlock next_block = Main.map.map[tank.getY()][tank.getX() + 1];
-		if (next_block.obstacle) {
-			switch (tank.getDirection()) {
-				default:
-					tank.setDirection(Tank.RIGHT);
-					sendMove(Utils.POINT_RIGHT, tank.getIndex());
-				case Tank.RIGHT: return;
-			}
-		} else {
-			final ArenaBlock block = Main.map.map[tank.getY()][tank.getX()];
-			next_block.value = block.value;
-			block.value = block.defValue;
-			block.obstacle = false;
-			next_block.obstacle = true;
-			tank.setX(tank.getX()+1);
-			switch (tank.getDirection()) {
-				default:
-					tank.setDirection(Tank.RIGHT);
-					sendMove(Utils.TURN_RIGHT, tank.getIndex());
-					return;
-				case Tank.RIGHT:
-					sendMove(Utils.MOVE_RIGHT, tank.getIndex());
-					return;
-			}
+	public ArenaBlock getNextBlock(final Tank tank) {
+		return Main.map.map[tank.getY()][tank.getX() + 1];
+	}
+
+	@Override
+	public void moveBlocked(final Tank tank) {
+		switch (tank.getDirection()) {
+			default:
+				tank.setDirection(Tank.RIGHT);
+				Main.this_server.write(Utils.POINT_RIGHT, tank.getIndex());
+			case Tank.RIGHT: return;
+		}
+	}
+
+	@Override
+	public void moveUnblocked(final Tank tank) {
+		tank.setX(tank.getX() + 1);
+		switch (tank.getDirection()) {
+			default:
+				tank.setDirection(Tank.RIGHT);
+				Main.this_server.write(Utils.TURN_RIGHT, tank.getIndex());
+				break;
+			case Tank.RIGHT:
+				Main.this_server.write(Utils.MOVE_RIGHT, tank.getIndex());
+				break;
 		}
 	}
 }

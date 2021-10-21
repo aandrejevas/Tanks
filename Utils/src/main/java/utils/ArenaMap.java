@@ -29,25 +29,25 @@ public class ArenaMap {
 		this.background[block.y][block.x] = block;
 	}
 
-	public boolean isObstacle(int x, int y) {
+	public boolean isObstacle(final int x, final int y) {
 		return map[y][x].value < Utils.MAP_NON_OBSTACLE;
 	}
 
-	public byte getBlockValue(int x, int y) {
+	public byte getBlockValue(final int x, final int y) {
 		return map[y][x].value;
 	}
 
-	public boolean hasPlayer(int x, int y) {
+	public boolean hasPlayer(final int x, final int y) {
 		byte val = map[y][x].value;
 		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_TIGER;
 	}
 
-	public boolean hasAlly(int x, int y) {
+	public boolean hasAlly(final int x, final int y) {
 		byte val = map[y][x].value;
 		return val >= Utils.MAP_PLAYER && val <= Utils.MAP_SHERMAN;
 	}
 
-	public boolean hasEnemy(int x, int y) {
+	public boolean hasEnemy(final int x, final int y) {
 		return map[y][x].value == Utils.MAP_TIGER;
 	}
 }

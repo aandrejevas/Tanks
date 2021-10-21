@@ -223,15 +223,14 @@ public class Main extends PApplet {
 			final int dropType = Utils.random().nextInt(300);
 			final Drop drop = (dropType < 100 ? af.createAmmo() : (dropType < 200 ? af.createArmor() : af.createHealth()));
 
-			final int[] dropCord = new int[2];
-
+			int x, y;
 			do {
-				dropCord[0] = Utils.random().nextInt(Main.edge);
-				dropCord[1] = Utils.random().nextInt(Main.edge);
-			} while (Main.map.map[dropCord[1]][dropCord[0]].value != Utils.MAP_EMPTY);
-			Main.map.map[dropCord[1]][dropCord[0]].drop = drop;
+				x = Utils.random().nextInt(Main.edge);
+				y = Utils.random().nextInt(Main.edge);
+			} while (Main.map.map[y][x].value != Utils.MAP_EMPTY);
+			Main.map.map[y][x].drop = drop;
 
-			this_server.write(Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), dropCord[1], dropCord[0]);
+			this_server.write(Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), y, x);
 		}
 	}
 

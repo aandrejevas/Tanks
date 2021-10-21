@@ -66,7 +66,7 @@ public class Tank implements Cloneable {
 		return type;
 	}
 
-	public void setMoveAlgorithm(MoveAlgorithm moveAlgorithm) {
+	public void setMoveAlgorithm(final MoveAlgorithm moveAlgorithm) {
 		this.moveAlgorithm = moveAlgorithm;
 	}
 
@@ -74,7 +74,7 @@ public class Tank implements Cloneable {
 		return x;
 	}
 
-	public void setX(int x) {
+	public void setX(final int x) {
 		this.x = x;
 	}
 
@@ -82,7 +82,7 @@ public class Tank implements Cloneable {
 		return y;
 	}
 
-	public void setY(int y) {
+	public void setY(final int y) {
 		this.y = y;
 	}
 
@@ -90,7 +90,7 @@ public class Tank implements Cloneable {
 		return direction;
 	}
 
-	public void setDirection(byte direction) {
+	public void setDirection(final byte direction) {
 		this.direction = direction;
 	}
 

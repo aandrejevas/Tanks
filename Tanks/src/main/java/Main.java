@@ -19,7 +19,7 @@ public class Main extends PApplet {
 	public static final int D = 800;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
-	public static final long move_timeout = 100_000_000, shoot_timeout = 10_000_000;
+	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
 
 	public static PApplet self;
 	public static Client this_client;
@@ -134,8 +134,16 @@ public class Main extends PApplet {
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
 						break;
+					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP:
-						handleAddDrop();
+						final byte i1 = (byte)Utils.rbuf.getInt();
+						final int i2 = Utils.rbuf.getInt(),
+						 i3 = Utils.rbuf.getInt(),
+						 i4 = Utils.rbuf.getInt();
+						map.map[i3][i4].drop = new TextureDrop(i1, i2, getImage(i1), i4, i3);
+						break;
+					case Utils.REMOVE_DROP:
+						map.map[Utils.rbuf.getInt()][Utils.rbuf.getInt()].drop = null;
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.MOVE_LEFT:
@@ -277,12 +285,6 @@ public class Main extends PApplet {
 				((TextureBlock)(map.background[j][i])).setShape(getImage(map.background[j][i].value));
 			}
 		}
-	}
-
-	public static void handleAddDrop() {
-		final byte i1 = (byte)Utils.rbuf.getInt();
-		final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
-		map.map[i3][i4].drop = new TextureDrop(i1, i2, getImage(i1), i4, i3);
 	}
 
 	public static void sendMove(final byte message) {
