@@ -1,23 +1,17 @@
-/**
- * @(#) BlueShootCommand.java
- */
-
 package Tank_Game.Patterns.Command;
 
 import Tank_Game.Patterns.Decorator.BlueShoot;
 import Tank_Game.Patterns.Decorator.Decorator;
-import Tank_Game.Patterns.Decorator.NormalShoot;
 import Tank_Game.Tank;
 
-public class BlueShootCommand extends Command implements Cloneable
-{
+public class BlueShootCommand extends Command implements Cloneable {
 
-	public BlueShootCommand(Tank tank) {
+	public BlueShootCommand(final Tank tank) {
 		this.tank = tank;
 		//this.target = new NormalShoot(tank);
 	}
 
-	public BlueShootCommand(Decorator target) throws CloneNotSupportedException {
+	public BlueShootCommand(final Decorator target) {
 		//super(target);
 		//this.target = (Decorator) target.clone();
 		this.target = target;
@@ -25,12 +19,12 @@ public class BlueShootCommand extends Command implements Cloneable
 
 	@Override
 	public Decorator execute() {
-		if(this.target == null){
+		if (this.target == null) {
 			this.target = new BlueShoot(this.tank);
 			return this.target;
 		}
 		try {
-			this.laterDecorator = (Decorator) this.target.clone();
+			this.laterDecorator = (Decorator)this.target.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

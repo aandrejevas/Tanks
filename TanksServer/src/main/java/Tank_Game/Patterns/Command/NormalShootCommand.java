@@ -4,28 +4,27 @@ import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Decorator.NormalShoot;
 import Tank_Game.Tank;
 
-public class NormalShootCommand extends Command
-{
-	public NormalShootCommand(Tank tank) {
+public class NormalShootCommand extends Command {
+	public NormalShootCommand(final Tank tank) {
 		super();
 		this.tank = tank;
 		//this.target = new NormalShoot(tank);
 	}
 
-	public NormalShootCommand(Decorator target) throws CloneNotSupportedException {
+	public NormalShootCommand(final Decorator target) {
 		//	this.target = (Decorator) target.clone();
 		this.target = target;
 	}
 
 	@Override
 	public Decorator execute() {
-		if(this.target == null){
+		if (this.target == null) {
 			this.target = new NormalShoot(this.tank);
 			return this.target;
 		}
 		try {
-			this.laterDecorator = (Decorator) this.target.clone();
-		} catch (CloneNotSupportedException e) {
+			this.laterDecorator = (Decorator)this.target.clone();
+		} catch (final CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 
@@ -39,7 +38,7 @@ public class NormalShootCommand extends Command
 		return this.laterDecorator;
 	}
 
-	public Tank thisTank(){
+	public Tank thisTank() {
 		return this.tank;
 	}
 

@@ -135,13 +135,12 @@ public class Main extends PApplet {
 						tanks.remove(Utils.rbuf.getInt());
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
-					case Utils.ADD_DROP:
+					case Utils.ADD_DROP: {
 						final byte i1 = (byte)Utils.rbuf.getInt();
-						final int i2 = Utils.rbuf.getInt(),
-						 i3 = Utils.rbuf.getInt(),
-						 i4 = Utils.rbuf.getInt();
+						final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
 						map.map[i3][i4].drop = new TextureDrop(i1, i2, getImage(i1), i4, i3);
 						break;
+					}
 					case Utils.REMOVE_DROP:
 						map.map[Utils.rbuf.getInt()][Utils.rbuf.getInt()].drop = null;
 						break;

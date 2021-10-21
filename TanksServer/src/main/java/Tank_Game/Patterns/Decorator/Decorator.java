@@ -25,9 +25,8 @@ public abstract class Decorator extends Tank {
 	public Tank thisTank() {
 		return super.thisTank();
 	}*/
-
 	@Override
-	public Tank setAlgorithm(MoveAlgorithm moveAlgorithm) {
+	public Tank setAlgorithm(final MoveAlgorithm moveAlgorithm) {
 		return wrapee.setAlgorithm(moveAlgorithm);
 	}
 
@@ -37,7 +36,7 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void setX(int x) {
+	public void setX(final int x) {
 		wrapee.setX(x);
 	}
 
@@ -47,7 +46,7 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void setY(int y) {
+	public void setY(final int y) {
 		wrapee.setY(y);
 	}
 
@@ -77,7 +76,7 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void setMoveAlgorithm(MoveAlgorithm moveAlgorithm) {
+	public void setMoveAlgorithm(final MoveAlgorithm moveAlgorithm) {
 		wrapee.setMoveAlgorithm(moveAlgorithm);
 	}
 
@@ -87,7 +86,7 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void setDirection(byte direction) {
+	public void setDirection(final byte direction) {
 		wrapee.setDirection(direction);
 	}
 

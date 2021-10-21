@@ -33,10 +33,10 @@ public class MoveUp implements MoveAlgorithm {
 			default:
 				tank.setDirection(Tank.UP);
 				Main.this_server.write(Utils.TURN_UP, tank.getIndex());
-				break;
+				return;
 			case Tank.UP:
 				Main.this_server.write(Utils.MOVE_UP, tank.getIndex());
-				break;
+				return;
 		}
 	}
 }

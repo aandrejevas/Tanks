@@ -5,11 +5,11 @@ import Tank_Game.Tank;
 import java.util.ArrayList;
 
 public class Invoker {
-	private final ArrayList<Command> commands = new ArrayList<Command>();
+	private final ArrayList<Command> commands = new ArrayList<>();
 
 	private Decorator crDecorator;
 
-	public Decorator runCommand(Command command) {
+	public Decorator runCommand(final Command command) {
 		crDecorator = command.execute();
 		commands.add(command);
 		return crDecorator;
@@ -18,7 +18,7 @@ public class Invoker {
 	public Decorator undoCommand() {
 		if (commands.isEmpty())
 			return null;
-		Command cmd = commands.remove(commands.size() - 1);
+		final Command cmd = commands.remove(commands.size() - 1);
 		/*if (commands.size() == 1){
 			commands.clear();
 		}*/
@@ -33,7 +33,7 @@ public class Invoker {
 		if (commands.isEmpty())
 			return null;
 
-		Command cmd = commands.get(0);
+		final Command cmd = commands.get(0);
 		return cmd.tank;
 	}
 

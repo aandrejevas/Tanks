@@ -1,35 +1,29 @@
-/**
- * @(#) RedShootCommand.java
- */
-
 package Tank_Game.Patterns.Command;
 
 import Tank_Game.Patterns.Decorator.Decorator;
-import Tank_Game.Patterns.Decorator.NormalShoot;
 import Tank_Game.Patterns.Decorator.RedShoot;
 import Tank_Game.Tank;
 
-public class RedShootCommand extends Command
-{
-	public RedShootCommand(Tank tank) {
+public class RedShootCommand extends Command {
+	public RedShootCommand(final Tank tank) {
 		super();
 		this.tank = tank;
 		//this.target = new NormalShoot(tank);
 	}
 
-	public RedShootCommand(Decorator target) throws CloneNotSupportedException {
+	public RedShootCommand(final Decorator target) {
 		//this.target = (Decorator) target.clone();
 		this.target = target;
 	}
 
 	@Override
 	public Decorator execute() {
-		if(this.target == null){
+		if (this.target == null) {
 			this.target = new RedShoot(this.tank);
 			return this.target;
 		}
 		try {
-			this.laterDecorator = (Decorator) this.target.clone();
+			this.laterDecorator = (Decorator)this.target.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}

@@ -33,10 +33,10 @@ public class MoveLeft implements MoveAlgorithm {
 			default:
 				tank.setDirection(Tank.LEFT);
 				Main.this_server.write(Utils.TURN_LEFT, tank.getIndex());
-				break;
+				return;
 			case Tank.LEFT:
 				Main.this_server.write(Utils.MOVE_LEFT, tank.getIndex());
-				break;
+				return;
 		}
 	}
 }

@@ -33,10 +33,10 @@ public class MoveRight implements MoveAlgorithm {
 			default:
 				tank.setDirection(Tank.RIGHT);
 				Main.this_server.write(Utils.TURN_RIGHT, tank.getIndex());
-				break;
+				return;
 			case Tank.RIGHT:
 				Main.this_server.write(Utils.MOVE_RIGHT, tank.getIndex());
-				break;
+				return;
 		}
 	}
 }
