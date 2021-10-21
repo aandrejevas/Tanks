@@ -216,7 +216,8 @@ public class Main extends PApplet {
 	}
 
 	private static void generateDrops() {
-		if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
+		if (Utils.random().nextInt(100000) < map.edge * map.edge) {
+//		if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
 			final int size = Utils.random().nextInt(300);
 			final AbstractFactory af = (size < 100 ? new SmallFactory() : (size < 200 ? new MediumFactory() : new LargeFactory()));
 

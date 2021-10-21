@@ -13,7 +13,7 @@ public abstract class Decorator extends Tank {
 
 	@Override
 	public void setShotType(final byte shotType) {
-		super.setShotType(shotType);
+		wrapee.setShotType(shotType);
 	}
 
 	@Override
