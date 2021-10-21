@@ -25,7 +25,7 @@ public class Main extends PApplet {
 	public static Client this_client;
 	public static TOutputStream this_os;
 	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
-		bullet_blue,
+		bullet_blue, bullet_red, bullet_normal,
 		background_box, water_box, lava_box, metal_box, wood_box,
 		drop_sammo, drop_mammo, drop_lammo,
 		drop_sarmor, drop_marmor, drop_larmor,
@@ -59,6 +59,8 @@ public class Main extends PApplet {
 		tiger_tank = loadImage("tiger-1.png");
 		sherman_tank = loadImage("sherman.png");
 		bullet_blue = loadImage("Bullet_Blue_3.png");
+		bullet_normal = loadImage("Bullet_Green_2.png");
+		bullet_red = loadImage("Bullet_Red_2.png");
 		background_box = loadImage("Backgound_box.png");
 		metal_box = loadImage("metal_box.png");
 		wood_box = loadImage("wood_box.png");
@@ -98,6 +100,9 @@ public class Main extends PApplet {
 			case Utils.DROP_LHEALTH: return drop_lhealth;
 			case Utils.DROP_MHEALTH: return drop_mhealth;
 			case Utils.DROP_SHEALTH: return drop_shealth;
+			case Utils.SHOT_NORMAL: return bullet_normal;
+			case Utils.SHOT_RED: return bullet_red;
+			case Utils.SHOT_BLUE: return bullet_blue;
 			default: throw new NullPointerException();
 		}
 	}
@@ -198,7 +203,7 @@ public class Main extends PApplet {
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE BULLET <><><><><><><><><><><><><><><>
 					case Utils.ADD_BULLET:
-						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt()));
+						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.rbuf.getInt()));
 						break;
 					case Utils.REMOVE_BULLET:
 						bullets.remove(Utils.rbuf.getInt());

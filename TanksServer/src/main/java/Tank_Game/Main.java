@@ -133,19 +133,15 @@ public class Main extends PApplet {
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
-					//handleMove(Tank::moveLeft);
 					handleMove(Tank -> Tank.setAlgorithm(MoveLeft.instance).move());
 					break;
 				case Utils.S_MOVE_RIGHT:
-					//handleMove(Tank::moveRight);
 					handleMove(Tank -> Tank.setAlgorithm(MoveRight.instance).move());
 					break;
 				case Utils.S_MOVE_UP:
-					//handleMove(Tank::moveUp);
 					handleMove(Tank -> Tank.setAlgorithm(MoveUp.instance).move());
 					break;
 				case Utils.S_MOVE_DOWN:
-					//handleMove(Tank::moveDown);
 					handleMove(Tank -> Tank.setAlgorithm(MoveDown.instance).move());
 					break;
 				case Utils.S_SHOOT:
@@ -179,40 +175,6 @@ public class Main extends PApplet {
 		//generate drops randomly
 		generateDrops();
 
-		//Prototype, command and decorator pattern
-		/*if (test && !enemies.isEmpty()) {
-			Tank tank = enemies.get(enemies.size() - 1);
-
-			Invoker invoker = new Invoker();
-			try {
-				Command cmd = new RedShootCommand(tank);
-				Decorator dec = invoker.runCommand(cmd);
-				System.out.println("First red decoration: " + dec.getShotType());
-
-				Command cmd2 = new BlueShootCommand(dec);
-				Decorator dec2 = invoker.runCommand(cmd2);
-				System.out.println("Second blue decoration: " + dec2.getShotType());
-
-				Command cmd3 = new RedShootCommand(dec2);
-				Decorator dec3 = invoker.runCommand(cmd3);
-				System.out.println("Third red decorator" + dec3.getShotType());
-
-				Decorator decUndo = invoker.undoCommand();
-				System.out.println("Undo last decorator: " + decUndo.getShotType());
-
-				Decorator decUndo2 = invoker.undoCommand();
-				System.out.println("Undo previous decorator: " + decUndo2.getShotType());
-
-				Decorator decUndo3 = invoker.undoCommand();
-				System.out.println("Undo first decorator: " + decUndo3.getShotType());
-
-				System.out.println("Tank without decorations: " + cmd.undoTank().getShotType());
-
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-			test = false;
-		}*/
 	}
 
 	private static void generateDrops() {

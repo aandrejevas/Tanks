@@ -8,17 +8,9 @@ public class NormalShoot extends Decorator {
 		super(wrapee);
 	}
 
-	public void blueShoot() {
-	}
-
 	@Override
 	public byte getShotType() {
 		return Utils.SHOT_NORMAL;
 	}
 
-	@Override
-	public void shoot() {
-		//blueShoot();
-		super.shoot();
-	}
 }

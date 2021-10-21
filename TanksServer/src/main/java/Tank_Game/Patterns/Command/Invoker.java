@@ -18,11 +18,12 @@ public class Invoker {
 	public Decorator undoCommand() {
 		if (commands.isEmpty())
 			return null;
-		final Command cmd = commands.remove(commands.size() - 1);
+		Command cmd = commands.remove(commands.size() - 1);
 		/*if (commands.size() == 1){
 			commands.clear();
 		}*/
-		return cmd.undo();
+		crDecorator = cmd.undo();
+		return crDecorator;
 	}
 
 	public void clearCommands() {
