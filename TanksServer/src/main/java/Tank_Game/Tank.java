@@ -55,9 +55,6 @@ public class Tank implements Cloneable {
 		moveAlgorithm.move(this);
 	}
 
-	public void shoot() {
-	}
-
 	public int getIndex() {
 		return index;
 	}

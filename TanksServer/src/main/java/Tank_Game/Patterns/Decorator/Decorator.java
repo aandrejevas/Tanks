@@ -61,11 +61,6 @@ public abstract class Decorator extends Tank {
 	}
 
 	@Override
-	public void shoot() {
-		wrapee.shoot();
-	}
-
-	@Override
 	public int getIndex() {
 		return wrapee.getIndex();
 	}

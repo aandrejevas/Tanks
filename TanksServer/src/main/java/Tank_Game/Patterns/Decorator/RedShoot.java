@@ -8,17 +8,9 @@ public class RedShoot extends Decorator {
 		super(wrapee);
 	}
 
-	public void redShoot() {
-	}
-
 	@Override
 	public byte getShotType() {
 		return Utils.SHOT_RED;
 	}
 
-	@Override
-	public void shoot() {
-		//redShoot();
-		super.shoot();
-	}
 }

@@ -23,16 +23,11 @@ public interface MoveAlgorithm {
 			next_block.obstacle = true;
 			moveUnblocked(tank);
 			if (next_block.drop != null && tank.getType() != 1) {
-				System.out.println("drop:" + next_block.drop.getName());
-
 				Command command = null;
 
 				Invoker inv = Main.clients.get(Main.available_client);
 				Decorator decorator = inv.currentDecorator();
 				byte st = inv.currentDecorator().getShotType();
-
-				System.out.println(tank.getType());
-
 
 				switch (next_block.drop.getName()) {
 					case Utils.DROP_SAMMO:
@@ -41,19 +36,16 @@ public interface MoveAlgorithm {
 						} else {
 							inv.undoCommand();
 						}
-						//tank.setShotType(Utils.SHOT_NORMAL);
 						break;
 					case Utils.DROP_MAMMO:
 						if (st == Utils.SHOT_BLUE) {
 							break;
 						} else if (st == Utils.SHOT_NORMAL) {
 							command = new BlueShootCommand(decorator);
-							//tank.setShotType(Utils.SHOT_BLUE);
 							inv.runCommand(command);
 						} else {
-							inv.undoCommand();
+							decorator = inv.undoCommand();
 							command = new BlueShootCommand(decorator);
-							//tank.setShotType(Utils.SHOT_BLUE);
 							inv.runCommand(command);
 						}
 						break;
@@ -62,12 +54,10 @@ public interface MoveAlgorithm {
 							break;
 						} else if (st == Utils.SHOT_NORMAL) {
 							command = new RedShootCommand(decorator);
-							//tank.setShotType(Utils.SHOT_RED);
 							inv.runCommand(command);
 						} else {
-							inv.undoCommand();
+							decorator = inv.undoCommand();
 							command = new RedShootCommand(decorator);
-							//tank.setShotType(Utils.SHOT_RED);
 							inv.runCommand(command);
 						}
 						break;
