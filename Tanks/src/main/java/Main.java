@@ -35,6 +35,8 @@ public class Main extends PApplet {
 	public static int move_state = 0;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 
+	private static byte shot_type = Utils.S_SHOOT_NORMAL;
+
 	public static int edge;
 	public static ArenaMap map = null;
 
@@ -314,10 +316,20 @@ public class Main extends PApplet {
 		switch (keyCode) {
 			case ' ':
 				if (System.nanoTime() - shoot_start > shoot_timeout) {
-					this_os.write(Utils.S_SHOOT);
+					this_os.write(shot_type);
 					shoot_start = System.nanoTime();
 				}
 				return;
+			case '1':
+				shot_type = Utils.S_SHOOT_NORMAL;
+				return;
+			case '2':
+				shot_type = Utils.S_SHOOT_BLUE;
+				return;
+			case '3':
+				shot_type = Utils.S_SHOOT_RED;
+				return;
+
 		}
 	}
 

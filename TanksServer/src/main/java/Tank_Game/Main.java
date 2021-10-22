@@ -144,23 +144,29 @@ public class Main extends PApplet {
 				case Utils.S_MOVE_DOWN:
 					handleMove(Tank -> Tank.setAlgorithm(MoveDown.instance).move());
 					break;
-				case Utils.S_SHOOT:
+				case Utils.S_SHOOT_NORMAL: {
+					final Tank tank = clients.get(available_client).undoTank();
+					shoot(tank);
+					break;
+				}
+				case Utils.S_SHOOT_BLUE: {
 					final Tank tank = clients.get(available_client).currentDecorator();
-					switch (tank.getDirection()) {
-						case Tank.LEFT:
-							if (!map.map[tank.getY()][tank.getX() - 1].obstacle) bullets.add(new Bullet.Left(tank));
-							break;
-						case Tank.RIGHT:
-							if (!map.map[tank.getY()][tank.getX() + 1].obstacle) bullets.add(new Bullet.Right(tank));
-							break;
-						case Tank.UP:
-							if (!map.map[tank.getY() - 1][tank.getX()].obstacle) bullets.add(new Bullet.Up(tank));
-							break;
-						case Tank.DOWN:
-							if (!map.map[tank.getY() + 1][tank.getX()].obstacle) bullets.add(new Bullet.Down(tank));
-							break;
+					byte type = clients.get(available_client).currentDecorator().getShotType();
+					if(type == Utils.SHOT_BLUE) {
+						shoot(tank);
 					}
 					break;
+				}
+
+				case Utils.S_SHOOT_RED: {
+					final Tank tank = clients.get(available_client).currentDecorator();
+					byte type = clients.get(available_client).currentDecorator().getShotType();
+					if(type == Utils.SHOT_RED) {
+						shoot(tank);
+					}
+					break;
+				}
+
 				default: throw new AssertionError();
 			}
 			if (clients.size() > enemies.size()) {
@@ -178,7 +184,8 @@ public class Main extends PApplet {
 	}
 
 	private static void generateDrops() {
-		if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
+		//if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
+		if (Utils.random().nextInt(100000) < map.edge * map.edge) {
 			final int size = Utils.random().nextInt(300);
 			final AbstractFactory af = (size < 100 ? new SmallFactory() : (size < 200 ? new MediumFactory() : new LargeFactory()));
 
@@ -241,5 +248,24 @@ public class Main extends PApplet {
 			}
 			println();
 		}
+	}
+
+	public static void shoot(Tank tank){
+		switch (tank.getDirection()) {
+			case Tank.LEFT:
+				if (!map.map[tank.getY()][tank.getX() - 1].obstacle) bullets.add(new Bullet.Left(tank));
+				break;
+			case Tank.RIGHT:
+				if (!map.map[tank.getY()][tank.getX() + 1].obstacle)
+					bullets.add(new Bullet.Right(tank));
+				break;
+			case Tank.UP:
+				if (!map.map[tank.getY() - 1][tank.getX()].obstacle) bullets.add(new Bullet.Up(tank));
+				break;
+			case Tank.DOWN:
+				if (!map.map[tank.getY() + 1][tank.getX()].obstacle) bullets.add(new Bullet.Down(tank));
+				break;
+		}
+
 	}
 }
