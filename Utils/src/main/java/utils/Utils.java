@@ -18,7 +18,7 @@ public abstract class Utils {
 		ADD_BULLET = 34, REMOVE_BULLET = 35;
 
 	public static final byte S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
-		S_INIT_CLIENT = 4, S_SHOOT = 5;
+		S_INIT_CLIENT = 4, S_SHOOT_NORMAL = 5, S_SHOOT_BLUE = 6, S_SHOOT_RED = 7;
 
 	public static final byte MAP_WALL = 1, MAP_BORDER = 2, MAP_PLAYER = 4, MAP_T34 = 5, MAP_SHERMAN = 6, MAP_TIGER = 7,
 		MAP_NON_OBSTACLE = 8, MAP_EMPTY = 9, MAP_WATER = 10, MAP_LAVA = 11,
