@@ -12,7 +12,11 @@ public class Tank {
 		shape.setFill(false);
 		shape.setTint(false);
 		shape.setTextureMode(PConstants.NORMAL);
-		if (ally_or_enemy == 0) {
+		if (Main.myTank && ally_or_enemy != 1){
+			shape.setTexture(Main.t34_tank_highlited);
+			Main.myTank = false;
+		}
+		else if (ally_or_enemy == 0) {
 			shape.setTexture(Main.t34_tank);
 		} else {
 			shape.setTexture(Main.tiger_tank);

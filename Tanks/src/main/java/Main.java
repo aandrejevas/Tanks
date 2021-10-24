@@ -24,7 +24,7 @@ public class Main extends PApplet {
 	public static PApplet self;
 	public static Client this_client;
 	public static TOutputStream this_os;
-	public static PImage red_tank, t34_tank, tiger_tank, sherman_tank,
+	public static PImage red_tank, t34_tank, t34_tank_highlited, tiger_tank, sherman_tank,
 		bullet_blue, bullet_red, bullet_normal,
 		background_box, water_box, lava_box, metal_box, wood_box,
 		drop_sammo, drop_mammo, drop_lammo,
@@ -39,6 +39,8 @@ public class Main extends PApplet {
 
 	public static int edge;
 	public static ArenaMap map = null;
+	
+	public static boolean myTank = true;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -77,6 +79,7 @@ public class Main extends PApplet {
 		drop_lhealth = loadImage("Drops/Health_Drop/Large_Health.png");
 		drop_mhealth = loadImage("Drops/Health_Drop/Medium_Health.png");
 		drop_shealth = loadImage("Drops/Health_Drop/Small_Health.png");
+		t34_tank_highlited = loadImage("tank_t34_highlighted.png");
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_client.output = (this_os = new TOutputStream(this_client));
