@@ -127,9 +127,8 @@ public class Main extends PApplet {
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE DROP <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP: {
-						final byte i1 = (byte)Utils.rbuf.getInt();
-						final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
-						map.map[i3][i4].drop = new TextureDrop(i1, i2, i4, i3);
+						final int y = Utils.rbuf.getInt(), x = Utils.rbuf.getInt();
+						map.map[y][x].drop = new TextureDrop((byte)Utils.rbuf.getInt(), Utils.rbuf.getInt(), x, y);
 						break;
 					}
 					case Utils.REMOVE_DROP:
@@ -202,7 +201,7 @@ public class Main extends PApplet {
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE BULLET <><><><><><><><><><><><><><><>
 					case Utils.ADD_BULLET:
-						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt()));
+						Facade.handleBulletAdd();
 						break;
 					case Utils.REMOVE_BULLET:
 						bullets.remove(Utils.rbuf.getInt());

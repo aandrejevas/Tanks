@@ -66,6 +66,10 @@ public abstract class Facade {
 		Main.tanks.put(index, tank);
 	}
 
+	public static void handleBulletAdd() {
+		Main.bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt()));
+	}
+
 	public static void handleMove(final Consumer<Tank> func) {
 		func.accept(Main.tanks.get(Utils.rbuf.getInt()));
 	}

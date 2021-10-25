@@ -109,9 +109,10 @@ public class Main extends PApplet {
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
 					for (int i = 0; i < map.edge; ++i) {
+						final ArenaBlock[] row = map.map[i];
 						for (int j = 0; j < map.edge; ++j) {
-							if (map.map[i][j].drop != null) {
-								this_server.write(Utils.ADD_DROP, map.map[i][j].drop.getName(), map.map[i][j].drop.getValue(), i, j);
+							if (row[j].drop != null) {
+								this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
 							}
 						}
 					}
@@ -199,7 +200,7 @@ public class Main extends PApplet {
 
 			++ndrops;
 			Main.map.map[y][x].drop = drop;
-			this_server.write(Utils.ADD_DROP, drop.getName(), drop.getValue(), y, x);
+			this_server.write(Utils.ADD_DROP, y, x, drop.getName(), drop.getValue());
 		}
 	}
 
