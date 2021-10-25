@@ -17,11 +17,11 @@ public class AILockTarget implements AIState {
 		int bestDist = Integer.MAX_VALUE;
 
 		for (int i = 0; i < players.length; i++) {
-			if (isClearSight(ai.getCord(), ((Invoker)players[i]).currentDecorator().getCord())) {
-				int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getCord());
+			if (isClearSight(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord())) {
+				int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
 				if (dist < bestDist) {
 					bestDist = dist;
-					best_tank = ((Invoker)players[i]).currentDecorator();
+					best_tank = ((Invoker)players[i]).currentDecorator().getTank();
 				}
 			}
 		}

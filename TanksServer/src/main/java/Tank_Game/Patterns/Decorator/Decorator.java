@@ -83,4 +83,8 @@ public abstract class Decorator extends Tank {
 		decorator.setShotType(this.getShotType());
 		return decorator;
 	}
+
+	public Tank getTank() {
+		return wrapee;
+	}
 }

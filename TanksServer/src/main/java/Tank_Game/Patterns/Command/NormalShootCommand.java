@@ -28,8 +28,8 @@ public class NormalShootCommand extends Command {
 			System.out.println("Decorator hashcode " + System.identityHashCode(this.target));
 			System.out.println("Cloned decorator hashcode " + System.identityHashCode(this.laterDecorator) + "\n");
 
-			System.out.println("Tank hashcode " + System.identityHashCode(this.target));
-			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator) + "\n");
+			System.out.println("Tank hashcode " + System.identityHashCode(this.target.getTank()));
+			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator.getTank()) + "\n");
 			return this.target;
 		}
 		try {
