@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
+import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.MapBuilder;
 import utils.TOutputStream;
@@ -48,7 +49,7 @@ public class Main extends PApplet {
 
 	@Override
 	public void settings() {
-		size(D, D, P2D);
+		size(D + 100, D, P2D);
 	}
 
 	@Override
@@ -126,6 +127,8 @@ public class Main extends PApplet {
 						scale = (float)D / edge;
 						Utils.random.setSeed(Utils.rbuf.getInt());
 
+						textSize(scale * 0.8f);
+						drawPanel();
 						handleGenMap();
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
@@ -144,7 +147,7 @@ public class Main extends PApplet {
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
 						break;
-					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
+					// <><><><><><><><><><><><><><><> ADD/REMOVE DROP <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP: {
 						final byte i1 = (byte)Utils.rbuf.getInt();
 						final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
@@ -152,7 +155,20 @@ public class Main extends PApplet {
 						break;
 					}
 					case Utils.REMOVE_DROP:
-						map.map[Utils.rbuf.getInt()][Utils.rbuf.getInt()].drop = null;
+						final ArenaBlock block = map.map[Utils.rbuf.getInt()][Utils.rbuf.getInt()];
+						switch (block.drop.getName()) {
+							case Utils.DROP_SAMMO:
+								normal_shots += block.drop.getValue();
+								break;
+							case Utils.DROP_MAMMO:
+								blue_shots += block.drop.getValue();
+								break;
+							case Utils.DROP_LAMMO:
+								red_shots += block.drop.getValue();
+								break;
+						}
+						drawPanel();
+						block.drop = null;
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.MOVE_LEFT:
@@ -208,7 +224,7 @@ public class Main extends PApplet {
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE BULLET <><><><><><><><><><><><><><><>
 					case Utils.ADD_BULLET:
-						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.rbuf.getInt()));
+						bullets.put(Utils.rbuf.getInt(), new Bullet(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt()));
 						break;
 					case Utils.REMOVE_BULLET:
 						bullets.remove(Utils.rbuf.getInt());
@@ -316,9 +332,22 @@ public class Main extends PApplet {
 		updateMoveState((final int bit) -> move_state |= bit);
 		switch (keyCode) {
 			case ' ':
-				if (System.nanoTime() - shoot_start > shoot_timeout) {
-					this_os.write(shot_type);
-					shoot_start = System.nanoTime();
+				switch (shot_type) {
+					case Utils.S_SHOOT_NORMAL:
+						if (normal_shots != 0) {
+							shoot(() -> --normal_shots);
+						}
+						break;
+					case Utils.S_SHOOT_BLUE:
+						if (blue_shots != 0) {
+							shoot(() -> --blue_shots);
+						}
+						break;
+					case Utils.S_SHOOT_RED:
+						if (red_shots != 0) {
+							shoot(() -> --red_shots);
+						}
+						break;
 				}
 				return;
 			case '1':
@@ -331,6 +360,15 @@ public class Main extends PApplet {
 				shot_type = Utils.S_SHOOT_RED;
 				return;
 
+		}
+	}
+
+	public void shoot(final Runnable action) {
+		if (System.nanoTime() - shoot_start > shoot_timeout) {
+			this_os.write(shot_type);
+			action.run();
+			drawPanel();
+			shoot_start = System.nanoTime();
 		}
 	}
 
@@ -362,5 +400,18 @@ public class Main extends PApplet {
 				action.accept(0b1000);
 				return;
 		}
+	}
+
+	public void drawPanel() {
+		fill(0xFF000000);
+		noStroke();
+		rect(800, 0, 100, 800);
+		image(bullet_normal, 810, 10, scale, scale);
+		image(bullet_blue, 810, 10 + scale, scale, scale);
+		image(bullet_red, 810, 10 + 2 * scale, scale, scale);
+		fill(0xFFFFFFFF);
+		text(normal_shots, 850, scale);
+		text(blue_shots, 850, scale * 2);
+		text(red_shots, 850, scale * 3);
 	}
 }

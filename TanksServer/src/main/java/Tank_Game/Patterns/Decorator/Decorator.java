@@ -7,7 +7,6 @@ public abstract class Decorator extends Tank {
 	protected Tank wrapee;
 
 	public Decorator(final Tank wrapee) {
-		super();
 		this.wrapee = wrapee;
 	}
 
@@ -18,16 +17,7 @@ public abstract class Decorator extends Tank {
 
 	@Override
 	public MoveAlgorithm getMoveAlgorithm() {
-		return super.getMoveAlgorithm();
-	}
-
-	/*@Override
-	public Tank thisTank() {
-		return super.thisTank();
-	}*/
-	@Override
-	public Tank setAlgorithm(final MoveAlgorithm moveAlgorithm) {
-		return wrapee.setAlgorithm(moveAlgorithm);
+		return wrapee.getMoveAlgorithm();
 	}
 
 	@Override
@@ -92,9 +82,5 @@ public abstract class Decorator extends Tank {
 
 		decorator.setShotType(this.getShotType());
 		return decorator;
-	}
-
-	public Tank getTank() {
-		return wrapee;
 	}
 }

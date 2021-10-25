@@ -3,9 +3,10 @@ package Tank_Game.Patterns.Command;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Invoker {
-	private final ArrayList<Command> commands = new ArrayList<>();
+	private final List<Command> commands = new ArrayList<>();
 
 	private Decorator crDecorator;
 

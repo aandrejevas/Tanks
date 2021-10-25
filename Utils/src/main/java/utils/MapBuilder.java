@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class MapBuilder implements Builder {
@@ -184,10 +185,10 @@ public class MapBuilder implements Builder {
 		boolean changed = true;
 		boolean status;
 
-		ArrayList<Stack<Integer>> stArr = new ArrayList<>();
+		final List<Stack<Integer>> stArr = new ArrayList<>();
 
 		for (int i = 0; i < map.edge; i++) {
-			Stack<Integer> s = new Stack<>();
+			final Stack<Integer> s = new Stack<>();
 			s.push((map.edge * (Utils.random.nextInt(map.edge - 4) + 2) + (Utils.random.nextInt(map.edge - 4) + 2)));
 			stArr.add(s);
 		}

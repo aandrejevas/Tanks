@@ -1,12 +1,11 @@
 
 import processing.core.PConstants;
 import processing.core.PShape;
-import utils.Utils;
 
 public class Bullet {
 	public final PShape shape;
 
-	public Bullet(final int x, final int y, int type) {
+	public Bullet(final int x, final int y, final byte type) {
 		shape = Main.self.createShape(PShape.GEOMETRY);
 		shape.setStroke(false);
 		shape.setFill(false);
@@ -19,7 +18,7 @@ public class Bullet {
 //			case Utils.DROP_LAMMO: shape.setTexture(Main.bullet_red);break;
 //			default: throw new NullPointerException();
 //		}
-		shape.setTexture(Main.getImage((byte)type));
+		shape.setTexture(Main.getImage(type));
 		shape.translate(x * Main.scale, y * Main.scale);
 
 		shape.beginShape(PConstants.POLYGON);

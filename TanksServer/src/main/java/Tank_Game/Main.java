@@ -41,10 +41,11 @@ public class Main extends PApplet {
 	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
 	public static final List<Bullet> bullets = new LinkedList<>();
 	public static final List<Invoker> enemies = new ArrayList<>();
-	public static ArenaMap map = new ArenaMap(edge, true);
 
+	public static ArenaMap map = new ArenaMap(edge, true);
 	public static Game_Context game_context;
 	public static final Creator ctr = new PlayerCreator();
+	public static int ndrops = 0;
 
 	public static TServer this_server;
 	public static Client available_client;
@@ -133,16 +134,24 @@ public class Main extends PApplet {
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
-					handleMove(Tank -> Tank.setAlgorithm(MoveLeft.instance).move());
+					handleMove((final Decorator tank) -> {
+						tank.setMoveAlgorithm(MoveLeft.instance);
+					});
 					break;
 				case Utils.S_MOVE_RIGHT:
-					handleMove(Tank -> Tank.setAlgorithm(MoveRight.instance).move());
+					handleMove((final Decorator tank) -> {
+						tank.setMoveAlgorithm(MoveRight.instance);
+					});
 					break;
 				case Utils.S_MOVE_UP:
-					handleMove(Tank -> Tank.setAlgorithm(MoveUp.instance).move());
+					handleMove((final Decorator tank) -> {
+						tank.setMoveAlgorithm(MoveUp.instance);
+					});
 					break;
 				case Utils.S_MOVE_DOWN:
-					handleMove(Tank -> Tank.setAlgorithm(MoveDown.instance).move());
+					handleMove((final Decorator tank) -> {
+						tank.setMoveAlgorithm(MoveDown.instance);
+					});
 					break;
 				case Utils.S_SHOOT_NORMAL: {
 					final Tank tank = clients.get(available_client).undoTank();
@@ -176,31 +185,30 @@ public class Main extends PApplet {
 		}
 		//generate drops randomly
 		generateDrops();
-
 	}
 
 	private static void generateDrops() {
 		//if (Utils.random().nextInt(1000000) < map.edge * map.edge) {
-		if (Utils.random().nextInt(100000) < map.edge * map.edge) {
+		if (ndrops < 30 && Utils.random().nextInt(100000) < map.edge * map.edge) {
+			final int x = Utils.random().nextInt(Main.edge), y = Utils.random().nextInt(Main.edge);
+			if (Main.map.map[y][x].value != Utils.MAP_EMPTY) return;
+
 			final int size = Utils.random().nextInt(300);
 			final AbstractFactory af = (size < 100 ? new SmallFactory() : (size < 200 ? new MediumFactory() : new LargeFactory()));
 
 			final int dropType = Utils.random().nextInt(300);
 			final Drop drop = (dropType < 100 ? af.createAmmo() : (dropType < 200 ? af.createArmor() : af.createHealth()));
 
-			int x, y;
-			do {
-				x = Utils.random().nextInt(Main.edge);
-				y = Utils.random().nextInt(Main.edge);
-			} while (Main.map.map[y][x].value != Utils.MAP_EMPTY);
+			++ndrops;
 			Main.map.map[y][x].drop = drop;
-
-			this_server.write(Utils.ADD_DROP, (int)drop.getName(), drop.getValue(), y, x);
+			this_server.write(Utils.ADD_DROP, drop.getName(), drop.getValue(), y, x);
 		}
 	}
 
 	public static void handleMove(final Consumer<Decorator> func) {
-		func.accept(clients.get(available_client).currentDecorator());
+		final Decorator tank = clients.get(available_client).currentDecorator();
+		func.accept(tank);
+		tank.move();
 	}
 
 	public static void printMap() {

@@ -6,11 +6,9 @@ public abstract class Bullet {
 
 	public static class Left extends Bullet {
 		public Left(final Tank tank) {
-			type = tank.getShotType();
-			System.out.println("shot:" + type);
 			x = tank.getX() - 1;
 			y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, (int)type);
+			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
 		}
 
 		@Override
@@ -19,7 +17,7 @@ public abstract class Bullet {
 				return true;
 			} else {
 				--x;
-				Main.this_server.write(Utils.BULLET_LEFT, (int)index);
+				Main.this_server.write(Utils.BULLET_LEFT, index);
 				return false;
 			}
 		}
@@ -27,11 +25,9 @@ public abstract class Bullet {
 
 	public static class Right extends Bullet {
 		public Right(final Tank tank) {
-			type = tank.getShotType();
-			System.out.println("shot:" + type);
 			x = tank.getX() + 1;
 			y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, (int)type);
+			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
 		}
 
 		@Override
@@ -48,11 +44,9 @@ public abstract class Bullet {
 
 	public static class Up extends Bullet {
 		public Up(final Tank tank) {
-			type = tank.getShotType();
-			System.out.println("shot:" + type);
 			x = tank.getX();
 			y = tank.getY() - 1;
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, (int)type);
+			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
 		}
 
 		@Override
@@ -69,11 +63,9 @@ public abstract class Bullet {
 
 	public static class Down extends Bullet {
 		public Down(final Tank tank) {
-			type = tank.getShotType();
-			System.out.println("shot:" + type);
 			x = tank.getX();
 			y = tank.getY() + 1;
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, (int)type);
+			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
 		}
 
 		@Override
@@ -94,7 +86,6 @@ public abstract class Bullet {
 	private long start_time;
 	public final int index;
 	protected int x, y;
-	protected byte type;
 
 	public Bullet() {
 		index = count++;

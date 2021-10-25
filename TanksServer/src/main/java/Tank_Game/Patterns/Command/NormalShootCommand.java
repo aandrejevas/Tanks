@@ -6,7 +6,6 @@ import Tank_Game.Tank;
 
 public class NormalShootCommand extends Command {
 	public NormalShootCommand(final Tank tank) {
-		super();
 		this.tank = tank;
 		//this.target = new NormalShoot(tank);
 	}
@@ -29,8 +28,8 @@ public class NormalShootCommand extends Command {
 			System.out.println("Decorator hashcode " + System.identityHashCode(this.target));
 			System.out.println("Cloned decorator hashcode " + System.identityHashCode(this.laterDecorator) + "\n");
 
-			System.out.println("Tank hashcode " + System.identityHashCode(this.target.getTank()));
-			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator.getTank()) + "\n");
+			System.out.println("Tank hashcode " + System.identityHashCode(this.target));
+			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator) + "\n");
 			return this.target;
 		}
 		try {

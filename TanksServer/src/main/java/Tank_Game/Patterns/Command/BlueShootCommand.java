@@ -4,7 +4,7 @@ import Tank_Game.Patterns.Decorator.BlueShoot;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 
-public class BlueShootCommand extends Command implements Cloneable {
+public class BlueShootCommand extends Command {
 
 	public BlueShootCommand(final Tank tank) {
 		this.tank = tank;
@@ -25,7 +25,7 @@ public class BlueShootCommand extends Command implements Cloneable {
 		}
 		try {
 			this.laterDecorator = (Decorator)this.target.clone();
-		} catch (CloneNotSupportedException e) {
+		} catch (final CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 

@@ -24,7 +24,7 @@ public class RedShootCommand extends Command {
 		}
 		try {
 			this.laterDecorator = (Decorator)this.target.clone();
-		} catch (CloneNotSupportedException e) {
+		} catch (final CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
 

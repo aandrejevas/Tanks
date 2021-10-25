@@ -31,12 +31,6 @@ public class Tank implements Cloneable {
 	}
 
 	public Tank() {
-
-	}
-
-	public Tank setAlgorithm(final MoveAlgorithm moveAlgorithm) {
-		this.moveAlgorithm = moveAlgorithm;
-		return this;
 	}
 
 	public MoveAlgorithm getMoveAlgorithm() {

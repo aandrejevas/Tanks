@@ -21,7 +21,6 @@ public interface MoveAlgorithm {
 			next_block.obstacle = true;
 			moveUnblocked(tank);
 			if (next_block.drop != null && tank.getType() != 1) {
-
 				final Invoker inv = Main.clients.get(Main.available_client);
 
 				switch (next_block.drop.getName()) {
@@ -60,6 +59,7 @@ public interface MoveAlgorithm {
 						break;
 				}
 
+				--Main.ndrops;
 				Main.this_server.write(Utils.REMOVE_DROP, tank.getY(), tank.getX());
 				next_block.drop = null;
 			}
