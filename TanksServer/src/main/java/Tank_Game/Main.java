@@ -107,7 +107,6 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-
 					for (int i = 0; i < map.edge; i++) {
 						for (int j = 0; j < map.edge; j++) {
 							if (map.map[i][j].drop != null) {
@@ -152,22 +151,18 @@ public class Main extends PApplet {
 				}
 				case Utils.S_SHOOT_BLUE: {
 					final Tank tank = clients.get(available_client).currentDecorator();
-					byte type = clients.get(available_client).currentDecorator().getShotType();
-					if(type == Utils.SHOT_BLUE) {
+					if (tank.getShotType() == Utils.SHOT_BLUE) {
 						shoot(tank);
 					}
 					break;
 				}
-
 				case Utils.S_SHOOT_RED: {
 					final Tank tank = clients.get(available_client).currentDecorator();
-					byte type = clients.get(available_client).currentDecorator().getShotType();
-					if(type == Utils.SHOT_RED) {
+					if (tank.getShotType() == Utils.SHOT_RED) {
 						shoot(tank);
 					}
 					break;
 				}
-
 				default: throw new AssertionError();
 			}
 			if (clients.size() > enemies.size()) {
@@ -251,14 +246,13 @@ public class Main extends PApplet {
 		}
 	}
 
-	public static void shoot(Tank tank){
+	public static void shoot(final Tank tank) {
 		switch (tank.getDirection()) {
 			case Tank.LEFT:
 				if (!map.map[tank.getY()][tank.getX() - 1].obstacle) bullets.add(new Bullet.Left(tank));
 				break;
 			case Tank.RIGHT:
-				if (!map.map[tank.getY()][tank.getX() + 1].obstacle)
-					bullets.add(new Bullet.Right(tank));
+				if (!map.map[tank.getY()][tank.getX() + 1].obstacle) bullets.add(new Bullet.Right(tank));
 				break;
 			case Tank.UP:
 				if (!map.map[tank.getY() - 1][tank.getX()].obstacle) bullets.add(new Bullet.Up(tank));

@@ -32,14 +32,14 @@ public class Main extends PApplet {
 		drop_shealth, drop_mhealth, drop_lhealth;
 	public static float scale;
 	public static boolean initialized = false;
-	public static int move_state = 0;
+	public static int move_state = 0, normal_shots = 20, blue_shots = 0, red_shots = 0;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 
 	private static byte shot_type = Utils.S_SHOOT_NORMAL;
 
 	public static int edge;
 	public static ArenaMap map = null;
-	
+
 	public static boolean myTank = true;
 
 	public static void main(final String[] args) {
@@ -235,8 +235,6 @@ public class Main extends PApplet {
 						break;
 				}
 			}
-
-			background(0xFFFFFFFF);
 
 			for (int i = 0; i < edge; i++) {
 				for (int j = 0; j < edge; j++) {
