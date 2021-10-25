@@ -2,7 +2,6 @@
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -11,6 +10,7 @@ import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.MapBuilder;
 import utils.TOutputStream;
+import utils.TWritable;
 import utils.Utils;
 
 // Client
@@ -23,7 +23,7 @@ public class Main extends PApplet {
 
 	public static PApplet self;
 	public static Client this_client;
-	public static TOutputStream this_os;
+	public static TWritable this_os;
 	public static PImage red_tank, t34_tank, t34_tank_highlited, tiger_tank, sherman_tank,
 		bullet_blue, bullet_red, bullet_normal,
 		background_box, water_box, lava_box, metal_box, wood_box,
@@ -82,35 +82,8 @@ public class Main extends PApplet {
 		t34_tank_highlited = loadImage("tank_t34_highlighted.png");
 
 		this_client = new Client(this, "127.0.0.1", 12345);
-		this_client.output = (this_os = new TOutputStream(this_client));
+		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
 		this_os.write(Utils.S_INIT_CLIENT);
-	}
-
-	public static PImage getImage(final byte key) {
-		switch (key) {
-			case Utils.MAP_EMPTY: return background_box;
-			case Utils.MAP_BORDER: return metal_box;
-			case Utils.MAP_WALL: return wood_box;
-			case Utils.MAP_WATER: return water_box;
-			case Utils.MAP_LAVA: return lava_box;
-			case Utils.MAP_T34: return t34_tank;
-			case Utils.MAP_SHERMAN: return sherman_tank;
-			case Utils.MAP_T34H: return t34_tank_highlited;
-			case Utils.MAP_TIGER: return tiger_tank;
-			case Utils.DROP_LAMMO: return drop_lammo;
-			case Utils.DROP_MAMMO: return drop_mammo;
-			case Utils.DROP_SAMMO: return drop_sammo;
-			case Utils.DROP_LARMOR: return drop_larmor;
-			case Utils.DROP_MARMOR: return drop_marmor;
-			case Utils.DROP_SARMOR: return drop_sarmor;
-			case Utils.DROP_LHEALTH: return drop_lhealth;
-			case Utils.DROP_MHEALTH: return drop_mhealth;
-			case Utils.DROP_SHEALTH: return drop_shealth;
-			case Utils.SHOT_NORMAL: return bullet_normal;
-			case Utils.SHOT_RED: return bullet_red;
-			case Utils.SHOT_BLUE: return bullet_blue;
-			default: throw new NullPointerException();
-		}
 	}
 
 	@Override
@@ -131,23 +104,23 @@ public class Main extends PApplet {
 					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
 					case Utils.ADD_NEW_TANK:
 						if (initialized) {
-							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
+							Facade.handleAddNew(Utils.MAP_T34);
 						} else {
 							initialized = true;
-							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
+							Facade.handleAddNew(Utils.MAP_T34H);
 						}
 						break;
 					case Utils.ADD_LEFT_TANK:
-						handleAdd(Tank::pointLeft);
+						Facade.handleAdd(Tank::pointLeft);
 						break;
 					case Utils.ADD_RIGHT_TANK:
-						handleAdd(Tank::pointRight);
+						Facade.handleAdd(Tank::pointRight);
 						break;
 					case Utils.ADD_UP_TANK:
-						handleAdd(null);
+						Facade.handleAdd(null);
 						break;
 					case Utils.ADD_DOWN_TANK:
-						handleAdd(Tank::pointDown);
+						Facade.handleAdd(Tank::pointDown);
 						break;
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
@@ -156,7 +129,7 @@ public class Main extends PApplet {
 					case Utils.ADD_DROP: {
 						final byte i1 = (byte)Utils.rbuf.getInt();
 						final int i2 = Utils.rbuf.getInt(), i3 = Utils.rbuf.getInt(), i4 = Utils.rbuf.getInt();
-						map.map[i3][i4].drop = new TextureDrop(i1, i2, getImage(i1), i4, i3);
+						map.map[i3][i4].drop = new TextureDrop(i1, i2, i4, i3);
 						break;
 					}
 					case Utils.REMOVE_DROP:
@@ -177,55 +150,55 @@ public class Main extends PApplet {
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.MOVE_LEFT:
-						handleMove(Tank::moveLeft);
+						Facade.handleMove(Tank::moveLeft);
 						break;
 					case Utils.MOVE_RIGHT:
-						handleMove(Tank::moveRight);
+						Facade.handleMove(Tank::moveRight);
 						break;
 					case Utils.MOVE_UP:
-						handleMove(Tank::moveUp);
+						Facade.handleMove(Tank::moveUp);
 						break;
 					case Utils.MOVE_DOWN:
-						handleMove(Tank::moveDown);
+						Facade.handleMove(Tank::moveDown);
 						break;
 					// <><><><><><><><><><><><><><><> POINT <><><><><><><><><><><><><><><>
 					case Utils.POINT_LEFT:
-						handleMove(Tank::pointLeft);
+						Facade.handleMove(Tank::pointLeft);
 						break;
 					case Utils.POINT_RIGHT:
-						handleMove(Tank::pointRight);
+						Facade.handleMove(Tank::pointRight);
 						break;
 					case Utils.POINT_UP:
-						handleMove(Tank::pointUp);
+						Facade.handleMove(Tank::pointUp);
 						break;
 					case Utils.POINT_DOWN:
-						handleMove(Tank::pointDown);
+						Facade.handleMove(Tank::pointDown);
 						break;
 					// <><><><><><><><><><><><><><><> TURN <><><><><><><><><><><><><><><>
 					case Utils.TURN_LEFT:
-						handleMove(Tank::turnLeft);
+						Facade.handleMove(Tank::turnLeft);
 						break;
 					case Utils.TURN_RIGHT:
-						handleMove(Tank::turnRight);
+						Facade.handleMove(Tank::turnRight);
 						break;
 					case Utils.TURN_UP:
-						handleMove(Tank::turnUp);
+						Facade.handleMove(Tank::turnUp);
 						break;
 					case Utils.TURN_DOWN:
-						handleMove(Tank::turnDown);
+						Facade.handleMove(Tank::turnDown);
 						break;
 					// <><><><><><><><><><><><><><><> BULLET MOVE <><><><><><><><><><><><><><><>
 					case Utils.BULLET_LEFT:
-						handleBulletMove(Bullet::moveLeft);
+						Facade.handleBulletMove(Bullet::moveLeft);
 						break;
 					case Utils.BULLET_RIGHT:
-						handleBulletMove(Bullet::moveRight);
+						Facade.handleBulletMove(Bullet::moveRight);
 						break;
 					case Utils.BULLET_UP:
-						handleBulletMove(Bullet::moveUp);
+						Facade.handleBulletMove(Bullet::moveUp);
 						break;
 					case Utils.BULLET_DOWN:
-						handleBulletMove(Bullet::moveDown);
+						Facade.handleBulletMove(Bullet::moveDown);
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE BULLET <><><><><><><><><><><><><><><>
 					case Utils.ADD_BULLET:
@@ -309,8 +282,8 @@ public class Main extends PApplet {
 //		}
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).shape.setTexture(getImage(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).shape.setTexture(getImage(map.background[j][i].value));
+				((TextureBlock)(map.map[j][i])).shape.setTexture(Facade.getImage(map.map[j][i].value));
+				((TextureBlock)(map.background[j][i])).shape.setTexture(Facade.getImage(map.background[j][i].value));
 			}
 		}
 	}
@@ -318,21 +291,6 @@ public class Main extends PApplet {
 	public static void sendMove(final byte message) {
 		this_os.write(message);
 		move_start = System.nanoTime();
-	}
-
-	public static void handleAdd(final Consumer<Tank> func) {
-		final int index = Utils.rbuf.getInt();
-		final Tank tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt());
-		if (func != null) func.accept(tank);
-		tanks.put(index, tank);
-	}
-
-	public static void handleMove(final Consumer<Tank> func) {
-		func.accept(tanks.get(Utils.rbuf.getInt()));
-	}
-
-	public static void handleBulletMove(final Consumer<Bullet> func) {
-		func.accept(bullets.get(Utils.rbuf.getInt()));
 	}
 
 	@Override

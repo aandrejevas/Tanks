@@ -5,7 +5,7 @@ public class Bullet {
 	public final PShape shape;
 
 	public Bullet(final int x, final int y, final byte type) {
-		shape = Facade.createShape(Main.getImage(type), x, y);
+		shape = Facade.createShape(Facade.getImage(type), x, y);
 	}
 
 	public void moveLeft() {

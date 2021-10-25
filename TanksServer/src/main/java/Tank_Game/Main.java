@@ -30,8 +30,8 @@ import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
 import utils.MapBuilder;
-import utils.TOutputStream;
 import utils.TServer;
+import utils.TWritable;
 import utils.Utils;
 
 // Server
@@ -49,7 +49,7 @@ public class Main extends PApplet {
 
 	public static TServer this_server;
 	public static Client available_client;
-	public static TOutputStream client_os;
+	public static TWritable client_os;
 
 	//public static boolean test = false;
 	public static void main(final String[] args) {
@@ -103,7 +103,7 @@ public class Main extends PApplet {
 		}
 
 		while ((available_client = this_server.available()) != null) {
-			client_os = (TOutputStream)available_client.output;
+			client_os = (TWritable)available_client.output;
 			switch (available_client.read()) {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);

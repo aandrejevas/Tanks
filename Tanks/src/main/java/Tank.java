@@ -5,7 +5,7 @@ public class Tank {
 	public final PShape shape;
 
 	public Tank(final int ix, final int iy, final byte type) {
-		shape = Facade.createShape(Main.getImage(type), ix, iy);
+		shape = Facade.createShape(Facade.getImage(type), ix, iy);
 	}
 
 	public void pointLeft() {

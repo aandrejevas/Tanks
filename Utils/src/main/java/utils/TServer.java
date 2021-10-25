@@ -42,7 +42,7 @@ public class TServer extends Server implements TWritable {
 				do {
 					final Client client = clients[index];
 					if (client.active()) {
-						((TOutputStream)client.output).write(data, off, len);
+						((TWritable)client.output).write(data, off, len);
 						++index;
 					} else {
 						removeIndex(index);
@@ -65,7 +65,7 @@ public class TServer extends Server implements TWritable {
 				do {
 					final Client client = clients[index];
 					if (client.active()) {
-						((TOutputStream)client.output).write(data);
+						((TWritable)client.output).write(data);
 						++index;
 					} else {
 						removeIndex(index);
@@ -83,7 +83,7 @@ public class TServer extends Server implements TWritable {
 				do {
 					final Client client = clients[index];
 					if (client.active()) {
-						((TOutputStream)client.output).write(data);
+						((TWritable)client.output).write(data);
 						++index;
 					} else {
 						removeIndex(index);
