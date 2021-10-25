@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.function.UnaryOperator;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
@@ -96,6 +95,7 @@ public class Main extends PApplet {
 			case Utils.MAP_LAVA: return lava_box;
 			case Utils.MAP_T34: return t34_tank;
 			case Utils.MAP_SHERMAN: return sherman_tank;
+			case Utils.MAP_T34H: return t34_tank_highlited;
 			case Utils.MAP_TIGER: return tiger_tank;
 			case Utils.DROP_LAMMO: return drop_lammo;
 			case Utils.DROP_MAMMO: return drop_mammo;
@@ -119,9 +119,6 @@ public class Main extends PApplet {
 			Utils.rbuf.reset().limit(this_client.readBytes(Utils.rbuf.array()));
 			do {
 				switch (Utils.rbuf.get()) {
-					case Utils.INITIALIZE:
-						initialized = true;
-						break;
 					case Utils.INITIALIZE_GRID:
 						edge = Utils.rbuf.getInt();
 						scale = (float)D / edge;
@@ -132,17 +129,25 @@ public class Main extends PApplet {
 						handleGenMap();
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
+					case Utils.ADD_NEW_TANK:
+						if (initialized) {
+							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
+						} else {
+							initialized = true;
+							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
+						}
+						break;
 					case Utils.ADD_LEFT_TANK:
-						handleAdd(Tank::initLeft);
+						handleAdd(Tank::pointLeft);
 						break;
 					case Utils.ADD_RIGHT_TANK:
-						handleAdd(Tank::initRight);
+						handleAdd(Tank::pointRight);
 						break;
 					case Utils.ADD_UP_TANK:
-						handleAdd(Tank::initUp);
+						handleAdd(null);
 						break;
 					case Utils.ADD_DOWN_TANK:
-						handleAdd(Tank::initDown);
+						handleAdd(Tank::pointDown);
 						break;
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
@@ -304,8 +309,8 @@ public class Main extends PApplet {
 //		}
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).setShape(getImage(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).setShape(getImage(map.background[j][i].value));
+				((TextureBlock)(map.map[j][i])).shape.setTexture(getImage(map.map[j][i].value));
+				((TextureBlock)(map.background[j][i])).shape.setTexture(getImage(map.background[j][i].value));
 			}
 		}
 	}
@@ -315,8 +320,11 @@ public class Main extends PApplet {
 		move_start = System.nanoTime();
 	}
 
-	public static void handleAdd(final UnaryOperator<Tank> func) {
-		tanks.put(Utils.rbuf.getInt(), func.apply(new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.rbuf.getInt())));
+	public static void handleAdd(final Consumer<Tank> func) {
+		final int index = Utils.rbuf.getInt();
+		final Tank tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt());
+		if (func != null) func.accept(tank);
+		tanks.put(index, tank);
 	}
 
 	public static void handleMove(final Consumer<Tank> func) {

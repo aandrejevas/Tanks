@@ -20,7 +20,7 @@ public interface MoveAlgorithm {
 			block.obstacle = false;
 			next_block.obstacle = true;
 			moveUnblocked(tank);
-			if (next_block.drop != null && tank.getType() != 1) {
+			if (next_block.drop != null && tank.getType() != Utils.MAP_TIGER) {
 				final Invoker inv = Main.clients.get(Main.available_client);
 
 				switch (next_block.drop.getName()) {

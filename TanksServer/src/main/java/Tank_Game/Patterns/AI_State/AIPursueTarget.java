@@ -132,10 +132,6 @@ public class AIPursueTarget implements AIState {
 		return stack;
 	}
 
-	private int menhadenDist(int[] from, int[] to) {
-		return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
-	}
-
 	private boolean isClearSight(int[] from, int[] to) {
 		return from[0] == to[0] || from[1] == to[1];
 	}

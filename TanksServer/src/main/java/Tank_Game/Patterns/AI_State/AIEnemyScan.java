@@ -5,6 +5,7 @@ import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Tank;
+import utils.Utils;
 
 public class AIEnemyScan implements AIState {
 	@Override
@@ -16,7 +17,7 @@ public class AIEnemyScan implements AIState {
 		int bestDist = Integer.MAX_VALUE;
 
 		for (int i = 0; i < players.length; i++) {
-			int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
+			int dist = Utils.manhattanDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
 			if (dist < bestDist) {
 				bestDist = dist;
 				best_tank = ((Invoker)players[i]).currentDecorator().getTank();
@@ -30,9 +31,5 @@ public class AIEnemyScan implements AIState {
 		} else {
 			ai.state.removeState(new AICompState(AICompState.AI_TARGET_FOUND));
 		}
-	}
-
-	private int menhadenDist(int[] from, int[] to) {
-		return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
 	}
 }

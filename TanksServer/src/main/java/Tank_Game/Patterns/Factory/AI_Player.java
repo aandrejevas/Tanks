@@ -11,6 +11,7 @@ import Tank_Game.Patterns.AI_State.AIShoot;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import Tank_Game.Tank;
 import java.util.Stack;
+import utils.Utils;
 
 public class AI_Player extends Tank {
 	public AICompState state;
@@ -26,7 +27,7 @@ public class AI_Player extends Tank {
 	public Stack<Integer[]> path = new Stack<Integer[]>();
 
 	public AI_Player(int playerIndex) {
-		super(playerIndex, 1);
+		super(playerIndex, Utils.MAP_TIGER);
 		this.setMoveAlgorithm(MoveUp.instance);
 		this.state = new AICompState();
 	}

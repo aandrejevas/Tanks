@@ -108,25 +108,23 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-					for (int i = 0; i < map.edge; i++) {
-						for (int j = 0; j < map.edge; j++) {
+					for (int i = 0; i < map.edge; ++i) {
+						for (int j = 0; j < map.edge; ++j) {
 							if (map.map[i][j].drop != null) {
 								this_server.write(Utils.ADD_DROP, map.map[i][j].drop.getName(), map.map[i][j].drop.getValue(), i, j);
 							}
 						}
 					}
 
+					clients.values().forEach((final Invoker tank) -> {
+						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
+					});
 					enemies.forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 					});
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
-
-					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
-					client_os.write(Utils.INITIALIZE);
-					clients.values().forEach((final Invoker tank) -> {
-						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
-					});
+					this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());
 					final Invoker invoker = new Invoker();
 					final Command cmd = new NormalShootCommand(new_player);
 					invoker.runCommand(cmd);

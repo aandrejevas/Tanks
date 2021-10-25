@@ -18,7 +18,7 @@ public class AILockTarget implements AIState {
 
 		for (int i = 0; i < players.length; i++) {
 			if (isClearSight(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord())) {
-				int dist = menhadenDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
+				int dist = Utils.manhattanDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
 				if (dist < bestDist) {
 					bestDist = dist;
 					best_tank = ((Invoker)players[i]).currentDecorator().getTank();
@@ -34,10 +34,6 @@ public class AILockTarget implements AIState {
 				ai.state.addState(new AICompState(AICompState.AI_AIMED));
 			}
 		}
-	}
-
-	private int menhadenDist(int[] from, int[] to) {
-		return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
 	}
 
 	private boolean isClearSight(int[] from, int[] to) {
