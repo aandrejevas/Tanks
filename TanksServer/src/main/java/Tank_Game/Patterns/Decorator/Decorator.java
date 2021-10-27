@@ -3,7 +3,7 @@ package Tank_Game.Patterns.Decorator;
 import Tank_Game.Patterns.Strategy.MoveAlgorithm;
 import Tank_Game.Tank;
 
-public abstract class Decorator extends Tank {
+public abstract class Decorator extends Tank implements Cloneable {
 	protected Tank wrapee;
 
 	public Decorator(final Tank wrapee) {
