@@ -8,7 +8,10 @@ import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
+import utils.ErrorLogger;
 import utils.MapBuilder;
+import utils.NullLogger;
+import utils.OutputLogger;
 import utils.TOutputStream;
 import utils.TWritable;
 import utils.Utils;
@@ -31,16 +34,15 @@ public class Main extends PApplet {
 		drop_sarmor, drop_marmor, drop_larmor,
 		drop_shealth, drop_mhealth, drop_lhealth;
 	public static float scale;
-	public static boolean initialized = false;
-	public static int move_state = 0, normal_shots = 20, blue_shots = 0, red_shots = 0;
+	public static boolean initialized = false,
+		write_out = false, write_err = false;
+	public static int move_state = 0,
+		normal_shots = 20, blue_shots = 0, red_shots = 0,
+		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
-
-	private static byte shot_type = Utils.S_SHOOT_NORMAL;
-
-	public static int edge;
-	public static ArenaMap map = null;
-
-	public static boolean myTank = true;
+	public static Tank this_tank;
+	public static byte shot_type = Utils.S_SHOOT_NORMAL;
+	public static ArenaMap map;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -104,10 +106,10 @@ public class Main extends PApplet {
 					// <><><><><><><><><><><><><><><> ADD/REMOVE TANK <><><><><><><><><><><><><><><>
 					case Utils.ADD_NEW_TANK:
 						if (initialized) {
-							Facade.handleAddNew(Utils.MAP_T34);
+							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
 						} else {
 							initialized = true;
-							Facade.handleAddNew(Utils.MAP_T34H);
+							tanks.put(Utils.rbuf.getInt(), this_tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
 						}
 						break;
 					case Utils.ADD_LEFT_TANK:
@@ -324,7 +326,26 @@ public class Main extends PApplet {
 			case '3':
 				shot_type = Utils.S_SHOOT_RED;
 				return;
-
+			case 'O':
+			case 'o':
+				if (write_out) {
+					write_out = false;
+					this_tank.setLogger(NullLogger.instance);
+				} else {
+					write_out = true;
+					this_tank.setLogger(OutputLogger.instance);
+				}
+				return;
+			case 'P':
+			case 'p':
+				if (write_err) {
+					write_err = false;
+					bullets.values().forEach((final Bullet bullet) -> bullet.setLogger(NullLogger.instance));
+				} else {
+					write_err = true;
+					bullets.values().forEach((final Bullet bullet) -> bullet.setLogger(ErrorLogger.instance));
+				}
+				return;
 		}
 	}
 

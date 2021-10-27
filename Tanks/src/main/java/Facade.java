@@ -55,10 +55,6 @@ public abstract class Facade {
 		}
 	}
 
-	public static void handleAddNew(final byte type) {
-		Main.tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), type));
-	}
-
 	public static void handleAdd(final Consumer<Tank> func) {
 		final int index = Utils.rbuf.getInt();
 		final Tank tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt());

@@ -2,7 +2,7 @@ package utils;
 
 public class ArenaMap {
 
-	public int edge;
+	public final int edge;
 	public final ArenaBlock[][] map;
 	public final ArenaBlock[][] background;
 

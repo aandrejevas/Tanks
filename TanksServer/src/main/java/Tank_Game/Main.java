@@ -41,12 +41,11 @@ public class Main extends PApplet {
 	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
 	public static final List<Bullet> bullets = new LinkedList<>();
 	public static final List<Invoker> enemies = new ArrayList<>();
+	public static final Creator ctr = new PlayerCreator();
 
 	public static ArenaMap map = new ArenaMap(edge, true);
 	public static Game_Context game_context;
-	public static final Creator ctr = new PlayerCreator();
 	public static int ndrops = 0;
-
 	public static TServer this_server;
 	public static Client available_client;
 	public static TWritable client_os;
