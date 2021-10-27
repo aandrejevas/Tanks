@@ -41,7 +41,7 @@ public class Main extends PApplet {
 		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 	public static Tank this_tank;
-	public static byte shot_type = Utils.S_SHOOT_NORMAL;
+	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
 	public static ArenaMap map;
 
 	public static void main(final String[] args) {
@@ -138,12 +138,15 @@ public class Main extends PApplet {
 						switch (block.drop.getName()) {
 							case Utils.DROP_SAMMO:
 								normal_shots += block.drop.getValue();
+								last_drop = Utils.DROP_SAMMO;
 								break;
 							case Utils.DROP_MAMMO:
 								blue_shots += block.drop.getValue();
+								last_drop = Utils.DROP_MAMMO;
 								break;
 							case Utils.DROP_LAMMO:
 								red_shots += block.drop.getValue();
+								last_drop = Utils.DROP_LAMMO;
 								break;
 						}
 						drawPanel();
@@ -306,12 +309,12 @@ public class Main extends PApplet {
 						}
 						break;
 					case Utils.S_SHOOT_BLUE:
-						if (blue_shots != 0) {
+						if (blue_shots != 0 && last_drop == Utils.DROP_MAMMO) {
 							shoot(() -> --blue_shots);
 						}
 						break;
 					case Utils.S_SHOOT_RED:
-						if (red_shots != 0) {
+						if (red_shots != 0 && last_drop == Utils.DROP_LAMMO) {
 							shoot(() -> --red_shots);
 						}
 						break;
