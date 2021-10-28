@@ -1,8 +1,4 @@
-package Tank_Game;
-
-import utils.ArenaMap;
-import utils.Builder;
-import utils.Utils;
+package utils;
 
 import java.util.ArrayList;
 import java.util.List;

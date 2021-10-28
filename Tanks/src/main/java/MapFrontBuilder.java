@@ -1,11 +1,7 @@
-import Tank_Game.MapBackBuilder;
+import utils.MapBackBuilder;
 import utils.ArenaMap;
 import utils.Builder;
 import utils.Utils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 public class MapFrontBuilder extends MapBackBuilder implements Builder {
 
