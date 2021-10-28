@@ -3,13 +3,14 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
+
+import Tank_Game.MapBackBuilder;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.ErrorLogger;
-import utils.MapBuilder;
 import utils.NullLogger;
 import utils.OutputLogger;
 import utils.TOutputStream;
@@ -260,7 +261,7 @@ public class Main extends PApplet {
 		}
 
 //		map = (new MapBuilder(map)).makeBackground().makeLava().makeWater().makeBorders().makeMaze().getBuildable();
-		map = (new MapBuilder(map)).build(true).getBuildable();
+		map = (new MapFrontBuilder(map)).build().getBuildable();
 
 //		for (int i = 0; i < map.edge; i++) {
 //			for (int j = 0; j < map.edge; j++) {

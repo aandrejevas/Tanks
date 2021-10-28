@@ -31,7 +31,13 @@
 			<artifactId>gluegen-rt-main</artifactId>
 			<version>2.3.2</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>group.id</groupId>
+            <artifactId>TanksServer</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>15</maven.compiler.source>

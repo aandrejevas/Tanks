@@ -29,7 +29,6 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
-import utils.MapBuilder;
 import utils.TServer;
 import utils.TWritable;
 import utils.Utils;
@@ -67,7 +66,7 @@ public class Main extends PApplet {
 		game_context = Game_Context.getInstance();
 		//building map
 		Utils.random.setSeed(seed);
-		map = (new MapBuilder(map)).build(false).getBuildable();
+		map = (new MapBackBuilder(map)).build().getBuildable();
 
 	}
 

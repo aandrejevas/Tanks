@@ -1,14 +1,18 @@
-package utils;
+package Tank_Game;
+
+import utils.ArenaMap;
+import utils.Builder;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class MapBuilder implements Builder {
+public class MapBackBuilder implements Builder {
 
 	private final ArenaMap map;
 
-	public MapBuilder(final ArenaMap map) {
+	public MapBackBuilder(final ArenaMap map) {
 		this.map = map;
 	}
 
@@ -18,15 +22,11 @@ public class MapBuilder implements Builder {
 	}
 
 	@Override
-	public Builder build(final boolean background) {
-		if (background) {
-			return this.makeBackground().makeLava().makeWater().makeBorders().makeMaze();
-		} else {
-			return this.makeLava().makeWater().makeBorders().makeMaze();
-		}
+	public Builder build() {
+		return this.makeLava().makeWater().makeBorders().makeMaze();
 	}
 
-	public MapBuilder makeBorders() {
+	public MapBackBuilder makeBorders() {
 		int edge = this.map.edge;
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
@@ -39,16 +39,7 @@ public class MapBuilder implements Builder {
 		return this;
 	}
 
-	public MapBuilder makeBackground() {
-		for (int i = 0; i < this.map.edge; i++) {
-			for (int j = 0; j < this.map.edge; j++) {
-				this.map.background[i][j].value = Utils.MAP_EMPTY;
-			}
-		}
-		return this;
-	}
-
-	public MapBuilder makeLava() {
+	public MapBackBuilder makeLava() {
 		double dist, prob;
 		int count = map.edge / 10;
 		int[] lava_x = new int[count];
@@ -72,7 +63,7 @@ public class MapBuilder implements Builder {
 		return this;
 	}
 
-	public MapBuilder makeWater() {
+	public MapBackBuilder makeWater() {
 		double dist, prob;
 		int count = map.edge / 10;
 		int[] lava_x = new int[count];
@@ -181,7 +172,7 @@ public class MapBuilder implements Builder {
 		return false;
 	}
 
-	public MapBuilder makeMaze() {
+	public MapBackBuilder makeMaze() {
 		boolean changed = true;
 		boolean status;
 
