@@ -37,9 +37,9 @@ public class MapBackBuilder implements Builder {
 
 	public MapBackBuilder makeLava() {
 		double dist, prob;
-		int count = map.edge / 10;
-		int[] lava_x = new int[count];
-		int[] lava_y = new int[count];
+		final int count = map.edge / 10;
+		final int[] lava_x = new int[count];
+		final int[] lava_y = new int[count];
 		for (int i = 0; i < count; i++) {
 			lava_x[i] = Utils.random.nextInt(map.edge);
 			lava_y[i] = Utils.random.nextInt(map.edge);
@@ -61,9 +61,9 @@ public class MapBackBuilder implements Builder {
 
 	public MapBackBuilder makeWater() {
 		double dist, prob;
-		int count = map.edge / 10;
-		int[] lava_x = new int[count];
-		int[] lava_y = new int[count];
+		final int count = map.edge / 10;
+		final int[] lava_x = new int[count];
+		final int[] lava_y = new int[count];
 		for (int i = 0; i < count; i++) {
 			lava_x[i] = Utils.random.nextInt(map.edge);
 			lava_y[i] = Utils.random.nextInt(map.edge);
@@ -83,9 +83,9 @@ public class MapBackBuilder implements Builder {
 		return this;
 	}
 
-	private boolean checkAvailable(int ox, int oy, int nx, int ny) {
-		int dx = ox - nx;
-		int dy = oy - ny;
+	private boolean checkAvailable(final int ox, final int oy, final int nx, final int ny) {
+		final int dx = ox - nx;
+		final int dy = oy - ny;
 
 		return (dx != 0
 			&& map.map[ny - 1][nx].value > Utils.MAP_NON_OBSTACLE

@@ -1,6 +1,7 @@
-import utils.MapBackBuilder;
+
 import utils.ArenaMap;
 import utils.Builder;
+import utils.MapBackBuilder;
 import utils.Utils;
 
 public class MapFrontBuilder extends MapBackBuilder implements Builder {
@@ -21,8 +22,6 @@ public class MapFrontBuilder extends MapBackBuilder implements Builder {
 	public Builder build() {
 		return this.makeBackground().makeLava().makeWater().makeBorders().makeMaze();
 	}
-
-
 
 	public MapFrontBuilder makeBackground() {
 		for (int i = 0; i < this.map.edge; i++) {

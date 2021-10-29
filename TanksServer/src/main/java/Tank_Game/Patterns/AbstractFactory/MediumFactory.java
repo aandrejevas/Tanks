@@ -1,6 +1,6 @@
 package Tank_Game.Patterns.AbstractFactory;
 
-public class MediumFactory extends AbstractFactory {
+public class MediumFactory implements AbstractFactory {
 	@Override
 	public Health createHealth() {
 		return new MediumHealth();
