@@ -48,6 +48,8 @@ public class Main extends PApplet {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
 	}
 
+	public int clientTankIndex;
+
 	@Override
 	public void settings() {
 		size(D + 100, D, P2D);
@@ -109,7 +111,8 @@ public class Main extends PApplet {
 							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
 						} else {
 							initialized = true;
-							tanks.put(Utils.rbuf.getInt(), this_tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
+							clientTankIndex = Utils.rbuf.getInt();
+							tanks.put(clientTankIndex, this_tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
 						}
 						break;
 					case Utils.ADD_LEFT_TANK:
@@ -135,19 +138,23 @@ public class Main extends PApplet {
 					}
 					case Utils.REMOVE_DROP:
 						final ArenaBlock block = map.map[Utils.rbuf.getInt()][Utils.rbuf.getInt()];
-						switch (block.drop.getName()) {
-							case Utils.DROP_SAMMO:
-								normal_shots += block.drop.getValue();
-								last_drop = Utils.DROP_SAMMO;
-								break;
-							case Utils.DROP_MAMMO:
-								blue_shots += block.drop.getValue();
-								last_drop = Utils.DROP_MAMMO;
-								break;
-							case Utils.DROP_LAMMO:
-								red_shots += block.drop.getValue();
-								last_drop = Utils.DROP_LAMMO;
-								break;
+						if (Utils.rbuf.getInt() == clientTankIndex) {
+							switch (block.drop.getName()) {
+								case Utils.DROP_SAMMO:
+									normal_shots += block.drop.getValue();
+									last_drop = Utils.DROP_SAMMO;
+									break;
+								case Utils.DROP_MAMMO:
+									blue_shots += block.drop.getValue();
+									last_drop = Utils.DROP_MAMMO;
+									break;
+								case Utils.DROP_LAMMO:
+									red_shots += block.drop.getValue();
+									last_drop = Utils.DROP_LAMMO;
+									break;
+							}
+						}else {
+							block.drop = null;
 						}
 						drawPanel();
 						block.drop = null;
