@@ -24,6 +24,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import Tank_Game.Patterns.Template.BlueBullet;
+import Tank_Game.Patterns.Template.Bullet;
+import Tank_Game.Patterns.Template.NormalBullet;
+import Tank_Game.Patterns.Template.RedBullet;
 import processing.core.PApplet;
 import processing.net.Client;
 import utils.ArenaBlock;
@@ -93,13 +98,15 @@ public class Main extends PApplet {
 		}
 
 		final Iterator<Bullet> iter = bullets.iterator();
+
 		while (iter.hasNext()) {
 			final Bullet bullet = iter.next();
-			if (bullet.move()) {
-				this_server.write(Utils.REMOVE_BULLET, bullet.index);
+			if (bullet._side.move()) {
+				//this_server.write(Utils.REMOVE_BULLET, bullet.index);
 				iter.remove();
 			}
 		}
+
 
 		while ((available_client = this_server.available()) != null) {
 			client_os = (TWritable)available_client.output;
@@ -153,20 +160,20 @@ public class Main extends PApplet {
 					break;
 				case Utils.S_SHOOT_NORMAL: {
 					final Tank tank = clients.get(available_client).undoTank();
-					shoot(tank);
+					shoot(tank, Utils.S_SHOOT_NORMAL);
 					break;
 				}
 				case Utils.S_SHOOT_BLUE: {
 					final Tank tank = clients.get(available_client).currentDecorator();
 					if (tank.getShotType() == Utils.SHOT_BLUE) {
-						shoot(tank);
+						shoot(tank, Utils.S_SHOOT_BLUE);
 					}
 					break;
 				}
 				case Utils.S_SHOOT_RED: {
 					final Tank tank = clients.get(available_client).currentDecorator();
 					if (tank.getShotType() == Utils.SHOT_RED) {
-						shoot(tank);
+						shoot(tank, Utils.S_SHOOT_RED);
 					}
 					break;
 				}
@@ -252,20 +259,35 @@ public class Main extends PApplet {
 		}
 	}
 
-	public static void shoot(final Tank tank) {
+	public static void shoot(final Tank tank, byte type) {
+		int side = 0;
 		switch (tank.getDirection()) {
 			case Tank.LEFT:
-				if (!map.map[tank.getY()][tank.getX() - 1].obstacle) bullets.add(new Bullet.Left(tank));
+				if (!map.map[tank.getY()][tank.getX() - 1].obstacle) side = 1; //bullets.add(new Bullet.Left(tank));
 				break;
 			case Tank.RIGHT:
-				if (!map.map[tank.getY()][tank.getX() + 1].obstacle) bullets.add(new Bullet.Right(tank));
+				if (!map.map[tank.getY()][tank.getX() + 1].obstacle) side = 2; //bullets.add(new Bullet.Right(tank));
 				break;
 			case Tank.UP:
-				if (!map.map[tank.getY() - 1][tank.getX()].obstacle) bullets.add(new Bullet.Up(tank));
+				if (!map.map[tank.getY() - 1][tank.getX()].obstacle) side = 3; //bullets.add(new Bullet.Up(tank));
 				break;
 			case Tank.DOWN:
-				if (!map.map[tank.getY() + 1][tank.getX()].obstacle) bullets.add(new Bullet.Down(tank));
+				if (!map.map[tank.getY() + 1][tank.getX()].obstacle) side = 4; //bullets.add(new Bullet.Down(tank));
 				break;
+		}
+
+		if (side != 0){
+			switch (type){
+				case Utils.S_SHOOT_NORMAL:
+					bullets.add(new NormalBullet(tank, side));
+					break;
+				case Utils.S_SHOOT_BLUE:
+					bullets.add(new BlueBullet(tank, side));
+					break;
+				case Utils.S_SHOOT_RED:
+					bullets.add(new RedBullet(tank, side));
+					break;
+			}
 		}
 
 	}

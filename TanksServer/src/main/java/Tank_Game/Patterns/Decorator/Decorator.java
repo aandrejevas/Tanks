@@ -76,6 +76,16 @@ public abstract class Decorator extends Tank implements Cloneable {
 	}
 
 	@Override
+	public int getHealth() {
+		return wrapee.getHealth();
+	}
+
+	@Override
+	public void setHealth(int health) {
+		wrapee.setHealth(health);
+	}
+
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Decorator decorator = (Decorator)super.clone();
 		//decorator.wrapee = (Tank)this.wrapee.clone();
