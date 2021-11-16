@@ -30,6 +30,8 @@ public abstract class Utils {
 
 	public static final byte SHOT_NORMAL = 27, SHOT_RED = 28, SHOT_BLUE = 29;
 
+	public static  final byte SET_HEALTH = 37;
+
 	public static final Random random = new Random();
 
 	public static final ByteBuffer wbuf = ByteBuffer.allocate(1000),

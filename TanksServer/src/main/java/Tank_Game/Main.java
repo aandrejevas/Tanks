@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import Tank_Game.Patterns.Template.Bullet;
 import processing.core.PApplet;
 import processing.net.Client;
 import utils.ArenaBlock;
