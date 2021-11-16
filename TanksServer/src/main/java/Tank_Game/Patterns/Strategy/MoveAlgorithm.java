@@ -60,7 +60,7 @@ public interface MoveAlgorithm {
 				}
 
 				--Main.ndrops;
-				Main.this_server.write(Utils.REMOVE_DROP, tank.getY(), tank.getX());
+				Main.this_server.write(Utils.REMOVE_DROP, tank.getY(), tank.getX(), tank.getIndex());
 				next_block.drop = null;
 			}
 		}
