@@ -1,6 +1,7 @@
 package Tank_Game.Patterns.Factory;
 
 import Tank_Game.Patterns.AI_Composite.AICompState;
+import Tank_Game.Patterns.AI_Composite.Component;
 import Tank_Game.Patterns.AI_State.AIAim;
 import Tank_Game.Patterns.AI_State.AIDrive;
 import Tank_Game.Patterns.AI_State.AIEnemyScan;
@@ -14,7 +15,7 @@ import java.util.Stack;
 import utils.Utils;
 
 public class AI_Player extends Tank {
-	public AICompState state;
+	public Component state;
 	public int sightDist = 20;
 	public int shotChangeDist = 8;
 	public int scanDist = 7;
