@@ -32,7 +32,10 @@ public class Main extends PApplet {
 		background_box, water_box, lava_box, metal_box, wood_box,
 		drop_sammo, drop_mammo, drop_lammo,
 		drop_sarmor, drop_marmor, drop_larmor,
-		drop_shealth, drop_mhealth, drop_lhealth;
+		drop_shealth, drop_mhealth, drop_lhealth,
+		bar_health,
+		bullet_blue_big, bullet_red_big, bullet_normal_big,
+		bullet_blue_big_selected, bullet_red_big_selected, bullet_normal_big_selected;
 	public static float scale;
 	public static boolean initialized = false,
 		write_out = false, write_err = false;
@@ -84,6 +87,13 @@ public class Main extends PApplet {
 		drop_mhealth = loadImage("Drops/Health_Drop/Medium_Health.png");
 		drop_shealth = loadImage("Drops/Health_Drop/Small_Health.png");
 		t34_tank_highlited = loadImage("tank_t34_highlighted.png");
+		bar_health = loadImage("Health.png");
+		bullet_blue_big = loadImage("Bullet_Blue_3_Big.png");
+		bullet_red_big = loadImage("Bullet_Red_2_Big.png");
+		bullet_normal_big = loadImage("Bullet_Green_2_Big.png");
+		bullet_blue_big_selected = loadImage("Bullet_Blue_3_selected.png");
+		bullet_red_big_selected = loadImage("Bullet_Red_2_selected.png");
+		bullet_normal_big_selected = loadImage("Bullet_Green_2_selected.png");
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -407,10 +417,10 @@ public class Main extends PApplet {
 		fill(0xFF000000);
 		noStroke();
 		rect(800, 0, 100, 800);
-		image(bullet_normal, 810, 10, scale, scale);
-		image(bullet_blue, 810, 10 + scale, scale, scale);
-		image(bullet_red, 810, 10 + 2 * scale, scale, scale);
-		image(drop_lhealth, 810, 10 + 3 * scale, scale, scale);
+		image(bullet_normal_big, 810, 10, scale, scale);
+		image(bullet_blue_big, 810, 10 + scale, scale, scale);
+		image(bullet_red_big, 810, 10 + 2 * scale, scale, scale);
+		image(bar_health, 810, 10 + 3 * scale, scale, scale);
 		fill(0xFFFFFFFF);
 		text(normal_shots, 850, scale);
 		text(blue_shots, 850, scale * 2);
