@@ -6,7 +6,7 @@ public class Tank extends AbstractLogger {
 	public final PShape shape;
 
 	public Tank(final int ix, final int iy, final byte type) {
-		shape = Facade.createShape(Facade.getImage(type), ix, iy);
+		shape = Facade.createShape(Main.images.getImage(type), ix, iy);
 	}
 
 	public void pointLeft() {

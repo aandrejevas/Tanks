@@ -9,7 +9,7 @@ public class Bullet extends AbstractLogger {
 
 	public Bullet(final int x, final int y, final byte type) {
 		super(Main.write_err ? ErrorLogger.instance : NullLogger.instance);
-		shape = Facade.createShape(Facade.getImage(type), x, y);
+		shape = Facade.createShape(Main.images.getImage(type), x, y);
 	}
 
 	public void moveLeft() {

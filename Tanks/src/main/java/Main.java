@@ -3,9 +3,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
-
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
@@ -27,15 +25,7 @@ public class Main extends PApplet {
 	public static PApplet self;
 	public static Client this_client;
 	public static TWritable this_os;
-	public static PImage red_tank, t34_tank, t34_tank_highlited, tiger_tank, sherman_tank,
-		bullet_blue, bullet_red, bullet_normal,
-		background_box, water_box, lava_box, metal_box, wood_box,
-		drop_sammo, drop_mammo, drop_lammo,
-		drop_sarmor, drop_marmor, drop_larmor,
-		drop_shealth, drop_mhealth, drop_lhealth,
-		bar_health,
-		bullet_blue_big, bullet_red_big, bullet_normal_big,
-		bullet_blue_big_selected, bullet_red_big_selected, bullet_normal_big_selected;
+	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false,
 		write_out = false, write_err = false;
@@ -65,35 +55,7 @@ public class Main extends PApplet {
 		surface.setResizable(false);
 
 		self = this;
-		red_tank = loadImage("tank_test.png");
-		t34_tank = loadImage("t-34.png");
-		tiger_tank = loadImage("tiger-1.png");
-		sherman_tank = loadImage("sherman.png");
-		bullet_blue = loadImage("Bullet_Blue_3.png");
-		bullet_normal = loadImage("Bullet_Green_2.png");
-		bullet_red = loadImage("Bullet_Red_2.png");
-		background_box = loadImage("Backgound_box.png");
-		metal_box = loadImage("metal_box.png");
-		wood_box = loadImage("wood_box.png");
-		lava_box = loadImage("lava_box.png");
-		water_box = loadImage("pudle_box.png");
-		drop_lammo = loadImage("Drops/Ammo_Drop/Large_Ammo.png");
-		drop_mammo = loadImage("Drops/Ammo_Drop/Medium_Ammo.png");
-		drop_sammo = loadImage("Drops/Ammo_Drop/Small_Ammo.png");
-		drop_sarmor = loadImage("Drops/Armor_Drop/Small_Armor.png");
-		drop_marmor = loadImage("Drops/Armor_Drop/Medium_Armor.png");
-		drop_larmor = loadImage("Drops/Armor_Drop/Large_Armor.png");
-		drop_lhealth = loadImage("Drops/Health_Drop/Large_Health.png");
-		drop_mhealth = loadImage("Drops/Health_Drop/Medium_Health.png");
-		drop_shealth = loadImage("Drops/Health_Drop/Small_Health.png");
-		t34_tank_highlited = loadImage("tank_t34_highlighted.png");
-		bar_health = loadImage("Health.png");
-		bullet_blue_big = loadImage("Bullet_Blue_3_Big.png");
-		bullet_red_big = loadImage("Bullet_Red_2_Big.png");
-		bullet_normal_big = loadImage("Bullet_Green_2_Big.png");
-		bullet_blue_big_selected = loadImage("Bullet_Blue_3_selected.png");
-		bullet_red_big_selected = loadImage("Bullet_Red_2_selected.png");
-		bullet_normal_big_selected = loadImage("Bullet_Green_2_selected.png");
+		images = new FlyweightFactory();
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -163,10 +125,8 @@ public class Main extends PApplet {
 									last_drop = Utils.DROP_LAMMO;
 									break;
 							}
-						}else {
-							block.drop = null;
+							drawPanel();
 						}
-						drawPanel();
 						block.drop = null;
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
@@ -308,8 +268,8 @@ public class Main extends PApplet {
 //		}
 		for (int i = 0; i < edge; i++) {
 			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).shape.setTexture(Facade.getImage(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).shape.setTexture(Facade.getImage(map.background[j][i].value));
+				((TextureBlock)(map.map[j][i])).shape.setTexture(images.getImage(map.map[j][i].value));
+				((TextureBlock)(map.background[j][i])).shape.setTexture(images.getImage(map.background[j][i].value));
 			}
 		}
 	}
@@ -417,10 +377,10 @@ public class Main extends PApplet {
 		fill(0xFF000000);
 		noStroke();
 		rect(800, 0, 100, 800);
-		image(bullet_normal_big, 810, 10, scale, scale);
-		image(bullet_blue_big, 810, 10 + scale, scale, scale);
-		image(bullet_red_big, 810, 10 + 2 * scale, scale, scale);
-		image(bar_health, 810, 10 + 3 * scale, scale, scale);
+		image(images.getImage(Utils.BIG_SHOT_NORMAL), 810, 10, scale, scale);
+		image(images.getImage(Utils.BIG_SHOT_BLUE), 810, 10 + scale, scale, scale);
+		image(images.getImage(Utils.BIG_SHOT_RED), 810, 10 + 2 * scale, scale, scale);
+		image(images.getImage(Utils.HEALTH_ICON), 810, 10 + 3 * scale, scale, scale);
 		fill(0xFFFFFFFF);
 		text(normal_shots, 850, scale);
 		text(blue_shots, 850, scale * 2);

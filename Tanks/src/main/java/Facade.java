@@ -28,33 +28,6 @@ public abstract class Facade {
 		return shape;
 	}
 
-	public static PImage getImage(final byte key) {
-		switch (key) {
-			case Utils.MAP_EMPTY: return Main.background_box;
-			case Utils.MAP_BORDER: return Main.metal_box;
-			case Utils.MAP_WALL: return Main.wood_box;
-			case Utils.MAP_WATER: return Main.water_box;
-			case Utils.MAP_LAVA: return Main.lava_box;
-			case Utils.MAP_T34: return Main.t34_tank;
-			case Utils.MAP_SHERMAN: return Main.sherman_tank;
-			case Utils.MAP_T34H: return Main.t34_tank_highlited;
-			case Utils.MAP_TIGER: return Main.tiger_tank;
-			case Utils.DROP_LAMMO: return Main.drop_lammo;
-			case Utils.DROP_MAMMO: return Main.drop_mammo;
-			case Utils.DROP_SAMMO: return Main.drop_sammo;
-			case Utils.DROP_LARMOR: return Main.drop_larmor;
-			case Utils.DROP_MARMOR: return Main.drop_marmor;
-			case Utils.DROP_SARMOR: return Main.drop_sarmor;
-			case Utils.DROP_LHEALTH: return Main.drop_lhealth;
-			case Utils.DROP_MHEALTH: return Main.drop_mhealth;
-			case Utils.DROP_SHEALTH: return Main.drop_shealth;
-			case Utils.SHOT_NORMAL: return Main.bullet_normal;
-			case Utils.SHOT_RED: return Main.bullet_red;
-			case Utils.SHOT_BLUE: return Main.bullet_blue;
-			default: throw new NullPointerException();
-		}
-	}
-
 	public static void handleAdd(final Consumer<Tank> func) {
 		final int index = Utils.rbuf.getInt();
 		final Tank tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), (byte)Utils.rbuf.getInt());

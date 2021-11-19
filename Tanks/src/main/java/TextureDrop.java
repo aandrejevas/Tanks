@@ -7,6 +7,6 @@ public class TextureDrop extends Drop {
 
 	public TextureDrop(final byte name, final int value, final int x, final int y) {
 		super(name, value);
-		shape = Facade.createShape(Facade.getImage(name), x, y);
+		shape = Facade.createShape(Main.images.getImage(name), x, y);
 	}
 }
