@@ -32,7 +32,7 @@ public class Main extends PApplet {
 	public static boolean initialized = false,
 		write_out = false, write_err = false;
 	public static int move_state = 0,
-		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100,
+		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 	public static Tank this_tank;
@@ -196,6 +196,11 @@ public class Main extends PApplet {
 					case Utils.SET_HEALTH:
 						int temp = Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
+						drawPanel();
+						break;
+					case Utils.SET_ARMOR:
+						int tem = Utils.rbuf.getInt();
+						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					default: throw new AssertionError();
@@ -415,10 +420,12 @@ public class Main extends PApplet {
 		image(blue_shot_icon, 810, 10 + scale, scale, scale);
 		image(red_shot_icon, 810, 10 + 2 * scale, scale, scale);
 		image(images.getImage(Utils.HEALTH_ICON), 810, 10 + 3 * scale, scale, scale);
+		image(images.getImage(Utils.MAP_BORDER), 810, 10 + 4 * scale, scale, scale);
 		fill(0xFFFFFFFF);
 		text(normal_shots, 850, scale);
 		text(blue_shots, 850, scale * 2);
 		text(red_shots, 850, scale * 3);
 		text(health_state, 850, scale * 4);
+		text(armor_state, 850, scale * 5);
 	}
 }

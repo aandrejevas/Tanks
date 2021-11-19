@@ -15,7 +15,8 @@ import java.util.Iterator;
 public abstract class Bullet {
 
 	public static abstract class Side extends Bullet {
-		protected byte damage;
+		protected int damage;
+		protected int armor;
 		public boolean move() {
 			if (System.nanoTime() - super.start_time > super.timeout) {
 				final boolean state = moveImpl();
@@ -28,12 +29,22 @@ public abstract class Bullet {
 		}
 
 		@Override
-		protected byte doDamage() {
+		protected int doDamage() {
 			return damage;
 		}
 
-		public void setDamage(byte damage) {
+		public void setDamage(int damage) {
 			this.damage = damage;
+		}
+
+
+		public void setArmor(int armor) {
+			this.armor = armor;
+		}
+
+		@Override
+		protected int doDamageArmor() {
+			return armor;
 		}
 	}
 
@@ -178,6 +189,7 @@ public abstract class Bullet {
 			_side = new Down(tank);
 		}
 		_side.setDamage(doDamage());
+		_side.setArmor(doDamageArmor());
 		index = count++;
 		start_time = System.nanoTime();
 	}
@@ -187,29 +199,27 @@ public abstract class Bullet {
 	};
 
 	public final void callDoDamage(TWritable client, Decorator decorator){
-		if (doDamage() == Utils.SHOT_NORMAL){
-			damage(decorator, Utils.SHOT_NORMAL);
-		}else if (doDamage() == Utils.SHOT_BLUE){
-			damage(decorator, Utils.SHOT_BLUE);
-		}else if (doDamage() == Utils.SHOT_RED){
-			damage(decorator, Utils.SHOT_RED);
-		}
-		client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
-	}
-
-	public void damage(Decorator decorator, byte dmg){
-		if (dmg == Utils.SHOT_NORMAL) {
-			decorator.setHealth(decorator.getHealth() - 5);
-		}else if (dmg == Utils.SHOT_BLUE){
-			decorator.setHealth(decorator.getHealth() - 10);
-		}else if (dmg == Utils.SHOT_RED){
-			decorator.setHealth(decorator.getHealth() - 15);
+		if (decorator.getArmor() > 0){
+			System.out.println("eeeeeeeeeeee" + decorator.getArmor());
+			decorator.setArmor(decorator.getArmor() - doDamageArmor());
+			System.out.println("ffffffffffffff" + doDamageArmor());
+			client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
+		}else {
+			decorator.setHealth(decorator.getHealth() - doDamage());
+			client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
 		}
 	}
 
-	protected byte doDamage(){
-		return Utils.SHOT_NORMAL;
+
+	protected int doDamage(){
+		return 0;
 	};
+
+	protected int doDamageArmor(){
+		return 0;
+	};
+
+
 
 	protected boolean moveImpl() {
 		return _side.moveImpl();

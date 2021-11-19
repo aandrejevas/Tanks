@@ -10,8 +10,12 @@ public class NormalBullet extends Bullet {
     }
 
     @Override
-    protected byte doDamage() {
-        return Utils.SHOT_NORMAL;
+    protected int doDamage() {
+        return 5;
     }
 
+    @Override
+    protected int doDamageArmor() {
+        return 5;
+    }
 }

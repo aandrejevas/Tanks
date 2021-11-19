@@ -17,6 +17,7 @@ public class Tank implements Cloneable {
 	private int x, y;
 	private byte direction;
 	private int health = 100;
+	private int armor = 100;
 
 	public Tank(final int index, final int ally_or_enemy) {
 		this.index = index;
@@ -99,6 +100,14 @@ public class Tank implements Cloneable {
 
 	public void setHealth(int health) {
 		this.health = health;
+	}
+
+	public int getArmor() {
+		return armor;
+	}
+
+	public void setArmor(int armor) {
+		this.armor = armor;
 	}
 
 	@Override

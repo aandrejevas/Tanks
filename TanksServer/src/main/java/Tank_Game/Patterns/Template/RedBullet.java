@@ -10,8 +10,12 @@ public class RedBullet extends Bullet{
     }
 
     @Override
-    protected byte doDamage() {
-        return Utils.SHOT_RED;
+    protected int doDamage() {
+        return 15;
     }
 
+    @Override
+    protected int doDamageArmor() {
+        return 10;
+    }
 }

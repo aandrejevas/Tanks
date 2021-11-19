@@ -10,7 +10,16 @@ public class BlueBullet extends Bullet{
     }
 
     @Override
-    protected byte doDamage() {
-        return Utils.SHOT_BLUE;
+    protected int doDamage() {
+        return 10;
     }
+
+    @Override
+    protected int doDamageArmor() {
+        return 15;
     }
+}
+
+
+
+
