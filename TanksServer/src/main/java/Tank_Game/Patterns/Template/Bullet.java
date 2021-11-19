@@ -200,9 +200,7 @@ public abstract class Bullet {
 
 	public final void callDoDamage(TWritable client, Decorator decorator){
 		if (decorator.getArmor() > 0){
-			System.out.println("eeeeeeeeeeee" + decorator.getArmor());
 			decorator.setArmor(decorator.getArmor() - doDamageArmor());
-			System.out.println("ffffffffffffff" + doDamageArmor());
 			client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
 		}else {
 			decorator.setHealth(decorator.getHealth() - doDamage());
