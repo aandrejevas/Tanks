@@ -71,8 +71,10 @@ public class FlyweightFactory {
 			case Utils.BIG_SHOT_RED: return bullet_red_big;
 			case Utils.BIG_SHOT_BLUE: return bullet_blue_big;
 			case Utils.HEALTH_ICON: return bar_health;
+			case Utils.SELECTED_SHOT_NORMAL: return bullet_normal_big_selected;
+			case Utils.SELECTED_SHOT_RED: return bullet_red_big_selected;
+			case Utils.SELECTED_SHOT_BLUE: return bullet_blue_big_selected;
 			default: throw new NullPointerException();
 		}
 	}
-
 }

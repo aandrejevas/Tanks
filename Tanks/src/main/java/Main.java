@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntConsumer;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
@@ -25,6 +26,7 @@ public class Main extends PApplet {
 	public static PApplet self;
 	public static Client this_client;
 	public static TWritable this_os;
+	public static PImage normal_shot_icon, blue_shot_icon, red_shot_icon;
 	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false,
@@ -56,6 +58,9 @@ public class Main extends PApplet {
 
 		self = this;
 		images = new FlyweightFactory();
+		normal_shot_icon = images.getImage(Utils.SELECTED_SHOT_NORMAL);
+		blue_shot_icon = images.getImage(Utils.BIG_SHOT_BLUE);
+		red_shot_icon = images.getImage(Utils.BIG_SHOT_RED);
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -303,13 +308,28 @@ public class Main extends PApplet {
 				}
 				return;
 			case '1':
-				shot_type = Utils.S_SHOOT_NORMAL;
+				if (shot_type != Utils.S_SHOOT_NORMAL) {
+					resetShotIcon();
+					shot_type = Utils.S_SHOOT_NORMAL;
+					normal_shot_icon = images.getImage(Utils.SELECTED_SHOT_NORMAL);
+					drawPanel();
+				}
 				return;
 			case '2':
-				shot_type = Utils.S_SHOOT_BLUE;
+				if (shot_type != Utils.S_SHOOT_BLUE) {
+					resetShotIcon();
+					shot_type = Utils.S_SHOOT_BLUE;
+					blue_shot_icon = images.getImage(Utils.SELECTED_SHOT_BLUE);
+					drawPanel();
+				}
 				return;
 			case '3':
-				shot_type = Utils.S_SHOOT_RED;
+				if (shot_type != Utils.S_SHOOT_RED) {
+					resetShotIcon();
+					shot_type = Utils.S_SHOOT_RED;
+					red_shot_icon = images.getImage(Utils.SELECTED_SHOT_RED);
+					drawPanel();
+				}
 				return;
 			case 'O':
 			case 'o':
@@ -330,6 +350,20 @@ public class Main extends PApplet {
 					write_err = true;
 					bullets.values().forEach((final Bullet bullet) -> bullet.setLogger(ErrorLogger.instance));
 				}
+				return;
+		}
+	}
+
+	public static void resetShotIcon() {
+		switch (shot_type) {
+			case Utils.S_SHOOT_NORMAL:
+				normal_shot_icon = images.getImage(Utils.BIG_SHOT_NORMAL);
+				return;
+			case Utils.S_SHOOT_BLUE:
+				blue_shot_icon = images.getImage(Utils.BIG_SHOT_BLUE);
+				return;
+			case Utils.S_SHOOT_RED:
+				red_shot_icon = images.getImage(Utils.BIG_SHOT_RED);
 				return;
 		}
 	}
@@ -377,9 +411,9 @@ public class Main extends PApplet {
 		fill(0xFF000000);
 		noStroke();
 		rect(800, 0, 100, 800);
-		image(images.getImage(Utils.BIG_SHOT_NORMAL), 810, 10, scale, scale);
-		image(images.getImage(Utils.BIG_SHOT_BLUE), 810, 10 + scale, scale, scale);
-		image(images.getImage(Utils.BIG_SHOT_RED), 810, 10 + 2 * scale, scale, scale);
+		image(normal_shot_icon, 810, 10, scale, scale);
+		image(blue_shot_icon, 810, 10 + scale, scale, scale);
+		image(red_shot_icon, 810, 10 + 2 * scale, scale, scale);
 		image(images.getImage(Utils.HEALTH_ICON), 810, 10 + 3 * scale, scale, scale);
 		fill(0xFFFFFFFF);
 		text(normal_shots, 850, scale);
