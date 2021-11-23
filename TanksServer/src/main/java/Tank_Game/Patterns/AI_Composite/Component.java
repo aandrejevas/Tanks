@@ -12,5 +12,7 @@ public abstract class Component {
 
     public abstract boolean hasState(int state);
 
+    public abstract Component getState(int state);
+
 
 }

@@ -1,5 +1,6 @@
 package Tank_Game.Patterns.AI_State;
 
+import Tank_Game.Patterns.AI_Composite.Component;
 import Tank_Game.Patterns.Template.BlueBullet;
 import Tank_Game.Patterns.Template.Bullet;
 import Tank_Game.Main;
@@ -8,7 +9,10 @@ import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Template.NormalBullet;
 import Tank_Game.Patterns.Template.RedBullet;
 import Tank_Game.Tank;
+import processing.core.PApplet;
 import utils.Utils;
+
+import java.util.List;
 
 public class AIShoot implements AIState {
 	@Override
@@ -30,8 +34,13 @@ public class AIShoot implements AIState {
 				break;
 		}
 
+
 		if (side != 0){
-			 Main.bullets.add(new NormalBullet(ai, side));
+			AICompState ast = (AICompState)ai.state.getState(AICompState.AI_AIMED);
+			Main.bullets.add(new NormalBullet(ai, side));
+			if (ast.hasState(AICompState.AI_SHOT_CLOSE)) {
+				Main.bullets.add(new RedBullet(ai, side));
+			}
 		}
 
 		ai.state.removeState(new AICompState(AICompState.AI_AIMED));

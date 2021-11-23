@@ -31,9 +31,21 @@ public class AILockTarget implements AIState {
 			ai.fireTarget = best_tank.getCord();
 			ai.fireTargetDist = bestDist;
 			if (isAimed(ai, ai.fireTarget)) {
-				ai.state.addState(new AICompState(AICompState.AI_AIMED));
+				AICompState st = new AICompState(AICompState.AI_AIMED);
+
+				if (manhadenDistTo(ai, ai.fireTarget) <= ai.shotChangeDist) {
+					st.addState(new AICompState(AICompState.AI_SHOT_CLOSE));
+				}
+
+				st.addState(new AICompState(AICompState.AI_SHOT_NORMAL));
+
+				ai.state.addState(st);
 			}
 		}
+	}
+
+	private int manhadenDistTo(AI_Player ai, int[] to) {
+		return  Math.abs(to[0] - ai.getX()) + Math.abs(to[1] - ai.getY());
 	}
 
 	private boolean isClearSight(int[] from, int[] to) {

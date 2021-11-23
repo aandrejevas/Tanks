@@ -13,20 +13,35 @@ public class AIAim implements AIState {
 	public void perform(AI_Player ai) {
 		int dx = ai.fireTarget[0] - ai.getX();
 		int dy = ai.fireTarget[1] - ai.getY();
+		int d = 0;
 
 		if (dy < 0) {
 			ai.setMoveAlgorithm(MoveUp.instance);
+			d = Math.abs(dy);
 		} else if (dy > 0) {
 			ai.setMoveAlgorithm(MoveDown.instance);
+			d = Math.abs(dy);
 		} else if (dx < 0) {
 			ai.setMoveAlgorithm(MoveLeft.instance);
+			d = Math.abs(dx);
 		} else if (dx > 0) {
 			ai.setMoveAlgorithm(MoveRight.instance);
+			d = Math.abs(dx);
 		} else {
 			PApplet.println("aim failed");
 		}
 
-		ai.state.addState(new AICompState(AICompState.AI_AIMED));
+		AICompState st = new AICompState(AICompState.AI_AIMED);
+
+		if (d <= ai.shotChangeDist) {
+			st.addState(new AICompState(AICompState.AI_SHOT_CLOSE));
+		}
+
+		st.addState(new AICompState(AICompState.AI_SHOT_NORMAL));
+
+		ai.state.addState(st);
+
+
 		ai.move();
 	}
 }
