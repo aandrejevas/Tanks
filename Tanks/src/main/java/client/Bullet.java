@@ -1,3 +1,4 @@
+package client;
 
 import processing.core.PShape;
 import utils.AbstractLogger;

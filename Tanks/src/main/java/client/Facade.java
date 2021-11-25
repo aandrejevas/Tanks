@@ -1,3 +1,4 @@
+package client;
 
 import java.util.function.Consumer;
 import processing.core.PConstants;

@@ -1,4 +1,10 @@
+package client;
 
+import chain.English;
+import chain.French;
+import chain.Language;
+import chain.Lithuanian;
+import chain.Russian;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +28,7 @@ public class Main extends PApplet {
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
+	public static final String[] languages = new String[] { "LT", "EN", "RU", "FR" };
 
 	public static PApplet self;
 	public static Client this_client;
@@ -29,15 +36,16 @@ public class Main extends PApplet {
 	public static PImage normal_shot_icon, blue_shot_icon, red_shot_icon;
 	public static FlyweightFactory images;
 	public static float scale;
-	public static boolean initialized = false,
+	public static boolean initialized = false, show_help = false,
 		write_out = false, write_err = false;
-	public static int move_state = 0,
+	public static int move_state = 0, language = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 	public static Tank this_tank;
 	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
 	public static ArenaMap map;
+	public static Language chain;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -55,12 +63,16 @@ public class Main extends PApplet {
 		hint(DISABLE_ASYNC_SAVEFRAME);
 		//hint(DISABLE_OPENGL_ERRORS);
 		surface.setResizable(false);
+		//printArray(PFont.list());
+		textFont(createFont("Arial", 100, true));
 
 		self = this;
 		images = new FlyweightFactory();
 		normal_shot_icon = images.getImage(Utils.SELECTED_SHOT_NORMAL);
 		blue_shot_icon = images.getImage(Utils.BIG_SHOT_BLUE);
 		red_shot_icon = images.getImage(Utils.BIG_SHOT_RED);
+
+		chain = new Lithuanian(new English(new Russian(new French(null))));
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -194,12 +206,12 @@ public class Main extends PApplet {
 						bullets.remove(Utils.rbuf.getInt());
 						break;
 					case Utils.SET_HEALTH:
-						int temp = Utils.rbuf.getInt();
+						//int temp = Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					case Utils.SET_ARMOR:
-						int tem = Utils.rbuf.getInt();
+						//int tem = Utils.rbuf.getInt();
 						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
@@ -238,6 +250,10 @@ public class Main extends PApplet {
 
 			bullets.values().forEach((final Bullet bullet) -> bullet.shape.draw(g));
 			tanks.values().forEach((final Tank tank) -> tank.shape.draw(g));
+
+			if (show_help) {
+				chain.showHelp(language);
+			}
 		}
 	}
 
@@ -356,6 +372,16 @@ public class Main extends PApplet {
 					bullets.values().forEach((final Bullet bullet) -> bullet.setLogger(ErrorLogger.instance));
 				}
 				return;
+			case TAB:
+				if (!show_help) {
+					language = (language + 1) % languages.length;
+					drawPanel();
+				}
+				return;
+			case 'h':
+			case 'H':
+				show_help = !show_help;
+				return;
 		}
 	}
 
@@ -427,5 +453,7 @@ public class Main extends PApplet {
 		text(red_shots, 850, scale * 3);
 		text(health_state, 850, scale * 4);
 		text(armor_state, 850, scale * 5);
+
+		text(languages[language], 850, height - scale);
 	}
 }

@@ -1,3 +1,4 @@
+package client;
 
 import utils.ArenaMap;
 import utils.Builder;
