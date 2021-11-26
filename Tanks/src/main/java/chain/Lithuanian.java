@@ -1,7 +1,7 @@
 package chain;
 
 public class Lithuanian extends Language {
-	public static final int LT = 0;
+	public static final int LT = 1;
 
 	public Lithuanian(final Language n) {
 		super(n);
@@ -9,13 +9,10 @@ public class Lithuanian extends Language {
 
 	@Override
 	public void showHelp(final int l) {
-		switch (l) {
-			case LT:
-				show("Ačiū");
-				return;
-			default:
-				next.showHelp(l);
-				return;
+		if ((l & LT) != 0) {
+			if (!text.isEmpty()) text.append(System.lineSeparator());
+			text.append("Ačiū");
 		}
+		next.showHelp(l);
 	}
 }

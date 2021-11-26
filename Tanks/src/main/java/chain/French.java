@@ -1,7 +1,7 @@
 package chain;
 
 public class French extends Language {
-	public static final int FR = 3;
+	public static final int FR = 1 << 3;
 
 	public French(final Language n) {
 		super(n);
@@ -9,13 +9,10 @@ public class French extends Language {
 
 	@Override
 	public void showHelp(final int l) {
-		switch (l) {
-			case FR:
-				show("Merci");
-				return;
-			default:
-				next.showHelp(l);
-				return;
+		if ((l & FR) != 0) {
+			if (!text.isEmpty()) text.append(System.lineSeparator());
+			text.append("Merci");
 		}
+		next.showHelp(l);
 	}
 }

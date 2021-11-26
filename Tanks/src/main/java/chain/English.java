@@ -1,7 +1,7 @@
 package chain;
 
 public class English extends Language {
-	public static final int EN = 1;
+	public static final int EN = 1 << 1;
 
 	public English(final Language n) {
 		super(n);
@@ -9,13 +9,10 @@ public class English extends Language {
 
 	@Override
 	public void showHelp(final int l) {
-		switch (l) {
-			case EN:
-				show("Thanks");
-				return;
-			default:
-				next.showHelp(l);
-				return;
+		if ((l & EN) != 0) {
+			if (!text.isEmpty()) text.append(System.lineSeparator());
+			text.append("Thanks");
 		}
+		next.showHelp(l);
 	}
 }

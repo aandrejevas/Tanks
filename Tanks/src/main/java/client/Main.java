@@ -4,6 +4,7 @@ import chain.English;
 import chain.French;
 import chain.Language;
 import chain.Lithuanian;
+import chain.NullLanguage;
 import chain.Russian;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
@@ -36,9 +37,9 @@ public class Main extends PApplet {
 	public static PImage normal_shot_icon, blue_shot_icon, red_shot_icon;
 	public static FlyweightFactory images;
 	public static float scale;
-	public static boolean initialized = false, show_help = false,
+	public static boolean initialized = false, show_help = false, show_second_language = false,
 		write_out = false, write_err = false;
-	public static int move_state = 0, language = 0,
+	public static int move_state = 0, language = 0, language2 = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
@@ -72,7 +73,7 @@ public class Main extends PApplet {
 		blue_shot_icon = images.getImage(Utils.BIG_SHOT_BLUE);
 		red_shot_icon = images.getImage(Utils.BIG_SHOT_RED);
 
-		chain = new Lithuanian(new English(new Russian(new French(null))));
+		chain = new Lithuanian(new English(new Russian(new French(new NullLanguage()))));
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -252,7 +253,11 @@ public class Main extends PApplet {
 			tanks.values().forEach((final Tank tank) -> tank.shape.draw(g));
 
 			if (show_help) {
-				chain.showHelp(language);
+				if (show_second_language) {
+					chain.showHelp((1 << language) | (1 << language2));
+				} else {
+					chain.showHelp(1 << language);
+				}
 			}
 		}
 	}
@@ -374,13 +379,25 @@ public class Main extends PApplet {
 				return;
 			case TAB:
 				if (!show_help) {
-					language = (language + 1) % languages.length;
+					if (!show_second_language) language = (language + 1) % languages.length;
+					else {
+						language2 = (language2 + 1) % languages.length;
+						if (language2 == language) language2 = (language2 + 1) % languages.length;
+					}
 					drawPanel();
 				}
 				return;
 			case 'h':
 			case 'H':
 				show_help = !show_help;
+				return;
+			case 'l':
+			case 'L':
+				if (!show_help) {
+					if (show_second_language = !show_second_language)
+						if (language2 == language) language2 = (language2 + 1) % languages.length;
+					drawPanel();
+				}
 				return;
 		}
 	}
@@ -454,6 +471,9 @@ public class Main extends PApplet {
 		text(health_state, 850, scale * 4);
 		text(armor_state, 850, scale * 5);
 
-		text(languages[language], 850, height - scale);
+		text(languages[language], 850, height - scale * 2);
+		if (show_second_language) {
+			text(languages[language2], 850, height - scale);
+		}
 	}
 }
