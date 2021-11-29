@@ -3,6 +3,7 @@ package Tank_Game.Patterns.Iterator;
 import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
 import processing.net.Client;
+import utils.Iterator.Iterate;
 
 import java.util.Collection;
 import java.util.IdentityHashMap;

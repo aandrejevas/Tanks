@@ -1,17 +1,12 @@
 package Tank_Game.Patterns.Template;
 
 import Tank_Game.Main;
-import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Iterator.TIterator;
 import Tank_Game.Tank;
 import processing.net.Client;
-import utils.TOutputStream;
 import utils.TWritable;
 import utils.Utils;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 public abstract class Bullet {
 

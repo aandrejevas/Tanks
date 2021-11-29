@@ -12,19 +12,13 @@ import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Iterator.ClientMap;
-import Tank_Game.Patterns.Iterator.TIterator;
 import Tank_Game.Patterns.Singletone.Game_Context;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import Tank_Game.Patterns.Template.BlueBullet;
@@ -36,6 +30,7 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
+import utils.Iterator.MIterator;
 import utils.MapBackBuilder;
 import utils.TServer;
 import utils.TWritable;
@@ -119,14 +114,21 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-					for (int i = 0; i < map.edge; ++i) {
+					MIterator<ArenaBlock> iterator = map.createIterator();
+					while (iter.hasNext()){
+						if (iterator.value().drop != null) {
+							this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
+						}
+						iterator.nextIJ();
+					}
+					/*for (int i = 0; i < map.edge; ++i) {
 						final ArenaBlock[] row = map.map[i];
 						for (int j = 0; j < map.edge; ++j) {
 							if (row[j].drop != null) {
 								this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
 							}
 						}
-					}
+					}*/
 
 					clients.values().forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
