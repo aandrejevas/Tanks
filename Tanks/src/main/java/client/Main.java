@@ -239,7 +239,7 @@ public class Main extends PApplet {
 						break;
 				}
 			}
-
+			
 			for (int i = 0; i < edge; i++) {
 				for (int j = 0; j < edge; j++) {
 					((TextureBlock)(map.background[j][i])).shape.draw(g);
