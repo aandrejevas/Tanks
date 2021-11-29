@@ -207,12 +207,12 @@ public class Main extends PApplet {
 						bullets.remove(Utils.rbuf.getInt());
 						break;
 					case Utils.SET_HEALTH:
-						//int temp = Utils.rbuf.getInt();
+						int temp = Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					case Utils.SET_ARMOR:
-						//int tem = Utils.rbuf.getInt();
+						int tem = Utils.rbuf.getInt();
 						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;

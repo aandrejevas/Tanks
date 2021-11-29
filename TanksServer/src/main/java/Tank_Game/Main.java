@@ -11,6 +11,8 @@ import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
+import Tank_Game.Patterns.Iterator.ClientMap;
+import Tank_Game.Patterns.Iterator.TIterator;
 import Tank_Game.Patterns.Singletone.Game_Context;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
@@ -43,7 +45,7 @@ import utils.Utils;
 public class Main extends PApplet {
 
 	public static final int edge = 30, seed = Utils.random().nextInt();
-	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
+	//public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
 	public static final List<Bullet> bullets = new LinkedList<>();
 	public static final List<Invoker> enemies = new ArrayList<>();
 	public static final Creator ctr = new PlayerCreator();
@@ -54,6 +56,8 @@ public class Main extends PApplet {
 	public static TServer this_server;
 	public static Client available_client;
 	public static TWritable client_os;
+
+	public static ClientMap clients = new ClientMap();
 
 	//public static boolean test = false;
 	public static void main(final String[] args) {
@@ -78,6 +82,7 @@ public class Main extends PApplet {
 
 	@Override
 	public void draw() {
+
 		if (this_server.clientCount != clients.size()) {
 			clients.entrySet().removeIf((final Map.Entry<Client, Invoker> entry) -> {
 				if (!entry.getKey().active()) {
@@ -135,7 +140,7 @@ public class Main extends PApplet {
 					final Invoker invoker = new Invoker();
 					final Command cmd = new NormalShootCommand(new_player);
 					invoker.runCommand(cmd);
-					clients.put(available_client, invoker);
+					clients.add(available_client, invoker);
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:
