@@ -11,18 +11,16 @@ import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
+import Tank_Game.Patterns.Iterator.AIterator;
+import Tank_Game.Patterns.Iterator.ClientMap;
+import Tank_Game.Patterns.Iterator.EnemiesContainer;
 import Tank_Game.Patterns.Singletone.Game_Context;
 import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import Tank_Game.Patterns.Template.BlueBullet;
@@ -34,6 +32,7 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
+import utils.Iterator.MIterator;
 import utils.MapBackBuilder;
 import utils.TServer;
 import utils.TWritable;
@@ -43,9 +42,9 @@ import utils.Utils;
 public class Main extends PApplet {
 
 	public static final int edge = 30, seed = Utils.random().nextInt();
-	public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
+	//public static final Map<Client, Invoker> clients = new IdentityHashMap<>();
 	public static final List<Bullet> bullets = new LinkedList<>();
-	public static final List<Invoker> enemies = new ArrayList<>();
+	//public static final List<Invoker> enemies = new ArrayList<>();
 	public static final Creator ctr = new PlayerCreator();
 
 	public static ArenaMap map = new ArenaMap(edge, true);
@@ -54,6 +53,9 @@ public class Main extends PApplet {
 	public static TServer this_server;
 	public static Client available_client;
 	public static TWritable client_os;
+
+	public static final ClientMap clients = new ClientMap();
+	public static final EnemiesContainer enemies = new EnemiesContainer();
 
 	//public static boolean test = false;
 	public static void main(final String[] args) {
@@ -78,6 +80,7 @@ public class Main extends PApplet {
 
 	@Override
 	public void draw() {
+
 		if (this_server.clientCount != clients.size()) {
 			clients.entrySet().removeIf((final Map.Entry<Client, Invoker> entry) -> {
 				if (!entry.getKey().active()) {
@@ -90,11 +93,15 @@ public class Main extends PApplet {
 				} else return false;
 			});
 		}
-
+		AIterator<Invoker> inv = enemies.createIterator();
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
-			enemies.forEach((final Invoker tank) -> {
+			while (inv.hasNext()){
+				System.out.println(inv.value().undoTank().getIndex());
+				((AI_Player)inv.next().undoTank()).AIThink();
+			}
+			/*enemies.forEach((final Invoker tank) -> {
 				((AI_Player)tank.undoTank()).AIThink();
-			});
+			});*/
 		}
 
 		final Iterator<Bullet> iter = bullets.iterator();
@@ -114,28 +121,41 @@ public class Main extends PApplet {
 				case Utils.S_INIT_CLIENT:
 					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-					for (int i = 0; i < map.edge; ++i) {
+					MIterator<ArenaBlock> iterator = map.createIterator();
+					while (iter.hasNext()){
+						if (iterator.value().drop != null) {
+							this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
+						}
+						iterator.nextIJ();
+					}
+
+					/*for (int i = 0; i < map.edge; ++i) {
 						final ArenaBlock[] row = map.map[i];
 						for (int j = 0; j < map.edge; ++j) {
 							if (row[j].drop != null) {
 								this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
 							}
 						}
-					}
+					}*/
 
 					clients.values().forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 					});
-					enemies.forEach((final Invoker tank) -> {
+
+					inv.reset();
+					while (inv.hasNext()){
+						client_os.write(inv.value().currentDecorator().getDirection(), inv.value().currentDecorator().getIndex(), inv.value().currentDecorator().getX(), inv.value().currentDecorator().getY(), inv.next().currentDecorator().getType());
+					}
+					/*enemies.forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
-					});
+					});*/
 
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
 					this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());
 					final Invoker invoker = new Invoker();
 					final Command cmd = new NormalShootCommand(new_player);
 					invoker.runCommand(cmd);
-					clients.put(available_client, invoker);
+					clients.add(available_client, invoker);
 					break;
 				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 				case Utils.S_MOVE_LEFT:

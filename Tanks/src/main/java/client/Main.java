@@ -16,6 +16,7 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.ErrorLogger;
+import utils.Iterator.MIterator;
 import utils.NullLogger;
 import utils.OutputLogger;
 import utils.TOutputStream;
@@ -207,12 +208,12 @@ public class Main extends PApplet {
 						bullets.remove(Utils.rbuf.getInt());
 						break;
 					case Utils.SET_HEALTH:
-						//int temp = Utils.rbuf.getInt();
+						int temp = Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					case Utils.SET_ARMOR:
-						//int tem = Utils.rbuf.getInt();
+						int tem = Utils.rbuf.getInt();
 						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
@@ -238,7 +239,7 @@ public class Main extends PApplet {
 						break;
 				}
 			}
-
+			
 			for (int i = 0; i < edge; i++) {
 				for (int j = 0; j < edge; j++) {
 					((TextureBlock)(map.background[j][i])).shape.draw(g);
