@@ -1,14 +1,8 @@
 package utils.Iterator;
 
-public interface MIterator <M>{
-    boolean hasNext();
-    M nextIJ();
-
-    void reset();
+public interface MIterator <M> extends IteratorPtr<M>{
 
     int keyI();
     int keyJ();
     M value();
-    M value2();
-    M valueReverseKey();
 }

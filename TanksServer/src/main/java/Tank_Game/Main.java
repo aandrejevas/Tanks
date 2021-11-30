@@ -96,7 +96,6 @@ public class Main extends PApplet {
 		AIterator<Invoker> inv = enemies.createIterator();
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
 			while (inv.hasNext()){
-				System.out.println(inv.value().undoTank().getIndex());
 				((AI_Player)inv.next().undoTank()).AIThink();
 			}
 			/*enemies.forEach((final Invoker tank) -> {
@@ -126,17 +125,17 @@ public class Main extends PApplet {
 						if (iterator.value().drop != null) {
 							this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
 						}
-						iterator.nextIJ();
+						iterator.next();
 					}
 
-					/*for (int i = 0; i < map.edge; ++i) {
+					for (int i = 0; i < map.edge; ++i) {
 						final ArenaBlock[] row = map.map[i];
 						for (int j = 0; j < map.edge; ++j) {
 							if (row[j].drop != null) {
 								this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
 							}
 						}
-					}*/
+					}
 
 					clients.values().forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
