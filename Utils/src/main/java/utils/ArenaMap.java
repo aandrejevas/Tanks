@@ -1,6 +1,9 @@
 package utils;
 
-public class ArenaMap {
+import utils.Iterator.Iterate;
+import utils.Iterator.MIterator;
+
+public class ArenaMap implements Iterate {
 
 	public final int edge;
 	public final ArenaBlock[][] map;
@@ -53,5 +56,51 @@ public class ArenaMap {
 
 	public boolean hasEnemy(final int x, final int y) {
 		return map[y][x].value == Utils.MAP_TIGER;
+	}
+
+	@Override
+	public ArenaMapIterator createIterator() {
+		return new ArenaMapIterator();
+	}
+
+	private class ArenaMapIterator implements MIterator<ArenaBlock> {
+		private int i = 0, j = 0;
+
+		@Override
+		public boolean hasNext() {
+			return edge > i * j;
+		}
+
+		@Override
+		public ArenaBlock next() {
+			if (j < edge-1){
+				j++;
+			}else if(i < edge-1){
+				i++;
+				j = 0;
+			}
+			return map[i][j];
+		}
+
+		@Override
+		public void reset() {
+			i = 0;
+			j = 0;
+		}
+
+		@Override
+		public int keyI() {
+			return i;
+		}
+
+		@Override
+		public int keyJ() {
+			return j;
+		}
+
+		@Override
+		public ArenaBlock value() {
+			return map[i][j];
+		}
 	}
 }
