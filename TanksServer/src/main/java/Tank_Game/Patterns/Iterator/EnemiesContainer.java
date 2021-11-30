@@ -42,10 +42,10 @@ public class EnemiesContainer implements Iterate<AIterator> {
 
     @Override
     public AIterator createIterator() {
-        return new MapIterator();
+        return new ContainerIterator();
     }
 
-    private class MapIterator implements AIterator<Invoker> {
+    private class ContainerIterator implements AIterator<Invoker> {
 
         private int i = 0;
         private Invoker inv = enemies[0];

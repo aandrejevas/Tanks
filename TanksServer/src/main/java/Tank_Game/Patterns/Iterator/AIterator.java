@@ -1,9 +1,7 @@
 package Tank_Game.Patterns.Iterator;
 
-public interface AIterator<T> {
-    boolean hasNext();
-    T next();
-    void reset();
+import utils.Iterator.IteratorPtr;
 
+public interface AIterator<T> extends IteratorPtr<T> {
     T value();
 }

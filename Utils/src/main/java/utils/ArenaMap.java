@@ -72,7 +72,7 @@ public class ArenaMap implements Iterate {
 		}
 
 		@Override
-		public ArenaBlock nextIJ() {
+		public ArenaBlock next() {
 			if (j < edge-1){
 				j++;
 			}else if(i < edge-1){
@@ -101,15 +101,6 @@ public class ArenaMap implements Iterate {
 		@Override
 		public ArenaBlock value() {
 			return map[i][j];
-		}
-		@Override
-		public ArenaBlock value2() {
-			return background[i][j];
-		}
-
-		@Override
-		public ArenaBlock valueReverseKey() {
-			return map[j][i];
 		}
 	}
 }
