@@ -12,6 +12,10 @@ public class Game_Context
 
     private int enemies_count = 0;
 
+    private int ai_set = -1;
+
+    private int kill_server_set = 0;
+
     private static Game_Context instance;
 
     private Game_Context( ) {}
@@ -24,6 +28,16 @@ public class Game_Context
         }
         return instance;
     }
+
+    public synchronized void setProp(String key, int val)
+    {
+        if (key.equals("ai")){
+            this.ai_set = val;
+        } else if (key.equals("kill")){
+            this.kill_server_set = val;
+        }
+    }
+
 
     public int Player_Count(){
         player_count++;
@@ -46,5 +60,13 @@ public class Game_Context
 
     public int getEnemies_count(){
         return enemies_count;
+    }
+
+    public int getAi_set() {
+        return ai_set;
+    }
+
+    public int getKill_server_set() {
+        return kill_server_set;
     }
 }
