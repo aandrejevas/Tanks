@@ -36,8 +36,7 @@ public class Interpreter extends Thread{
                 }
             }
             fr.close();    //closes the stream and release the rsesources
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             return;
         }
     }
