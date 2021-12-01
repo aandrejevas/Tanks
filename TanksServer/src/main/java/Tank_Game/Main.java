@@ -11,6 +11,7 @@ import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
+import Tank_Game.Patterns.Interpreter.Interpreter;
 import Tank_Game.Patterns.Iterator.AIterator;
 import Tank_Game.Patterns.Iterator.ClientMap;
 import Tank_Game.Patterns.Iterator.EnemiesContainer;
@@ -19,6 +20,7 @@ import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
+
 import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.function.Consumer;
@@ -68,6 +70,8 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
+		Interpreter interpreter = new Interpreter();
+		interpreter.start();
 		surface.setVisible(false);
 		this_server = new TServer(this, 12345);
 
@@ -80,6 +84,10 @@ public class Main extends PApplet {
 
 	@Override
 	public void draw() {
+
+		if (Game_Context.getInstance().getKill_server_set() != 0) {
+			exit();
+		}
 
 		if (this_server.clientCount != clients.size()) {
 			clients.entrySet().removeIf((final Map.Entry<Client, Invoker> entry) -> {
@@ -198,13 +206,27 @@ public class Main extends PApplet {
 				}
 				default: throw new AssertionError();
 			}
+
+			int new_ai = -1;
+			if (Game_Context.getInstance().getAi_set() != -1) {
+				new_ai = Game_Context.getInstance().getAi_set();
+				Game_Context.getInstance().setProp("ai", -1);
+			}
 			if (clients.size() > enemies.size()) {
-				final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
-				this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
-				final Invoker invoker = new Invoker();
-				final Command cmd = new NormalShootCommand(new_player);
-				invoker.runCommand(cmd);
-				enemies.add(invoker);
+				new_ai = clients.size();
+			}
+
+			if (new_ai != -1 && new_ai < enemies.size()) {
+				println("Killing ai is not yet implemented");
+			} else if (new_ai != -1 && new_ai > enemies.size()){
+				while (new_ai > enemies.size()) {
+					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
+					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
+					final Invoker invoker = new Invoker();
+					final Command cmd = new NormalShootCommand(new_player);
+					invoker.runCommand(cmd);
+					enemies.add(invoker);
+				}
 			}
 		}
 		//generate drops randomly
