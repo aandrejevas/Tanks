@@ -509,7 +509,7 @@ public class Main extends PApplet {
 		image(blue_shot_icon, 810, 10 + scale, scale, scale);
 		image(red_shot_icon, 810, 10 + 2 * scale, scale, scale);
 		image(images.getImage(Utils.HEALTH_ICON), 810, 10 + 3 * scale, scale, scale);
-		image(images.getImage(Utils.MAP_BORDER), 810, 10 + 4 * scale, scale, scale);
+		image(images.getImage(Utils.SHIELD_ICON), 810, 10 + 4 * scale, scale, scale);
 		fill(0xFFFFFFFF);
 		text(normal_shots, 850, scale);
 		text(blue_shots, 850, scale * 2);

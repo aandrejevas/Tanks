@@ -10,7 +10,7 @@ public class FlyweightFactory {
 		drop_sammo, drop_mammo, drop_lammo,
 		drop_sarmor, drop_marmor, drop_larmor,
 		drop_shealth, drop_mhealth, drop_lhealth,
-		bar_health,
+		bar_health, bar_shield,
 		bullet_blue_big, bullet_red_big, bullet_normal_big,
 		bullet_blue_big_selected, bullet_red_big_selected, bullet_normal_big_selected;
 
@@ -37,6 +37,7 @@ public class FlyweightFactory {
 		drop_shealth = new ProxyImage("Drops/Health_Drop/Small_Health.png");
 		t34_tank_highlited = new ProxyImage("tank_t34_highlighted.png");
 		bar_health = new ProxyImage("Health.png");
+		bar_shield = new ProxyImage("Shield.png");
 		bullet_blue_big = new ProxyImage("Bullet_Blue_3_Big.png");
 		bullet_red_big = new ProxyImage("Bullet_Red_2_Big.png");
 		bullet_normal_big = new ProxyImage("Bullet_Green_2_Big.png");
@@ -72,6 +73,7 @@ public class FlyweightFactory {
 			case Utils.BIG_SHOT_RED: return bullet_red_big.get();
 			case Utils.BIG_SHOT_BLUE: return bullet_blue_big.get();
 			case Utils.HEALTH_ICON: return bar_health.get();
+			case Utils.SHIELD_ICON: return bar_shield.get();
 			case Utils.SELECTED_SHOT_NORMAL: return bullet_normal_big_selected.get();
 			case Utils.SELECTED_SHOT_RED: return bullet_red_big_selected.get();
 			case Utils.SELECTED_SHOT_BLUE: return bullet_blue_big_selected.get();

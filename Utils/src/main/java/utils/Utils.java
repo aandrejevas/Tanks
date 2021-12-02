@@ -34,7 +34,7 @@ public abstract class Utils {
 		DROP_SAMMO = 24, DROP_MAMMO = 25, DROP_LAMMO = 26,
 		SHOT_NORMAL = 27, SHOT_RED = 28, SHOT_BLUE = 29,
 		BIG_SHOT_NORMAL = 30, BIG_SHOT_RED = 31, BIG_SHOT_BLUE = 32,
-		HEALTH_ICON = 33,
+		HEALTH_ICON = 33, SHIELD_ICON = 37,
 		SELECTED_SHOT_NORMAL = 34, SELECTED_SHOT_RED = 35, SELECTED_SHOT_BLUE = 36;
 
 	public static final Random random = new Random();
