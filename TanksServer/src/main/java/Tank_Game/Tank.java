@@ -1,6 +1,7 @@
 package Tank_Game;
 
 import Tank_Game.Patterns.Strategy.MoveAlgorithm;
+import mediator.Mediator;
 import utils.ArenaBlock;
 import utils.Utils;
 
@@ -8,20 +9,23 @@ public class Tank implements Cloneable {
 
 	public static final byte LEFT = Utils.ADD_LEFT_TANK, RIGHT = Utils.ADD_RIGHT_TANK, UP = Utils.ADD_UP_TANK, DOWN = Utils.ADD_DOWN_TANK;
 
-	private int index;
+	protected final Mediator mediator;
 
-	private int type;
-	private byte shotType = Utils.SHOT_NORMAL;
+	protected final int index;
 
-	private MoveAlgorithm moveAlgorithm;
-	private int x, y;
-	private byte direction;
-	private int health = 100;
-	private int armor = 100;
+	protected final int type;
+	protected byte shotType = Utils.SHOT_NORMAL;
 
-	public Tank(final int index, final int ally_or_enemy) {
-		this.index = index;
-		this.type = ally_or_enemy;
+	protected MoveAlgorithm moveAlgorithm;
+	protected int x, y;
+	protected byte direction;
+	protected int health = 100;
+	protected int armor = 100;
+
+	public Tank(final int i, final int ally_or_enemy, final Mediator m) {
+		index = i;
+		type = ally_or_enemy;
+		mediator = m;
 		do {
 			x = Utils.random().nextInt(Main.edge);
 			y = Utils.random().nextInt(Main.edge);
@@ -30,9 +34,6 @@ public class Tank implements Cloneable {
 		block.value = Utils.MAP_PLAYER;
 		block.obstacle = true;
 		direction = UP;
-	}
-
-	public Tank() {
 	}
 
 	public MoveAlgorithm getMoveAlgorithm() {
@@ -110,6 +111,10 @@ public class Tank implements Cloneable {
 		this.armor = armor;
 	}
 
+	public Mediator getMediator() {
+		return mediator;
+	}
+
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		final Tank tank = (Tank)super.clone();
@@ -123,5 +128,9 @@ public class Tank implements Cloneable {
 		tank.y = y;
 		tank.direction = direction;*/
 		return tank;
+	}
+
+	public void sendMessage(final byte[] data, final int offset, final int length) {
+		mediator.sendMessage(data, offset, length);
 	}
 }

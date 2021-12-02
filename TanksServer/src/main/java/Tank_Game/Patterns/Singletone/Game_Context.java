@@ -1,72 +1,62 @@
 package Tank_Game.Patterns.Singletone;
 
-public class Game_Context
-{
-    private int seed;
+import Tank_Game.Main;
 
-    private int edge;
+public class Game_Context {
+	private int seed, edge, tic_time, player_count = 0, enemies_count = 0, ai_set = -1, kill_server_set = 0;
+	private static Game_Context instance;
 
-    private int tic_time;
+	private Game_Context() {
+	}
 
-    private int player_count = 0;
+	public static synchronized Game_Context getInstance() {
+		if (instance == null) {
+			instance = new Game_Context();
+		}
+		return instance;
+	}
 
-    private int enemies_count = 0;
+	public synchronized void setProp(String key, int val) {
+		if (key.equals("ai")) {
+			this.ai_set = val;
+		} else if (key.equals("kill")) {
+			this.kill_server_set = val;
+		}
+	}
 
-    private int ai_set = -1;
+	public int Player_Count() {
+		return ++player_count;
+	}
 
-    private int kill_server_set = 0;
+	public int getPlayer_count() {
+		return player_count;
+	}
 
-    private static Game_Context instance;
+	public int Set_Enemy() {
+		return ++enemies_count;
+	}
 
-    private Game_Context( ) {}
+	public int Remove_Enemy() {
+		return --enemies_count;
+	}
 
-    public static synchronized Game_Context getInstance( )
-    {
-        if (instance == null)
-        {
-            instance = new Game_Context();
-        }
-        return instance;
-    }
+	public int getEnemies_count() {
+		return enemies_count;
+	}
 
-    public synchronized void setProp(String key, int val)
-    {
-        if (key.equals("ai")){
-            this.ai_set = val;
-        } else if (key.equals("kill")){
-            this.kill_server_set = val;
-        }
-    }
+	public int getAi_set() {
+		return ai_set;
+	}
 
+	public int getKill_server_set() {
+		return kill_server_set;
+	}
 
-    public int Player_Count(){
-        player_count++;
-        return player_count;
-    }
+	public void receiveMessage(final byte[] data, final int offset, final int length) {
+		Main.this_server.write(data, offset, length);
+	}
 
-    public int getPlayer_count(){
-        return player_count;
-    }
-
-    public int Set_Enemy(){
-        enemies_count++;
-        return enemies_count;
-    }
-
-    public int Remove_Enemy(){
-        enemies_count++;
-        return enemies_count;
-    }
-
-    public int getEnemies_count(){
-        return enemies_count;
-    }
-
-    public int getAi_set() {
-        return ai_set;
-    }
-
-    public int getKill_server_set() {
-        return kill_server_set;
-    }
+	public void receiveMessage(final byte[] data) {
+		Main.this_server.write(data, 0, data.length);
+	}
 }

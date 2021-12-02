@@ -12,9 +12,14 @@ import Tank_Game.Patterns.AI_State.AIShoot;
 import Tank_Game.Patterns.Strategy.MoveUp;
 import Tank_Game.Tank;
 import java.util.Stack;
+import mediator.Mediator;
 import utils.Utils;
 
 public class AI_Player extends Tank {
+	private static final byte[] message = new byte[] { Utils.MESSAGE, 0x00, 0x00, 0x00, 0x07, '[', 'A', 'I', ']', ' ', '<', '3' };
+
+	private int shots_shot = 0;
+
 	public Component state;
 	public int sightDist = 20;
 	public int shotChangeDist = 8;
@@ -25,10 +30,10 @@ public class AI_Player extends Tank {
 
 	public int fireTargetDist = 0;
 
-	public Stack<Integer[]> path = new Stack<Integer[]>();
+	public Stack<Integer[]> path = new Stack<>();
 
-	public AI_Player(int playerIndex) {
-		super(playerIndex, Utils.MAP_TIGER);
+	public AI_Player(final int playerIndex, final Mediator m) {
+		super(playerIndex, Utils.MAP_TIGER, m);
 		this.setMoveAlgorithm(MoveUp.instance);
 		this.state = new AICompState();
 	}
@@ -43,6 +48,9 @@ public class AI_Player extends Tank {
 		(new AILockTarget()).perform(this);
 
 		if (state.hasState(AICompState.AI_AIMED)) {
+			if (++shots_shot % 10 == 0) {
+				mediator.sendMessage(message);
+			}
 			(new AIShoot()).perform(this);
 			return;
 		} else if (state.hasState(AICompState.AI_TARGET_LOCKED)) {

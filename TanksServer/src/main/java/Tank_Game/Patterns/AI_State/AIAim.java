@@ -31,16 +31,15 @@ public class AIAim implements AIState {
 			PApplet.println("aim failed");
 		}
 
-		AICompState st = new AICompState(AICompState.AI_AIMED);
+		final AICompState st = new AICompState(AICompState.AI_AIMED);
 
 		if (d <= ai.shotChangeDist) {
 			st.addState(new AICompState(AICompState.AI_SHOT_CLOSE));
+		} else {
+			st.addState(new AICompState(AICompState.AI_SHOT_NORMAL));
 		}
 
-		st.addState(new AICompState(AICompState.AI_SHOT_NORMAL));
-
 		ai.state.addState(st);
-
 
 		ai.move();
 	}

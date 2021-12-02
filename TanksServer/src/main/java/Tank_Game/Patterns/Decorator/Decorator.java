@@ -4,10 +4,11 @@ import Tank_Game.Patterns.Strategy.MoveAlgorithm;
 import Tank_Game.Tank;
 
 public abstract class Decorator extends Tank implements Cloneable {
-	protected Tank wrapee;
+	protected final Tank wrapee;
 
-	public Decorator(final Tank wrapee) {
-		this.wrapee = wrapee;
+	public Decorator(final Tank tank) {
+		super(tank.getIndex(), tank.getType(), tank.getMediator());
+		wrapee = tank;
 	}
 
 	@Override
@@ -97,7 +98,7 @@ public abstract class Decorator extends Tank implements Cloneable {
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		Decorator decorator = (Decorator)super.clone();
+		final Decorator decorator = (Decorator)super.clone();
 		//decorator.wrapee = (Tank)this.wrapee.clone();
 
 		decorator.setShotType(this.getShotType());

@@ -10,7 +10,7 @@ import processing.core.PApplet;
 
 public class AIDrive implements AIState {
 	@Override
-	public void perform(AI_Player ai) {
+	public void perform(final AI_Player ai) {
 		if (ai.path.empty()) {
 //            println("stack empty");
 			ai.state.removeState(new AICompState(AICompState.AI_ROAM_FOUND));
@@ -18,10 +18,10 @@ public class AIDrive implements AIState {
 			return;
 		}
 
-		Integer[] next = ai.path.pop();
+		final Integer[] next = ai.path.pop();
 
-		int dy = next[1] - ai.getY();
-		int dx = next[0] - ai.getX();
+		final int dy = next[1] - ai.getY();
+		final int dx = next[0] - ai.getX();
 
 		if (dy == -1) {
 			ai.setMoveAlgorithm(MoveUp.instance);

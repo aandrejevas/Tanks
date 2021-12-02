@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import mediator.Mediator;
 import processing.core.PApplet;
 import processing.net.Client;
 import utils.ArenaBlock;
@@ -49,6 +50,9 @@ public class Main extends PApplet {
 	public static final List<Bullet> bullets = new LinkedList<>();
 	//public static final List<Invoker> enemies = new ArrayList<>();
 	public static final Creator ctr = new PlayerCreator();
+	public static final Mediator mediator = new Mediator(Game_Context.getInstance());
+	private static final byte[] message = new byte[] { Utils.MESSAGE, 0x00, 0x00, 0x00, 0x13,
+		'[', 'S', 'E', 'R', 'V', 'E', 'R', ']', ' ', 'N', 'E', 'W', ' ', 'P', 'L', 'A', 'Y', 'E', 'R' };
 
 	public static ArenaMap map = new ArenaMap(edge, true);
 	public static Game_Context game_context;
@@ -159,12 +163,13 @@ public class Main extends PApplet {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 					});*/
 
-						final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
+						final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true, mediator);
 						this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());
 						final Invoker invoker = new Invoker();
-						final Command cmd = new NormalShootCommand(new_player);
-						invoker.runCommand(cmd);
+						invoker.runCommand(new NormalShootCommand(new_player));
 						clients.add(available_client, invoker);
+
+						mediator.sendMessage(message);
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.S_MOVE_LEFT:
@@ -208,7 +213,7 @@ public class Main extends PApplet {
 					}
 					case Utils.S_MESSAGE: {
 						final int length = Utils.rbuf.getInt();
-						this_server.write(Utils.rbuf.array(), Utils.rbuf.position() - 5, length + 5);
+						clients.get(available_client).currentDecorator().sendMessage(Utils.rbuf.array(), Utils.rbuf.position() - 5, length + 5);
 						Utils.rbuf.position(Utils.rbuf.position() + length);
 						break;
 					}
@@ -229,7 +234,7 @@ public class Main extends PApplet {
 				println("Killing ai is not yet implemented");
 			} else if (new_ai != -1 && new_ai > enemies.size()) {
 				while (new_ai > enemies.size()) {
-					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
+					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false, mediator);
 					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
 					final Invoker invoker = new Invoker();
 					final Command cmd = new NormalShootCommand(new_player);
