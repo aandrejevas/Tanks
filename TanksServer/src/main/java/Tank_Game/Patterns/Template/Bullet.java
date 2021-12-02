@@ -13,6 +13,7 @@ public abstract class Bullet {
 	public static abstract class Side extends Bullet {
 		protected int damage;
 		protected int armor;
+
 		public boolean move() {
 			if (System.nanoTime() - super.start_time > super.timeout) {
 				final boolean state = moveImpl();
@@ -32,7 +33,6 @@ public abstract class Bullet {
 		public void setDamage(int damage) {
 			this.damage = damage;
 		}
-
 
 		public void setArmor(int armor) {
 			this.armor = armor;
@@ -58,8 +58,8 @@ public abstract class Bullet {
 				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
 				while (iterator.hasNext()) {
 
-					if (iterator.next().getY() == y && iterator.currentValue().getX() == x-1){
-						callDoDamage((TWritable) iterator.currentKey().output, iterator.currentValue());
+					if (iterator.next().getY() == y && iterator.currentValue().getX() == x - 1) {
+						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
 						break;
 					}
 				}
@@ -85,8 +85,8 @@ public abstract class Bullet {
 				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
 				while (iterator.hasNext()) {
 
-					if (iterator.next().getY() == y && iterator.currentValue().getX() == x+1){
-						callDoDamage((TWritable) iterator.currentKey().output, iterator.currentValue());
+					if (iterator.next().getY() == y && iterator.currentValue().getX() == x + 1) {
+						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
 						break;
 					}
 				}
@@ -112,8 +112,8 @@ public abstract class Bullet {
 				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
 				while (iterator.hasNext()) {
 
-					if (iterator.next().getY() == y-1 && iterator.currentValue().getX() == x){
-						callDoDamage((TWritable) iterator.currentKey().output, iterator.currentValue());
+					if (iterator.next().getY() == y - 1 && iterator.currentValue().getX() == x) {
+						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
 						break;
 					}
 				}
@@ -139,8 +139,8 @@ public abstract class Bullet {
 				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
 				while (iterator.hasNext()) {
 
-					if (iterator.next().getY() == y + 1 && iterator.currentValue().getX() == x){
-						callDoDamage((TWritable) iterator.currentKey().output, iterator.currentValue());
+					if (iterator.next().getY() == y + 1 && iterator.currentValue().getX() == x) {
+						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
 						break;
 					}
 				}
@@ -168,15 +168,22 @@ public abstract class Bullet {
 		start_time = System.nanoTime();
 	}
 
-	public Bullet(Tank tank, int side) {
-		if (side == 1){
-			_side = new Left(tank);
-		}else if(side == 2){
-			_side = new Right(tank);
-		}else if (side == 3){
-			_side = new Up(tank);
-		}else if (side == 4) {
-			_side = new Down(tank);
+	public Bullet(final Tank tank, final int side) {
+		switch (side) {
+			case 1:
+				_side = new Left(tank);
+				break;
+			case 2:
+				_side = new Right(tank);
+				break;
+			case 3:
+				_side = new Up(tank);
+				break;
+			case 4:
+				_side = new Down(tank);
+				break;
+			default:
+				break;
 		}
 		_side.setDamage(doDamage());
 		_side.setArmor(doDamageArmor());
@@ -184,28 +191,33 @@ public abstract class Bullet {
 		start_time = System.nanoTime();
 	}
 
-	public boolean move(){
+	public boolean move() {
 		return false;
-	};
+	}
 
-	public final void callDoDamage(TWritable client, Decorator decorator){
-		if (decorator.getArmor() > 0){
+	;
+
+	public final void callDoDamage(TWritable client, Decorator decorator) {
+		if (decorator.getArmor() > 0) {
 			decorator.setArmor(decorator.getArmor() - doDamageArmor());
 			client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
-		}else {
+		} else {
 			decorator.setHealth(decorator.getHealth() - doDamage());
 			client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
 		}
 	}
 
-
-	protected int doDamage(){
+	protected int doDamage() {
 		return 0;
-	};
+	}
 
-	protected int doDamageArmor(){
+	;
+
+	protected int doDamageArmor() {
 		return 0;
-	};
+	}
+
+	;
 
 	protected boolean moveImpl() {
 		return _side.moveImpl();

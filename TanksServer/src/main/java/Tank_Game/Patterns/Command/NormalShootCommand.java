@@ -24,12 +24,12 @@ public class NormalShootCommand extends Command {
 			} catch (final CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Name " + this.target.getIndex() + " type " + (this.target.getType() == 0 ? "ally" : "Enemy"));
+			/*System.out.println("Name " + this.target.getIndex() + " type " + (this.target.getType() == 0 ? "ally" : "Enemy"));
 			System.out.println("Decorator hashcode " + System.identityHashCode(this.target));
 			System.out.println("Cloned decorator hashcode " + System.identityHashCode(this.laterDecorator) + "\n");
 
 			System.out.println("Tank hashcode " + System.identityHashCode(this.target.getTank()));
-			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator.getTank()) + "\n");
+			System.out.println("Cloned Tank hashcode " + System.identityHashCode(this.laterDecorator.getTank()) + "\n");*/
 			return this.target;
 		}
 		try {

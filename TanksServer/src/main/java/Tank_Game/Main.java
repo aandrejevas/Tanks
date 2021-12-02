@@ -20,15 +20,16 @@ import Tank_Game.Patterns.Strategy.MoveDown;
 import Tank_Game.Patterns.Strategy.MoveLeft;
 import Tank_Game.Patterns.Strategy.MoveRight;
 import Tank_Game.Patterns.Strategy.MoveUp;
-
-import java.lang.invoke.MethodHandles;
-import java.util.*;
-import java.util.function.Consumer;
-
 import Tank_Game.Patterns.Template.BlueBullet;
 import Tank_Game.Patterns.Template.Bullet;
 import Tank_Game.Patterns.Template.NormalBullet;
 import Tank_Game.Patterns.Template.RedBullet;
+import java.lang.invoke.MethodHandles;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.net.Client;
 import utils.ArenaBlock;
@@ -103,7 +104,7 @@ public class Main extends PApplet {
 		}
 		AIterator<Invoker> inv = enemies.createIterator();
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
-			while (inv.hasNext()){
+			while (inv.hasNext()) {
 				((AI_Player)inv.next().undoTank()).AIThink();
 			}
 			/*enemies.forEach((final Invoker tank) -> {
@@ -121,91 +122,99 @@ public class Main extends PApplet {
 			}
 		}
 
-
 		while ((available_client = this_server.available()) != null) {
 			client_os = (TWritable)available_client.output;
-			switch (available_client.read()) {
-				case Utils.S_INIT_CLIENT:
-					client_os.write(Utils.INITIALIZE_GRID, edge, seed);
+			Utils.rbuf.rewind().limit(available_client.readBytes(Utils.rbuf.array()));
+			do {
+				switch (Utils.rbuf.get()) {
+					case Utils.S_INIT_CLIENT:
+						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-					MIterator<ArenaBlock> iterator = map.createIterator();
-					while (iter.hasNext()){
-						if (iterator.value().drop != null) {
-							this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
+						MIterator<ArenaBlock> iterator = map.createIterator();
+						while (iter.hasNext()) {
+							if (iterator.value().drop != null) {
+								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
+							}
+							iterator.next();
 						}
-						iterator.next();
-					}
 
-					for (int i = 0; i < map.edge; ++i) {
-						final ArenaBlock[] row = map.map[i];
-						for (int j = 0; j < map.edge; ++j) {
-							if (row[j].drop != null) {
-								this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
+						for (int i = 0; i < map.edge; ++i) {
+							final ArenaBlock[] row = map.map[i];
+							for (int j = 0; j < map.edge; ++j) {
+								if (row[j].drop != null) {
+									this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
+								}
 							}
 						}
-					}
 
-					clients.values().forEach((final Invoker tank) -> {
-						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
-					});
+						clients.values().forEach((final Invoker tank) -> {
+							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
+						});
 
-					inv.reset();
-					while (inv.hasNext()){
-						client_os.write(inv.value().currentDecorator().getDirection(), inv.value().currentDecorator().getIndex(), inv.value().currentDecorator().getX(), inv.value().currentDecorator().getY(), inv.next().currentDecorator().getType());
-					}
-					/*enemies.forEach((final Invoker tank) -> {
+						inv.reset();
+						while (inv.hasNext()) {
+							client_os.write(inv.value().currentDecorator().getDirection(), inv.value().currentDecorator().getIndex(), inv.value().currentDecorator().getX(), inv.value().currentDecorator().getY(), inv.next().currentDecorator().getType());
+						}
+						/*enemies.forEach((final Invoker tank) -> {
 						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 					});*/
 
-					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
-					this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());
-					final Invoker invoker = new Invoker();
-					final Command cmd = new NormalShootCommand(new_player);
-					invoker.runCommand(cmd);
-					clients.add(available_client, invoker);
-					break;
-				// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
-				case Utils.S_MOVE_LEFT:
-					handleMove((final Decorator tank) -> {
-						tank.setMoveAlgorithm(MoveLeft.instance);
-					});
-					break;
-				case Utils.S_MOVE_RIGHT:
-					handleMove((final Decorator tank) -> {
-						tank.setMoveAlgorithm(MoveRight.instance);
-					});
-					break;
-				case Utils.S_MOVE_UP:
-					handleMove((final Decorator tank) -> {
-						tank.setMoveAlgorithm(MoveUp.instance);
-					});
-					break;
-				case Utils.S_MOVE_DOWN:
-					handleMove((final Decorator tank) -> {
-						tank.setMoveAlgorithm(MoveDown.instance);
-					});
-					break;
-				case Utils.S_SHOOT_NORMAL: {
-					final Tank tank = clients.get(available_client).undoTank();
-					shoot(tank, Utils.S_SHOOT_NORMAL);
-					break;
-				}
-				case Utils.S_SHOOT_BLUE: {
-					final Tank tank = clients.get(available_client).currentDecorator();
-					if (tank.getShotType() == Utils.SHOT_BLUE) {
-						shoot(tank, Utils.S_SHOOT_BLUE);
+						final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true);
+						this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());
+						final Invoker invoker = new Invoker();
+						final Command cmd = new NormalShootCommand(new_player);
+						invoker.runCommand(cmd);
+						clients.add(available_client, invoker);
+						break;
+					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
+					case Utils.S_MOVE_LEFT:
+						handleMove((final Decorator tank) -> {
+							tank.setMoveAlgorithm(MoveLeft.instance);
+						});
+						break;
+					case Utils.S_MOVE_RIGHT:
+						handleMove((final Decorator tank) -> {
+							tank.setMoveAlgorithm(MoveRight.instance);
+						});
+						break;
+					case Utils.S_MOVE_UP:
+						handleMove((final Decorator tank) -> {
+							tank.setMoveAlgorithm(MoveUp.instance);
+						});
+						break;
+					case Utils.S_MOVE_DOWN:
+						handleMove((final Decorator tank) -> {
+							tank.setMoveAlgorithm(MoveDown.instance);
+						});
+						break;
+					case Utils.S_SHOOT_NORMAL: {
+						final Tank tank = clients.get(available_client).undoTank();
+						shoot(tank, Utils.S_SHOOT_NORMAL);
+						break;
 					}
-					break;
-				}
-				case Utils.S_SHOOT_RED: {
-					final Tank tank = clients.get(available_client).currentDecorator();
-					if (tank.getShotType() == Utils.SHOT_RED) {
-						shoot(tank, Utils.S_SHOOT_RED);
+					case Utils.S_SHOOT_BLUE: {
+						final Tank tank = clients.get(available_client).currentDecorator();
+						if (tank.getShotType() == Utils.SHOT_BLUE) {
+							shoot(tank, Utils.S_SHOOT_BLUE);
+						}
+						break;
 					}
-					break;
+					case Utils.S_SHOOT_RED: {
+						final Tank tank = clients.get(available_client).currentDecorator();
+						if (tank.getShotType() == Utils.SHOT_RED) {
+							shoot(tank, Utils.S_SHOOT_RED);
+						}
+						break;
+					}
+					case Utils.S_MESSAGE: {
+						final int length = Utils.rbuf.getInt();
+						this_server.write(Utils.rbuf.array(), Utils.rbuf.position() - 5, length + 5);
+						Utils.rbuf.position(Utils.rbuf.position() + length);
+						break;
+					}
+					default: throw new AssertionError();
 				}
-				default: throw new AssertionError();
-			}
+			} while (Utils.rbuf.hasRemaining());
 
 			int new_ai = -1;
 			if (Game_Context.getInstance().getAi_set() != -1) {
@@ -218,7 +227,7 @@ public class Main extends PApplet {
 
 			if (new_ai != -1 && new_ai < enemies.size()) {
 				println("Killing ai is not yet implemented");
-			} else if (new_ai != -1 && new_ai > enemies.size()){
+			} else if (new_ai != -1 && new_ai > enemies.size()) {
 				while (new_ai > enemies.size()) {
 					final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), false);
 					this_server.write(Utils.ADD_UP_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY(), new_player.getType());
@@ -317,8 +326,8 @@ public class Main extends PApplet {
 				break;
 		}
 
-		if (side != 0){
-			switch (type){
+		if (side != 0) {
+			switch (type) {
 				case Utils.S_SHOOT_NORMAL:
 					bullets.add(new NormalBullet(tank, side));
 					break;

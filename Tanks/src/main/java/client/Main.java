@@ -7,8 +7,12 @@ import chain.Lithuanian;
 import chain.NullLanguage;
 import chain.Russian;
 import java.lang.invoke.MethodHandles;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.function.IntConsumer;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -16,7 +20,6 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.ErrorLogger;
-import utils.Iterator.MIterator;
 import utils.NullLogger;
 import utils.OutputLogger;
 import utils.TOutputStream;
@@ -31,6 +34,8 @@ public class Main extends PApplet {
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
 	public static final String[] languages = new String[] { "LT", "EN", "RU", "FR" };
+	public static final CharBuffer message = CharBuffer.allocate(500);
+	public static final Queue<String> messages = new ArrayDeque<>();
 
 	public static PApplet self;
 	public static Client this_client;
@@ -39,7 +44,7 @@ public class Main extends PApplet {
 	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false, show_help = false, show_second_language = false,
-		write_out = false, write_err = false;
+		write_out = false, write_err = false, show_chat = false;
 	public static int move_state = 0, language = 0, language2 = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
@@ -84,7 +89,7 @@ public class Main extends PApplet {
 	@Override
 	public void draw() {
 		while (this_client.available() != 0) {
-			Utils.rbuf.reset().limit(this_client.readBytes(Utils.rbuf.array()));
+			Utils.rbuf.rewind().limit(this_client.readBytes(Utils.rbuf.array()));
 			do {
 				switch (Utils.rbuf.get()) {
 					case Utils.INITIALIZE_GRID:
@@ -208,15 +213,26 @@ public class Main extends PApplet {
 						bullets.remove(Utils.rbuf.getInt());
 						break;
 					case Utils.SET_HEALTH:
-						int temp = Utils.rbuf.getInt();
+						//int temp = Utils.rbuf.getInt();
+						Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					case Utils.SET_ARMOR:
-						int tem = Utils.rbuf.getInt();
+						//int tem = Utils.rbuf.getInt();
+						Utils.rbuf.getInt();
 						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
+					// <><><><><><><><><><><><><><><> MESSAGE <><><><><><><><><><><><><><><>
+					case Utils.MESSAGE: {
+						final int length = Utils.rbuf.getInt();
+						if (messages.size() == 10)
+							messages.poll();
+						messages.offer(new String(Utils.rbuf.array(), Utils.rbuf.position(), length, StandardCharsets.US_ASCII));
+						Utils.rbuf.position(Utils.rbuf.position() + length);
+						break;
+					}
 					default: throw new AssertionError();
 				}
 			} while (Utils.rbuf.hasRemaining());
@@ -239,7 +255,7 @@ public class Main extends PApplet {
 						break;
 				}
 			}
-			
+
 			for (int i = 0; i < edge; i++) {
 				for (int j = 0; j < edge; j++) {
 					((TextureBlock)(map.background[j][i])).shape.draw(g);
@@ -259,6 +275,15 @@ public class Main extends PApplet {
 				} else {
 					chain.showHelp(1 << language);
 				}
+			}
+
+			if (show_chat) {
+				translate(0, height - scale);
+				text(message.array(), 0, message.position(), 50, 0);
+				messages.forEach((final String message) -> {
+					translate(0, -scale);
+					text(message, 50, 0);
+				});
 			}
 		}
 	}
@@ -313,7 +338,22 @@ public class Main extends PApplet {
 
 	@Override
 	public void keyPressed() {
-		updateMoveState((final int bit) -> move_state |= bit);
+		if (show_chat) {
+			switch (keyCode) {
+				case ENTER:
+					this_os.write(Utils.S_MESSAGE, message.flip());
+					message.clear();
+					return;
+				case ESC:
+					key = 0;
+					message.rewind();
+					show_chat = false;
+					return;
+				default:
+					message.put(key);
+					return;
+			}
+		}
 		switch (keyCode) {
 			case ' ':
 				switch (shot_type) {
@@ -400,7 +440,12 @@ public class Main extends PApplet {
 					drawPanel();
 				}
 				return;
+			case 'c':
+			case 'C':
+				show_chat = true;
+				return;
 		}
+		updateMoveState((final int bit) -> move_state |= bit);
 	}
 
 	public static void resetShotIcon() {
