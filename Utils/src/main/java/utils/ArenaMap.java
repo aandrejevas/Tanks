@@ -1,9 +1,8 @@
 package utils;
 
-import utils.Iterator.Iterate;
 import utils.Iterator.MIterator;
 
-public class ArenaMap implements Iterate {
+public class ArenaMap implements Iterable<ArenaBlock> {
 
 	public final int edge;
 	public final ArenaBlock[][] map;
@@ -59,33 +58,32 @@ public class ArenaMap implements Iterate {
 	}
 
 	@Override
-	public ArenaMapIterator createIterator() {
-		return new ArenaMapIterator();
+	public ArenaMapIterator iterator() {
+		return new ArenaMapIterator(this);
 	}
 
-	private class ArenaMapIterator implements MIterator<ArenaBlock> {
+	private static class ArenaMapIterator implements MIterator<ArenaBlock> {
+		private final ArenaMap map;
 		private int i = 0, j = 0;
+
+		public ArenaMapIterator(final ArenaMap m) {
+			map = m;
+		}
 
 		@Override
 		public boolean hasNext() {
-			return edge > i * j;
+			return map.edge > i * j;
 		}
 
 		@Override
 		public ArenaBlock next() {
-			if (j < edge-1){
-				j++;
-			}else if(i < edge-1){
-				i++;
+			if (j < map.edge - 1) {
+				++j;
+			} else if (i < map.edge - 1) {
+				++i;
 				j = 0;
 			}
-			return map[i][j];
-		}
-
-		@Override
-		public void reset() {
-			i = 0;
-			j = 0;
+			return map.map[i][j];
 		}
 
 		@Override
@@ -96,11 +94,6 @@ public class ArenaMap implements Iterate {
 		@Override
 		public int keyJ() {
 			return j;
-		}
-
-		@Override
-		public ArenaBlock value() {
-			return map[i][j];
 		}
 	}
 }

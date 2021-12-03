@@ -2,74 +2,58 @@ package Tank_Game.Patterns.Iterator;
 
 import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
-import processing.net.Client;
-import utils.Iterator.Iterate;
+import java.util.Iterator;
 
-import java.util.ArrayList;
-import java.util.List;
+public class EnemiesContainer implements Iterable<Decorator> {
+	private Invoker[] enemies = new Invoker[1];
+	private int size = 0;
 
-public class EnemiesContainer implements Iterate<AIterator> {
+	public Invoker get(final int index) {
+		return enemies[index];
+	}
 
-    private  Invoker[] enemies = new Invoker[1];
-    private int size = 0;
+	public void add(Invoker enem) {
+		if (size == enemies.length) {
+			resizeArray();
+		}
+		enemies[size++] = enem;
+	}
 
-    public void add (Invoker enem){
-        if (size < enemies.length) {
-            enemies[size] = enem;
-            size++;
-        }else {
-            resizeArray();
-            enemies[size] = enem;
-            size++;
-        }
-    }
+	public void resizeArray() {
+		final Invoker[] enem = new Invoker[enemies.length + 10];
+		System.arraycopy(enemies, 0, enem, 0, enemies.length);
+		enemies = enem;
+	}
 
-    public void resizeArray(){
-        Invoker[] enem = new Invoker[enemies.length + 10];
-        for (int i = 0; i < enemies.length; i++){
-            enem[i] = enemies[i];
-        }
-        enemies = enem;
-    }
+	public int size() {
+		return size;
+	}
 
-    public int size() {
-        return size;
-    }
+	public boolean isEmpty() {
+		return size == 0;
+	}
 
-    public boolean isEmpty(){
-        return size == 0;
-    }
+	@Override
+	public ContainerIterator iterator() {
+		return new ContainerIterator(this);
+	}
 
-    @Override
-    public AIterator createIterator() {
-        return new ContainerIterator();
-    }
+	private static class ContainerIterator implements Iterator<Decorator> {
+		private final EnemiesContainer enemies;
+		private int i = 0;
 
-    private class ContainerIterator implements AIterator<Invoker> {
+		public ContainerIterator(final EnemiesContainer e) {
+			enemies = e;
+		}
 
-        private int i = 0;
-        private Invoker inv = enemies[0];
+		@Override
+		public boolean hasNext() {
+			return i != enemies.size();
+		}
 
-        @Override
-        public boolean hasNext() {
-            return i < size;
-        }
-
-        @Override
-        public Invoker next() {
-            inv = enemies[i];
-            i++;
-            return inv;
-        }
-
-        @Override
-        public void reset() {
-            i = 0;
-        }
-
-        @Override
-        public Invoker value() {
-            return enemies[i];
-        }
-    }
+		@Override
+		public Decorator next() {
+			return enemies.get(i++).currentDecorator();
+		}
+	}
 }

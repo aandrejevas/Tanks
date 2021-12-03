@@ -2,8 +2,9 @@ package Tank_Game.Patterns.Template;
 
 import Tank_Game.Main;
 import Tank_Game.Patterns.Decorator.Decorator;
-import Tank_Game.Patterns.Iterator.TIterator;
 import Tank_Game.Tank;
+import java.util.Iterator;
+import java.util.Map;
 import processing.net.Client;
 import utils.TWritable;
 import utils.Utils;
@@ -55,11 +56,11 @@ public abstract class Bullet {
 		protected boolean moveImpl() {
 
 			if (Main.map.map[y][x - 1].obstacle) {
-				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
+				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
-
-					if (iterator.next().getY() == y && iterator.currentValue().getX() == x - 1) {
-						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
+					final Map.Entry<Client, Decorator> entry = iterator.next();
+					if (entry.getValue().getY() == y && entry.getValue().getX() == x - 1) {
+						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
@@ -82,11 +83,11 @@ public abstract class Bullet {
 		@Override
 		protected boolean moveImpl() {
 			if (Main.map.map[y][x + 1].obstacle) {
-				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
+				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
-
-					if (iterator.next().getY() == y && iterator.currentValue().getX() == x + 1) {
-						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
+					final Map.Entry<Client, Decorator> entry = iterator.next();
+					if (entry.getValue().getY() == y && entry.getValue().getX() == x + 1) {
+						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
@@ -109,11 +110,11 @@ public abstract class Bullet {
 		@Override
 		protected boolean moveImpl() {
 			if (Main.map.map[y - 1][x].obstacle) {
-				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
+				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
-
-					if (iterator.next().getY() == y - 1 && iterator.currentValue().getX() == x) {
-						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
+					final Map.Entry<Client, Decorator> entry = iterator.next();
+					if (entry.getValue().getY() == y - 1 && entry.getValue().getX() == x) {
+						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
@@ -136,11 +137,11 @@ public abstract class Bullet {
 		@Override
 		protected boolean moveImpl() {
 			if (Main.map.map[y + 1][x].obstacle) {
-				TIterator<Client, Decorator> iterator = Main.clients.createIterator();
+				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
-
-					if (iterator.next().getY() == y + 1 && iterator.currentValue().getX() == x) {
-						callDoDamage((TWritable)iterator.currentKey().output, iterator.currentValue());
+					final Map.Entry<Client, Decorator> entry = iterator.next();
+					if (entry.getValue().getY() == y + 1 && entry.getValue().getX() == x) {
+						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
@@ -194,8 +195,6 @@ public abstract class Bullet {
 	public boolean move() {
 		return false;
 	}
-
-	;
 
 	public final void callDoDamage(TWritable client, Decorator decorator) {
 		if (decorator.getArmor() > 0) {

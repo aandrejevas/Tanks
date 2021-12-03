@@ -4,20 +4,20 @@ import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
 import java.util.Collection;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import processing.net.Client;
-import utils.Iterator.Iterate;
 
-public class ClientMap implements Iterate {
+public class ClientMap implements Iterable<Map.Entry<Client, Decorator>> {
 
 	private final Map<Client, Invoker> clients = new IdentityHashMap<>();
 
-	public void add(Client available_client, Invoker invoker) {
+	public void add(final Client available_client, final Invoker invoker) {
 		clients.put(available_client, invoker);
 	}
 
-	public boolean isMember(Client client) {
+	public boolean isMember(final Client client) {
 		return clients.containsKey(client);
 	}
 
@@ -25,7 +25,7 @@ public class ClientMap implements Iterate {
 		return clients;
 	}
 
-	public Invoker get(Object available_client) {
+	public Invoker get(final Object available_client) {
 		return clients.get(available_client);
 	}
 
@@ -42,46 +42,26 @@ public class ClientMap implements Iterate {
 	}
 
 	@Override
-	public TIterator createIterator() {
-		return new MapIterator();
+	public MapIterator iterator() {
+		return new MapIterator(clients.entrySet());
 	}
 
-	private class MapIterator implements TIterator<Client, Decorator> {
+	private static class MapIterator implements Iterator<Map.Entry<Client, Decorator>> {
+		private final Iterator<Map.Entry<Client, Invoker>> entries;
 
-		private java.util.Iterator<Client> key;
-		private Client clt;
-		private Invoker inv;
-
-		public MapIterator() {
-			key = clients.keySet().iterator();
+		public MapIterator(final Iterable<Map.Entry<Client, Invoker>> e) {
+			entries = e.iterator();
 		}
 
 		@Override
 		public boolean hasNext() {
-			return key.hasNext();
+			return entries.hasNext();
 		}
 
 		@Override
-		public Decorator next() {
-			clt = key.next();
-			inv = clients.get(clt);
-			return inv.currentDecorator();
-		}
-
-		@Override
-		public void reset() {
-			key = clients.keySet().iterator();
-		}
-
-		@Override
-		public Client currentKey() {
-			return clt;
-		}
-
-		@Override
-		public Decorator currentValue() {
-			return inv.currentDecorator();
+		public Map.Entry<Client, Decorator> next() {
+			final Map.Entry<Client, Invoker> entry = entries.next();
+			return Map.entry(entry.getKey(), entry.getValue().currentDecorator());
 		}
 	}
-
 }

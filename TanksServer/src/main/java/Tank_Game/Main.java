@@ -12,7 +12,6 @@ import Tank_Game.Patterns.Factory.AI_Player;
 import Tank_Game.Patterns.Factory.Creator;
 import Tank_Game.Patterns.Factory.PlayerCreator;
 import Tank_Game.Patterns.Interpreter.Interpreter;
-import Tank_Game.Patterns.Iterator.AIterator;
 import Tank_Game.Patterns.Iterator.ClientMap;
 import Tank_Game.Patterns.Iterator.EnemiesContainer;
 import Tank_Game.Patterns.Singletone.Game_Context;
@@ -106,23 +105,24 @@ public class Main extends PApplet {
 				} else return false;
 			});
 		}
-		AIterator<Invoker> inv = enemies.createIterator();
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
+			final Iterator<Decorator> inv = enemies.iterator();
 			while (inv.hasNext()) {
-				((AI_Player)inv.next().undoTank()).AIThink();
+				((AI_Player)inv.next().getTank()).AIThink();
 			}
 			/*enemies.forEach((final Invoker tank) -> {
 				((AI_Player)tank.undoTank()).AIThink();
 			});*/
 		}
 
-		final Iterator<Bullet> iter = bullets.iterator();
-
-		while (iter.hasNext()) {
-			final Bullet bullet = iter.next();
-			if (bullet._side.move()) {
-				//this_server.write(Utils.REMOVE_BULLET, bullet.index);
-				iter.remove();
+		{
+			final Iterator<Bullet> iter = bullets.iterator();
+			while (iter.hasNext()) {
+				final Bullet bullet = iter.next();
+				if (bullet._side.move()) {
+					//this_server.write(Utils.REMOVE_BULLET, bullet.index);
+					iter.remove();
+				}
 			}
 		}
 
@@ -134,12 +134,12 @@ public class Main extends PApplet {
 					case Utils.S_INIT_CLIENT:
 						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-						MIterator<ArenaBlock> iterator = map.createIterator();
-						while (iter.hasNext()) {
-							if (iterator.value().drop != null) {
-								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), iterator.value().drop.getName(), iterator.value().drop.getValue());
+						final MIterator<ArenaBlock> iterator = map.iterator();
+						while (iterator.hasNext()) {
+							final ArenaBlock block = iterator.next();
+							if (block.drop != null) {
+								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), block.drop.getName(), block.drop.getValue());
 							}
-							iterator.next();
 						}
 
 						for (int i = 0; i < map.edge; ++i) {
@@ -155,13 +155,16 @@ public class Main extends PApplet {
 							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 						});
 
-						inv.reset();
-						while (inv.hasNext()) {
-							client_os.write(inv.value().currentDecorator().getDirection(), inv.value().currentDecorator().getIndex(), inv.value().currentDecorator().getX(), inv.value().currentDecorator().getY(), inv.next().currentDecorator().getType());
+						 {
+							final Iterator<Decorator> inv = enemies.iterator();
+							while (inv.hasNext()) {
+								final Decorator tank = inv.next();
+								client_os.write(tank.getDirection(), tank.getIndex(), tank.getX(), tank.getY(), tank.getType());
+							}
 						}
 						/*enemies.forEach((final Invoker tank) -> {
-						client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
-					});*/
+							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
+						});*/
 
 						final Tank new_player = ctr.factoryMethod(game_context.Player_Count(), true, mediator);
 						this_server.write(Utils.ADD_NEW_TANK, game_context.getPlayer_count(), new_player.getX(), new_player.getY());

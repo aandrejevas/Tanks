@@ -1,8 +1,9 @@
 package utils.Iterator;
 
-public interface MIterator <M> extends IteratorPtr<M>{
+import java.util.Iterator;
 
-    int keyI();
-    int keyJ();
-    M value();
+public interface MIterator<M> extends Iterator<M> {
+	int keyI();
+
+	int keyJ();
 }
