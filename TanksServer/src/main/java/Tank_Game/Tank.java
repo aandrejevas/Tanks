@@ -36,6 +36,12 @@ public class Tank implements Cloneable {
 		direction = UP;
 	}
 
+	protected Tank() {
+		index = -1;
+		type = -1;
+		mediator = null;
+	}
+
 	public MoveAlgorithm getMoveAlgorithm() {
 		return moveAlgorithm;
 	}

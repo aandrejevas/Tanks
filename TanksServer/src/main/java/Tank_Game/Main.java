@@ -4,7 +4,6 @@ import Tank_Game.Patterns.AbstractFactory.AbstractFactory;
 import Tank_Game.Patterns.AbstractFactory.LargeFactory;
 import Tank_Game.Patterns.AbstractFactory.MediumFactory;
 import Tank_Game.Patterns.AbstractFactory.SmallFactory;
-import Tank_Game.Patterns.Command.Command;
 import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Command.NormalShootCommand;
 import Tank_Game.Patterns.Decorator.Decorator;
@@ -138,7 +137,7 @@ public class Main extends PApplet {
 						while (iterator.hasNext()) {
 							final ArenaBlock block = iterator.next();
 							if (block.drop != null) {
-								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyI(), block.drop.getName(), block.drop.getValue());
+								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyJ(), block.drop.getName(), block.drop.getValue());
 							}
 						}
 
@@ -224,7 +223,7 @@ public class Main extends PApplet {
 				}
 			} while (Utils.rbuf.hasRemaining());
 
-			int new_ai = -1;
+			/*int new_ai = -1;
 			if (Game_Context.getInstance().getAi_set() != -1) {
 				new_ai = Game_Context.getInstance().getAi_set();
 				Game_Context.getInstance().setProp("ai", -1);
@@ -244,7 +243,7 @@ public class Main extends PApplet {
 					invoker.runCommand(cmd);
 					enemies.add(invoker);
 				}
-			}
+			}*/
 		}
 		//generate drops randomly
 		generateDrops();
@@ -274,6 +273,16 @@ public class Main extends PApplet {
 		tank.move();
 	}
 
+	@Override
+	public void keyPressed() {
+		switch (keyCode) {
+			case 'm':
+			case 'M':
+				printMap();
+				return;
+		}
+	}
+
 	public static void printMap() {
 		for (int i = 0; i < Main.map.edge; i++) {
 			for (int j = 0; j < Main.map.edge; j++) {
@@ -288,28 +297,32 @@ public class Main extends PApplet {
 					}
 					Main.map.map[i][j].debugValue = 0;
 				} else {
-					switch (Main.map.map[i][j].value) {
-						case Utils.MAP_WALL:
-							print('▒');
-							break;
-						case Utils.MAP_EMPTY:
-							print('░');
-							break;
-						case Utils.MAP_BORDER:
-							print('▓');
-							break;
-						case Utils.MAP_LAVA:
-							print('^');
-							break;
-						case Utils.MAP_WATER:
-							print('0');
-							break;
-						case Utils.MAP_PLAYER:
-							print('X');
-							break;
-						default:
-							print(' ');
-							break;
+					if (Main.map.map[i][j].drop != null) {
+						print('D');
+					} else {
+						switch (Main.map.map[i][j].value) {
+							case Utils.MAP_WALL:
+								print('.');
+								break;
+							case Utils.MAP_EMPTY:
+								print(' ');
+								break;
+							case Utils.MAP_BORDER:
+								print(' ');
+								break;
+							case Utils.MAP_LAVA:
+								print('^');
+								break;
+							case Utils.MAP_WATER:
+								print('0');
+								break;
+							case Utils.MAP_PLAYER:
+								print('X');
+								break;
+							default:
+								print('@');
+								break;
+						}
 					}
 				}
 			}

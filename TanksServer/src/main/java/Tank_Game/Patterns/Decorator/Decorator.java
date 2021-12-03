@@ -7,7 +7,6 @@ public abstract class Decorator extends Tank implements Cloneable {
 	protected final Tank wrapee;
 
 	public Decorator(final Tank tank) {
-		super(tank.getIndex(), tank.getType(), tank.getMediator());
 		wrapee = tank;
 	}
 
