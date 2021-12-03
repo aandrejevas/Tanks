@@ -74,9 +74,9 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
-		Interpreter interpreter = new Interpreter();
+		final Interpreter interpreter = new Interpreter();
 		interpreter.start();
-		surface.setVisible(false);
+		//surface.setVisible(false);
 		this_server = new TServer(this, 12345);
 
 		game_context = Game_Context.getInstance();

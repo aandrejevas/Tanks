@@ -72,18 +72,17 @@ public class ArenaMap implements Iterable<ArenaBlock> {
 
 		@Override
 		public boolean hasNext() {
-			return map.edge > i * j;
+			return i != map.edge;
 		}
 
 		@Override
 		public ArenaBlock next() {
-			if (j < map.edge - 1) {
-				++j;
-			} else if (i < map.edge - 1) {
+			final ArenaBlock next = map.map[i][j];
+			if (++j == map.edge) {
 				++i;
 				j = 0;
 			}
-			return map.map[i][j];
+			return next;
 		}
 
 		@Override
