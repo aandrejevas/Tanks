@@ -4,8 +4,8 @@ import Tank_Game.Tank;
 
 public class NormalBullet extends Bullet {
 
-	public NormalBullet(Tank tank, int side) {
-		super(tank, side);
+	public NormalBullet(final Tank tank) {
+		super(tank);
 	}
 
 	@Override

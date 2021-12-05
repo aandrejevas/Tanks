@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public abstract class AbstractLogger {
 	private Logger logger;
@@ -21,7 +22,7 @@ public abstract class AbstractLogger {
 		logger = Objects.requireNonNull(l);
 	}
 
-	protected final void log(final String message) {
+	protected final void log(final Supplier<String> message) {
 		logger.log(message);
 	}
 }

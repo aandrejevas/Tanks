@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.function.Supplier;
+
 public class ErrorLogger implements Logger {
 	private ErrorLogger() {
 	}
@@ -7,7 +9,7 @@ public class ErrorLogger implements Logger {
 	public static final Logger instance = new ErrorLogger();
 
 	@Override
-	public void log(final String message) {
-		System.err.println(message);
+	public void log(final Supplier<String> message) {
+		System.err.println(message.get());
 	}
 }

@@ -15,21 +15,21 @@ public class Bullet extends AbstractLogger {
 
 	public void moveLeft() {
 		shape.translate(-Main.scale, 0);
-		log(System.identityHashCode(this) + " bullet moved left.");
+		log(() -> System.identityHashCode(this) + " bullet moved left.");
 	}
 
 	public void moveRight() {
 		shape.translate(Main.scale, 0);
-		log(System.identityHashCode(this) + " bullet moved right.");
+		log(() -> System.identityHashCode(this) + " bullet moved right.");
 	}
 
 	public void moveUp() {
 		shape.translate(0, -Main.scale);
-		log(System.identityHashCode(this) + " bullet moved up.");
+		log(() -> System.identityHashCode(this) + " bullet moved up.");
 	}
 
 	public void moveDown() {
 		shape.translate(0, Main.scale);
-		log(System.identityHashCode(this) + " bullet moved down.");
+		log(() -> System.identityHashCode(this) + " bullet moved down.");
 	}
 }

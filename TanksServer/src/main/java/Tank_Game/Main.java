@@ -4,6 +4,7 @@ import Tank_Game.Patterns.AbstractFactory.AbstractFactory;
 import Tank_Game.Patterns.AbstractFactory.LargeFactory;
 import Tank_Game.Patterns.AbstractFactory.MediumFactory;
 import Tank_Game.Patterns.AbstractFactory.SmallFactory;
+import Tank_Game.Patterns.Command.Command;
 import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Command.NormalShootCommand;
 import Tank_Game.Patterns.Decorator.Decorator;
@@ -103,6 +104,7 @@ public class Main extends PApplet {
 				} else return false;
 			});
 		}
+
 		if (!enemies.isEmpty() && frameCount % 30 == 0) {
 			final Iterator<Decorator> inv = enemies.iterator();
 			while (inv.hasNext()) {
@@ -116,8 +118,8 @@ public class Main extends PApplet {
 		{
 			final Iterator<Bullet> iter = bullets.iterator();
 			while (iter.hasNext()) {
-				final Bullet bullet = iter.next();
-				if (bullet._side.move()) {
+				//final Bullet bullet = iter.next();
+				if (iter.next().move()) {
 					//this_server.write(Utils.REMOVE_BULLET, bullet.index);
 					iter.remove();
 				}
@@ -194,22 +196,20 @@ public class Main extends PApplet {
 							tank.setMoveAlgorithm(MoveDown.instance);
 						});
 						break;
-					case Utils.S_SHOOT_NORMAL: {
-						final Tank tank = clients.get(available_client).undoTank();
-						shoot(tank, Utils.S_SHOOT_NORMAL);
+					case Utils.S_SHOOT_NORMAL:
+						bullets.add(new NormalBullet(clients.get(available_client).undoTank()));
 						break;
-					}
 					case Utils.S_SHOOT_BLUE: {
 						final Tank tank = clients.get(available_client).currentDecorator();
 						if (tank.getShotType() == Utils.SHOT_BLUE) {
-							shoot(tank, Utils.S_SHOOT_BLUE);
+							bullets.add(new BlueBullet(tank));
 						}
 						break;
 					}
 					case Utils.S_SHOOT_RED: {
 						final Tank tank = clients.get(available_client).currentDecorator();
 						if (tank.getShotType() == Utils.SHOT_RED) {
-							shoot(tank, Utils.S_SHOOT_RED);
+							bullets.add(new RedBullet(tank));
 						}
 						break;
 					}
@@ -222,8 +222,10 @@ public class Main extends PApplet {
 					default: throw new AssertionError();
 				}
 			} while (Utils.rbuf.hasRemaining());
+		}
 
-			/*int new_ai = -1;
+		{
+			int new_ai = -1;
 			if (Game_Context.getInstance().getAi_set() != -1) {
 				new_ai = Game_Context.getInstance().getAi_set();
 				Game_Context.getInstance().setProp("ai", -1);
@@ -243,8 +245,9 @@ public class Main extends PApplet {
 					invoker.runCommand(cmd);
 					enemies.add(invoker);
 				}
-			}*/
+			}
 		}
+
 		//generate drops randomly
 		generateDrops();
 	}
@@ -328,38 +331,5 @@ public class Main extends PApplet {
 			}
 			println();
 		}
-	}
-
-	public static void shoot(final Tank tank, byte type) {
-		int side = 0;
-		switch (tank.getDirection()) {
-			case Tank.LEFT:
-				if (!map.map[tank.getY()][tank.getX() - 1].obstacle) side = 1; //bullets.add(new Bullet.Left(tank));
-				break;
-			case Tank.RIGHT:
-				if (!map.map[tank.getY()][tank.getX() + 1].obstacle) side = 2; //bullets.add(new Bullet.Right(tank));
-				break;
-			case Tank.UP:
-				if (!map.map[tank.getY() - 1][tank.getX()].obstacle) side = 3; //bullets.add(new Bullet.Up(tank));
-				break;
-			case Tank.DOWN:
-				if (!map.map[tank.getY() + 1][tank.getX()].obstacle) side = 4; //bullets.add(new Bullet.Down(tank));
-				break;
-		}
-
-		if (side != 0) {
-			switch (type) {
-				case Utils.S_SHOOT_NORMAL:
-					bullets.add(new NormalBullet(tank, side));
-					break;
-				case Utils.S_SHOOT_BLUE:
-					bullets.add(new BlueBullet(tank, side));
-					break;
-				case Utils.S_SHOOT_RED:
-					bullets.add(new RedBullet(tank, side));
-					break;
-			}
-		}
-
 	}
 }

@@ -3,7 +3,7 @@ package Tank_Game.Patterns.Singletone;
 import Tank_Game.Main;
 
 public class Game_Context {
-	private int seed, edge, tic_time, player_count = 0, enemies_count = 0, ai_set = -1, kill_server_set = 0;
+	private int /*seed, edge, tic_time, */ player_count = 0, enemies_count = 0, ai_set = -1, kill_server_set = 0;
 	private static Game_Context instance;
 
 	private Game_Context() {
@@ -16,7 +16,7 @@ public class Game_Context {
 		return instance;
 	}
 
-	public synchronized void setProp(String key, int val) {
+	public synchronized void setProp(final String key, final int val) {
 		if (key.equals("ai")) {
 			this.ai_set = val;
 		} else if (key.equals("kill")) {

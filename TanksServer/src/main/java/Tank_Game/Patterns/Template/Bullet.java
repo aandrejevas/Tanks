@@ -11,144 +11,135 @@ import utils.Utils;
 
 public abstract class Bullet {
 
-	public static abstract class Side extends Bullet {
-		protected int damage;
-		protected int armor;
+	public static abstract class Side {
+		protected final Bullet bullet;
+
+		public Side(final Bullet b) {
+			bullet = b;
+		}
 
 		public boolean move() {
-			if (System.nanoTime() - super.start_time > super.timeout) {
+			if (System.nanoTime() - bullet.start_time > bullet.timeout) {
 				final boolean state = moveImpl();
-				super.start_time = System.nanoTime();
+				bullet.start_time = System.nanoTime();
 				if (state)
-					Main.this_server.write(Utils.REMOVE_BULLET, index);
+					Main.this_server.write(Utils.REMOVE_BULLET, bullet.index);
 				return state;
 			}
 			return false;
 		}
 
-		@Override
-		protected int doDamage() {
-			return damage;
-		}
-
-		public void setDamage(int damage) {
-			this.damage = damage;
-		}
-
-		public void setArmor(int armor) {
-			this.armor = armor;
-		}
-
-		@Override
-		protected int doDamageArmor() {
-			return armor;
-		}
+		protected abstract boolean moveImpl();
 	}
 
 	public static class Left extends Side {
-		public Left(final Tank tank) {
-			x = tank.getX() - 1;
-			y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
+		public Left(final Tank tank, final Bullet b) {
+			super(b);
+			bullet.x = tank.getX() - 1;
+			bullet.y = tank.getY();
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
 		}
 
 		@Override
 		protected boolean moveImpl() {
 
-			if (Main.map.map[y][x - 1].obstacle) {
+			if (Main.map.map[bullet.y][bullet.x - 1].obstacle) {
 				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
 					final Map.Entry<Client, Decorator> entry = iterator.next();
-					if (entry.getValue().getY() == y && entry.getValue().getX() == x - 1) {
-						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
+					if (entry.getValue().getY() == bullet.y && entry.getValue().getX() == bullet.x - 1) {
+						bullet.callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
 				return true;
 			} else {
-				--x;
-				Main.this_server.write(Utils.BULLET_LEFT, index);
+				--bullet.x;
+				Main.this_server.write(Utils.BULLET_LEFT, bullet.index);
 				return false;
 			}
 		}
 	}
 
 	public static class Right extends Side {
-		public Right(final Tank tank) {
-			x = tank.getX() + 1;
-			y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
+		public Right(final Tank tank, final Bullet b) {
+			super(b);
+			bullet.x = tank.getX() + 1;
+			bullet.y = tank.getY();
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
 		}
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[y][x + 1].obstacle) {
+			if (Main.map.map[bullet.y][bullet.x + 1].obstacle) {
 				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
 					final Map.Entry<Client, Decorator> entry = iterator.next();
-					if (entry.getValue().getY() == y && entry.getValue().getX() == x + 1) {
-						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
+					if (entry.getValue().getY() == bullet.y && entry.getValue().getX() == bullet.x + 1) {
+						bullet.callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
 				return true;
 			} else {
-				++x;
-				Main.this_server.write(Utils.BULLET_RIGHT, index);
+				++bullet.x;
+				Main.this_server.write(Utils.BULLET_RIGHT, bullet.index);
 				return false;
 			}
 		}
 	}
 
 	public static class Up extends Side {
-		public Up(final Tank tank) {
-			x = tank.getX();
-			y = tank.getY() - 1;
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
+		public Up(final Tank tank, final Bullet b) {
+			super(b);
+			bullet.x = tank.getX();
+			bullet.y = tank.getY() - 1;
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
 		}
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[y - 1][x].obstacle) {
+			if (Main.map.map[bullet.y - 1][bullet.x].obstacle) {
 				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
 					final Map.Entry<Client, Decorator> entry = iterator.next();
-					if (entry.getValue().getY() == y - 1 && entry.getValue().getX() == x) {
-						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
+					if (entry.getValue().getY() == bullet.y - 1 && entry.getValue().getX() == bullet.x) {
+						bullet.callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
 				return true;
 			} else {
-				--y;
-				Main.this_server.write(Utils.BULLET_UP, index);
+				--bullet.y;
+				Main.this_server.write(Utils.BULLET_UP, bullet.index);
 				return false;
 			}
 		}
 	}
 
 	public static class Down extends Side {
-		public Down(final Tank tank) {
-			x = tank.getX();
-			y = tank.getY() + 1;
-			Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
+		public Down(final Tank tank, final Bullet b) {
+			super(b);
+			bullet.x = tank.getX();
+			bullet.y = tank.getY() + 1;
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
 		}
 
 		@Override
 		protected boolean moveImpl() {
-			if (Main.map.map[y + 1][x].obstacle) {
+			if (Main.map.map[bullet.y + 1][bullet.x].obstacle) {
 				final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 				while (iterator.hasNext()) {
 					final Map.Entry<Client, Decorator> entry = iterator.next();
-					if (entry.getValue().getY() == y + 1 && entry.getValue().getX() == x) {
-						callDoDamage((TWritable)entry.getKey().output, entry.getValue());
+					if (entry.getValue().getY() == bullet.y + 1 && entry.getValue().getX() == bullet.x) {
+						bullet.callDoDamage((TWritable)entry.getKey().output, entry.getValue());
 						break;
 					}
 				}
 				return true;
 			} else {
-				++y;
-				Main.this_server.write(Utils.BULLET_DOWN, index);
+				++bullet.y;
+				Main.this_server.write(Utils.BULLET_DOWN, bullet.index);
 				return false;
 			}
 		}
@@ -156,47 +147,38 @@ public abstract class Bullet {
 
 	private static int count = 0;
 
-	private final long timeout = 50_000_000;
-	private long start_time;
+	protected final long timeout = 50_000_000;
+	protected long start_time;
 	public final int index;
 	protected int x, y;
-	public Side _side;
-	public byte damage;
-	public Bullet bullet = this;
+	private final Side _side;
 
-	public Bullet() {
+	public Bullet(final Tank tank) {
 		index = count++;
-		start_time = System.nanoTime();
-	}
-
-	public Bullet(final Tank tank, final int side) {
-		switch (side) {
-			case 1:
-				_side = new Left(tank);
+		switch (tank.getDirection()) {
+			case Tank.LEFT:
+				_side = new Left(tank, this);
 				break;
-			case 2:
-				_side = new Right(tank);
+			case Tank.RIGHT:
+				_side = new Right(tank, this);
 				break;
-			case 3:
-				_side = new Up(tank);
+			case Tank.UP:
+				_side = new Up(tank, this);
 				break;
-			case 4:
-				_side = new Down(tank);
+			case Tank.DOWN:
+				_side = new Down(tank, this);
 				break;
 			default:
-				break;
+				throw new RuntimeException();
 		}
-		_side.setDamage(doDamage());
-		_side.setArmor(doDamageArmor());
-		index = count++;
 		start_time = System.nanoTime();
 	}
 
 	public boolean move() {
-		return false;
+		return _side.move();
 	}
 
-	public final void callDoDamage(TWritable client, Decorator decorator) {
+	public final void callDoDamage(final TWritable client, final Decorator decorator) {
 		if (decorator.getArmor() > 0) {
 			decorator.setArmor(decorator.getArmor() - doDamageArmor());
 			client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
@@ -206,19 +188,7 @@ public abstract class Bullet {
 		}
 	}
 
-	protected int doDamage() {
-		return 0;
-	}
+	protected abstract int doDamage();
 
-	;
-
-	protected int doDamageArmor() {
-		return 0;
-	}
-
-	;
-
-	protected boolean moveImpl() {
-		return _side.moveImpl();
-	}
+	protected abstract int doDamageArmor();
 }
