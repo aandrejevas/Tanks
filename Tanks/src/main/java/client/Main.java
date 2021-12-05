@@ -7,13 +7,15 @@ import chain.Lithuanian;
 import chain.NullLanguage;
 import chain.Russian;
 import java.lang.invoke.MethodHandles;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.IntConsumer;
+import memento.Message;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.net.Client;
@@ -34,7 +36,8 @@ public class Main extends PApplet {
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
 	public static final String[] languages = new String[] { "LT", "EN", "RU", "FR" };
-	public static final CharBuffer message = CharBuffer.allocate(500);
+	public static final Message message = new Message();
+	public static final List<Message.Memento> mementoes = new ArrayList<>();
 	public static final Queue<String> messages = new ArrayDeque<>();
 
 	public static PApplet self;
@@ -45,7 +48,7 @@ public class Main extends PApplet {
 	public static float scale;
 	public static boolean initialized = false, show_help = false, show_second_language = false,
 		write_out = false, write_err = false, show_chat = false;
-	public static int move_state = 0, language = 0, language2 = 0,
+	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
@@ -80,6 +83,7 @@ public class Main extends PApplet {
 		red_shot_icon = images.getImage(Utils.BIG_SHOT_RED);
 
 		chain = new Lithuanian(new English(new Russian(new French(new NullLanguage()))));
+		mementoes.add(message.saveState());
 
 		this_client = new Client(this, "127.0.0.1", 12345);
 		this_os = (TWritable)(this_client.output = new TOutputStream(this_client));
@@ -279,7 +283,7 @@ public class Main extends PApplet {
 
 			if (show_chat) {
 				translate(0, height - scale);
-				text(message.array(), 0, message.position(), 50, 0);
+				text(message.get().array(), 0, message.get().position(), 50, 0);
 				messages.forEach((final String message) -> {
 					translate(0, -scale);
 					text(message, 50, 0);
@@ -341,16 +345,31 @@ public class Main extends PApplet {
 		if (show_chat) {
 			switch (keyCode) {
 				case ENTER:
-					this_os.write(Utils.S_MESSAGE, message.flip());
-					message.clear();
+					this_os.write(Utils.S_MESSAGE, message.get().flip());
+					message.get().clear();
+					memento_index = 0;
 					return;
 				case ESC:
 					key = 0;
-					message.rewind();
 					show_chat = false;
 					return;
+				case SHIFT:
+					if (memento_index != mementoes.size() - 1)
+						message.restoreState(mementoes.get(++memento_index));
+					return;
+				case BACKSPACE:
+					if (memento_index != 0)
+						message.restoreState(mementoes.get(--memento_index));
+					return;
 				default:
-					message.put(key);
+					if (message.get().hasRemaining()) {
+						message.get().put(key);
+						while (memento_index != mementoes.size() - 1) {
+							mementoes.remove(mementoes.size() - 1);
+						}
+						mementoes.add(message.saveState());
+						++memento_index;
+					}
 					return;
 			}
 		}

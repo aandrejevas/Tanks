@@ -215,7 +215,7 @@ public class Main extends PApplet {
 					}
 					case Utils.S_MESSAGE: {
 						final int length = Utils.rbuf.getInt();
-						clients.get(available_client).currentDecorator().sendMessage(Utils.rbuf.array(), Utils.rbuf.position() - 5, length + 5);
+						clients.get(available_client).currentDecorator().getTank().sendMessage(Utils.rbuf.array(), Utils.rbuf.position() - 5, length + 5);
 						Utils.rbuf.position(Utils.rbuf.position() + length);
 						break;
 					}
