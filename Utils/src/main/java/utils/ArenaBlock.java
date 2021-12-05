@@ -1,7 +1,7 @@
 package utils;
 
 public class ArenaBlock {
-	public int x, y;
+	public final int x, y;
 	public byte value;
 	public byte debugValue;
 	public byte defValue;

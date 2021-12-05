@@ -34,7 +34,6 @@ import processing.net.Client;
 import utils.ArenaBlock;
 import utils.ArenaMap;
 import utils.Drop;
-import utils.Iterator.MIterator;
 import utils.MapBackBuilder;
 import utils.TServer;
 import utils.TWritable;
@@ -133,23 +132,24 @@ public class Main extends PApplet {
 					case Utils.S_INIT_CLIENT:
 						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-						final MIterator<ArenaBlock> iterator = map.iterator();
-						while (iterator.hasNext()) {
-							final ArenaBlock block = iterator.next();
-							if (block.drop != null) {
-								this_server.write(Utils.ADD_DROP, iterator.keyI(), iterator.keyJ(), block.drop.getName(), block.drop.getValue());
-							}
-						}
-
-						for (int i = 0; i < map.edge; ++i) {
-							final ArenaBlock[] row = map.map[i];
-							for (int j = 0; j < map.edge; ++j) {
-								if (row[j].drop != null) {
-									this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
+						 {
+							final Iterator<ArenaBlock> iterator = map.iterator();
+							while (iterator.hasNext()) {
+								final ArenaBlock block = iterator.next();
+								if (block.drop != null) {
+									this_server.write(Utils.ADD_DROP, block.y, block.x, block.drop.getName(), block.drop.getValue());
 								}
 							}
 						}
 
+						/*for (int i = 0; i != map.edge; ++i) {
+							final ArenaBlock[] row = map.map[i];
+							for (int j = 0; j != map.edge; ++j) {
+								if (row[j].drop != null) {
+									this_server.write(Utils.ADD_DROP, i, j, row[j].drop.getName(), row[j].drop.getValue());
+								}
+							}
+						}*/
 						clients.values().forEach((final Invoker tank) -> {
 							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 						});

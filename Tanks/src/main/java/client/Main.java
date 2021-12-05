@@ -256,12 +256,12 @@ public class Main extends PApplet {
 				}
 			}
 
-			for (int i = 0; i < edge; i++) {
-				for (int j = 0; j < edge; j++) {
-					((TextureBlock)(map.background[j][i])).shape.draw(g);
-					((TextureBlock)(map.map[j][i])).shape.draw(g);
-					if (map.map[j][i].drop != null) {
-						((TextureDrop)(map.map[j][i].drop)).shape.draw(g);
+			for (int i = 0; i != edge; ++i) {
+				for (int j = 0; j != edge; ++j) {
+					((TextureBlock)(map.background[i][j])).shape.draw(g);
+					((TextureBlock)(map.map[i][j])).shape.draw(g);
+					if (map.map[i][j].drop != null) {
+						((TextureDrop)(map.map[i][j].drop)).shape.draw(g);
 					}
 				}
 			}
@@ -291,8 +291,8 @@ public class Main extends PApplet {
 	public static void handleGenMap() {
 		map = new ArenaMap(edge, false);
 
-		for (int i = 0; i < edge; i++) {
-			for (int j = 0; j < edge; j++) {
+		for (int i = 0; i != edge; ++i) {
+			for (int j = 0; j != edge; ++j) {
 				map.setBlock(new TextureBlock(i, j));
 				map.setDefBlock(new TextureBlock(i, j));
 			}
@@ -323,10 +323,10 @@ public class Main extends PApplet {
 //			}
 //			println();
 //		}
-		for (int i = 0; i < edge; i++) {
-			for (int j = 0; j < edge; j++) {
-				((TextureBlock)(map.map[j][i])).shape.setTexture(images.getImage(map.map[j][i].value));
-				((TextureBlock)(map.background[j][i])).shape.setTexture(images.getImage(map.background[j][i].value));
+		for (int i = 0; i != edge; ++i) {
+			for (int j = 0; j != edge; ++j) {
+				((TextureBlock)(map.map[i][j])).shape.setTexture(images.getImage(map.map[i][j].value));
+				((TextureBlock)(map.background[i][j])).shape.setTexture(images.getImage(map.background[i][j].value));
 			}
 		}
 	}

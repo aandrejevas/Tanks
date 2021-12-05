@@ -1,6 +1,6 @@
 package utils;
 
-import utils.Iterator.MIterator;
+import java.util.Iterator;
 
 public class ArenaMap implements Iterable<ArenaBlock> {
 
@@ -14,10 +14,10 @@ public class ArenaMap implements Iterable<ArenaBlock> {
 		this.map = new ArenaBlock[edge][edge];
 		this.background = new ArenaBlock[edge][edge];
 		if (def) {
-			for (int i = 0; i < edge; i++) {
-				for (int j = 0; j < edge; j++) {
-					this.map[j][i] = new ArenaBlock(j, i);
-					this.background[j][i] = new ArenaBlock(j, i);
+			for (int i = 0; i != edge; ++i) {
+				for (int j = 0; j != edge; ++j) {
+					this.map[i][j] = new ArenaBlock(j, i);
+					this.background[i][j] = new ArenaBlock(j, i);
 				}
 			}
 		}
@@ -39,7 +39,7 @@ public class ArenaMap implements Iterable<ArenaBlock> {
 		return map[y][x].value;
 	}
 
-	public byte getBlockValue(int[] cord) {
+	public byte getBlockValue(final int[] cord) {
 		return map[cord[0]][cord[1]].value;
 	}
 
@@ -62,7 +62,7 @@ public class ArenaMap implements Iterable<ArenaBlock> {
 		return new ArenaMapIterator(this);
 	}
 
-	private static class ArenaMapIterator implements MIterator<ArenaBlock> {
+	private static class ArenaMapIterator implements Iterator<ArenaBlock> {
 		private final ArenaMap map;
 		private int i = 0, j = 0;
 
@@ -83,16 +83,6 @@ public class ArenaMap implements Iterable<ArenaBlock> {
 				j = 0;
 			}
 			return next;
-		}
-
-		@Override
-		public int keyI() {
-			return i;
-		}
-
-		@Override
-		public int keyJ() {
-			return j;
 		}
 	}
 }
