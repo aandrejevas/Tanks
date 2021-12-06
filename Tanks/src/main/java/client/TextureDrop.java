@@ -10,4 +10,9 @@ public class TextureDrop extends Drop {
 		super(name, value);
 		shape = Facade.createShape(Main.images.getImage(name), x, y);
 	}
+
+	@Override
+	public void draw() {
+		shape.draw(Main.self.g);
+	}
 }

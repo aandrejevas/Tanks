@@ -27,11 +27,17 @@ import utils.OutputLogger;
 import utils.TOutputStream;
 import utils.TWritable;
 import utils.Utils;
+import visitor.Drawer;
+import visitor.JPEGSaver;
+import visitor.PNGSaver;
+import visitor.SaverVisitor;
+import visitor.TIFFSaver;
 
 // Client
 public class Main extends PApplet {
 
 	public static final int D = 800;
+	public static final float Df = D;
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
@@ -39,6 +45,7 @@ public class Main extends PApplet {
 	public static final Message message = new Message();
 	public static final List<Message.Memento> mementoes = new ArrayList<>();
 	public static final Queue<String> messages = new ArrayDeque<>();
+	public static final Drawer drawer = new Drawer();
 
 	public static PApplet self;
 	public static Client this_client;
@@ -47,7 +54,7 @@ public class Main extends PApplet {
 	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false, show_help = false, show_second_language = false,
-		write_out = false, write_err = false, show_chat = false;
+		write_out = false, write_err = false, show_chat = false, save_image = false;
 	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
@@ -56,6 +63,7 @@ public class Main extends PApplet {
 	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
 	public static ArenaMap map;
 	public static Language chain;
+	public static SaverVisitor visitor;
 
 	public static void main(final String[] args) {
 		PApplet.main(MethodHandles.lookup().lookupClass(), args);
@@ -260,34 +268,11 @@ public class Main extends PApplet {
 				}
 			}
 
-			for (int i = 0; i != edge; ++i) {
-				for (int j = 0; j != edge; ++j) {
-					((TextureBlock)(map.background[i][j])).shape.draw(g);
-					((TextureBlock)(map.map[i][j])).shape.draw(g);
-					if (map.map[i][j].drop != null) {
-						((TextureDrop)(map.map[i][j].drop)).shape.draw(g);
-					}
-				}
-			}
-
-			bullets.values().forEach((final Bullet bullet) -> bullet.shape.draw(g));
-			tanks.values().forEach((final Tank tank) -> tank.shape.draw(g));
-
-			if (show_help) {
-				if (show_second_language) {
-					chain.showHelp((1 << language) | (1 << language2));
-				} else {
-					chain.showHelp(1 << language);
-				}
-			}
-
-			if (show_chat) {
-				translate(0, height - scale);
-				text(message.get().array(), 0, message.get().position(), 50, 0);
-				messages.forEach((final String message) -> {
-					translate(0, -scale);
-					text(message, 50, 0);
-				});
+			if (save_image) {
+				save_image = false;
+				drawer.accept(visitor);
+			} else {
+				drawer.draw();
 			}
 		}
 	}
@@ -462,6 +447,21 @@ public class Main extends PApplet {
 			case 'c':
 			case 'C':
 				show_chat = true;
+				return;
+			case 't':
+			case 'T':
+				save_image = true;
+				visitor = new TIFFSaver();
+				return;
+			case 's':
+			case 'S':
+				save_image = true;
+				visitor = new PNGSaver();
+				return;
+			case 'j':
+			case 'J':
+				save_image = true;
+				visitor = new JPEGSaver();
 				return;
 		}
 		updateMoveState((final int bit) -> move_state |= bit);

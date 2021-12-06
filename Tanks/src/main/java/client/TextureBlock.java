@@ -11,4 +11,9 @@ public class TextureBlock extends ArenaBlock {
 		super(x, y);
 		shape = Facade.createShape(Main.images.getImage(Utils.MAP_EMPTY), this.x, this.y);
 	}
+
+	@Override
+	public void draw() {
+		shape.draw(Main.self.g);
+	}
 }

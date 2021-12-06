@@ -1,6 +1,6 @@
 package utils;
 
-public abstract class Drop {
+public abstract class Drop implements Drawable {
 	private final byte name;
 	private final int value;
 
@@ -15,5 +15,10 @@ public abstract class Drop {
 
 	public int getValue() {
 		return value;
+	}
+
+	@Override
+	public void draw() {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -2,8 +2,9 @@ package client;
 
 import processing.core.PShape;
 import utils.AbstractLogger;
+import utils.Drawable;
 
-public class Tank extends AbstractLogger {
+public class Tank extends AbstractLogger implements Drawable {
 	public final PShape shape;
 
 	public Tank(final int ix, final int iy, final byte type) {
@@ -76,5 +77,10 @@ public class Tank extends AbstractLogger {
 	public void turnDown() {
 		pointDown();
 		moveDown();
+	}
+
+	@Override
+	public void draw() {
+		shape.draw(Main.self.g);
 	}
 }

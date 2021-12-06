@@ -1,6 +1,6 @@
 package utils;
 
-public class ArenaBlock {
+public class ArenaBlock implements Drawable {
 	public final int x, y;
 	public byte value;
 	public byte debugValue;
@@ -16,5 +16,10 @@ public class ArenaBlock {
 		this.defValue = Utils.MAP_EMPTY;
 		this.obstacle = false;
 		this.drop = null;
+	}
+
+	@Override
+	public void draw() {
+		throw new UnsupportedOperationException();
 	}
 }

@@ -2,10 +2,11 @@ package client;
 
 import processing.core.PShape;
 import utils.AbstractLogger;
+import utils.Drawable;
 import utils.ErrorLogger;
 import utils.NullLogger;
 
-public class Bullet extends AbstractLogger {
+public class Bullet extends AbstractLogger implements Drawable {
 	public final PShape shape;
 
 	public Bullet(final int x, final int y, final byte type) {
@@ -31,5 +32,10 @@ public class Bullet extends AbstractLogger {
 	public void moveDown() {
 		shape.translate(0, Main.scale);
 		log(() -> System.identityHashCode(this) + " bullet moved down.");
+	}
+
+	@Override
+	public void draw() {
+		shape.draw(Main.self.g);
 	}
 }
