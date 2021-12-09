@@ -107,4 +107,14 @@ public abstract class Decorator extends Tank implements Cloneable {
 	public Tank getTank() {
 		return wrapee;
 	}
+
+	@Override
+	public int[] getCord() {
+		return wrapee.getCord();
+	}
+
+	@Override
+	public void sendMessage(final byte[] data, final int offset, final int length) {
+		wrapee.sendMessage(data, offset, length);
+	}
 }

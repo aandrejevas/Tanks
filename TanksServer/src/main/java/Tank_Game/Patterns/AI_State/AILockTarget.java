@@ -3,25 +3,27 @@ package Tank_Game.Patterns.AI_State;
 import Tank_Game.Main;
 import Tank_Game.Patterns.AI_Composite.AICompState;
 import Tank_Game.Patterns.Command.Invoker;
+import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Patterns.Factory.AI_Player;
-import Tank_Game.Tank;
+import java.util.Iterator;
 import utils.Utils;
 
 public class AILockTarget implements AIState {
 	@Override
 	public void perform(AI_Player ai) {
 //        println("AI lock target");
-		Object[] players = Main.clients.values().toArray();
+		final Iterator<Invoker> players = Main.clients.values().iterator();
 
-		Tank best_tank = null;
+		Decorator best_tank = null;
 		int bestDist = Integer.MAX_VALUE;
 
-		for (int i = 0; i < players.length; i++) {
-			if (isClearSight(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord())) {
-				int dist = Utils.manhattanDist(ai.getCord(), ((Invoker)players[i]).currentDecorator().getTank().getCord());
+		while (players.hasNext()) {
+			final Invoker player = players.next();
+			if (isClearSight(ai.getCord(), player.currentDecorator().getCord())) {
+				int dist = Utils.manhattanDist(ai.getCord(), player.currentDecorator().getCord());
 				if (dist < bestDist) {
 					bestDist = dist;
-					best_tank = ((Invoker)players[i]).currentDecorator().getTank();
+					best_tank = player.currentDecorator();
 				}
 			}
 		}
@@ -45,7 +47,7 @@ public class AILockTarget implements AIState {
 	}
 
 	private int manhadenDistTo(AI_Player ai, int[] to) {
-		return  Math.abs(to[0] - ai.getX()) + Math.abs(to[1] - ai.getY());
+		return Math.abs(to[0] - ai.getX()) + Math.abs(to[1] - ai.getY());
 	}
 
 	private boolean isClearSight(int[] from, int[] to) {

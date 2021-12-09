@@ -12,7 +12,11 @@ public class EnemiesContainer implements Iterable<Decorator> {
 		return enemies[index];
 	}
 
-	public void add(Invoker enem) {
+	public void remove(final int index) {
+		System.arraycopy(enemies, index + 1, enemies, index, --size - index);
+	}
+
+	public void add(final Invoker enem) {
 		if (size == enemies.length) {
 			resizeArray();
 		}
@@ -54,6 +58,11 @@ public class EnemiesContainer implements Iterable<Decorator> {
 		@Override
 		public Decorator next() {
 			return enemies.get(i++).currentDecorator();
+		}
+
+		@Override
+		public void remove() {
+			enemies.remove(--i);
 		}
 	}
 }

@@ -45,8 +45,6 @@ public abstract class Bullet {
 
 			if (Main.map.map[bullet.y][bullet.x - 1].obstacle) {
 				bullet.callDoDamage(bullet.x - 1, bullet.y);
-				bullet.callEnemyDamage(bullet.x - 1, bullet.y);
-
 				return true;
 			} else {
 				--bullet.x;
@@ -68,7 +66,6 @@ public abstract class Bullet {
 		protected boolean moveImpl() {
 			if (Main.map.map[bullet.y][bullet.x + 1].obstacle) {
 				bullet.callDoDamage(bullet.x + 1, bullet.y);
-				bullet.callEnemyDamage(bullet.x + 1, bullet.y);
 				return true;
 			} else {
 				++bullet.x;
@@ -89,8 +86,7 @@ public abstract class Bullet {
 		@Override
 		protected boolean moveImpl() {
 			if (Main.map.map[bullet.y - 1][bullet.x].obstacle) {
-				bullet.callDoDamage(bullet.x, bullet.y - 1 );
-				bullet.callEnemyDamage(bullet.x, bullet.y - 1 );
+				bullet.callDoDamage(bullet.x, bullet.y - 1);
 				return true;
 			} else {
 				--bullet.y;
@@ -111,8 +107,7 @@ public abstract class Bullet {
 		@Override
 		protected boolean moveImpl() {
 			if (Main.map.map[bullet.y + 1][bullet.x].obstacle) {
-				bullet.callDoDamage( bullet.x, bullet.y + 1);
-				bullet.callEnemyDamage( bullet.x, bullet.y + 1);
+				bullet.callDoDamage(bullet.x, bullet.y + 1);
 				return true;
 			} else {
 				++bullet.y;
@@ -155,15 +150,14 @@ public abstract class Bullet {
 		return _side.move();
 	}
 
-	public final void callDoDamage(int x, int y) {
-
+	public final void callDoDamage(final int x, final int y) {
 		final Iterator<Map.Entry<Client, Decorator>> iterator = Main.clients.iterator();
 		while (iterator.hasNext()) {
 			final Map.Entry<Client, Decorator> entry = iterator.next();
 			final Decorator decorator = entry.getValue();
 			if (decorator.getX() == x && decorator.getY() == y) {
 
-				TWritable client = (TWritable)entry.getKey().output;
+				final TWritable client = (TWritable)entry.getKey().output;
 				if (decorator.getArmor() > 0) {
 					decorator.setArmor(decorator.getArmor() - doDamageArmor());
 					client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
@@ -174,14 +168,16 @@ public abstract class Bullet {
 				break;
 			}
 		}
-	}
 
-	public final void callEnemyDamage(int x, int y) {
 		final Iterator<Decorator> inv = Main.enemies.iterator();
 		while (inv.hasNext()) {
-			Decorator enem = inv.next();
+			final Decorator enem = inv.next();
 			if (enem.getX() == x && enem.getY() == y) {
 				enem.setHealth(enem.getHealth() - doDamage());
+				if (enem.getHealth() <= 0) {
+					inv.remove();
+					Main.this_server.write(Utils.REMOVE_TANK, enem.getIndex());
+				}
 				break;
 			}
 		}

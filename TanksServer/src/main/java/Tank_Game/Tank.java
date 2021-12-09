@@ -87,10 +87,7 @@ public class Tank implements Cloneable {
 	}
 
 	public int[] getCord() {
-		int[] c = new int[2];
-		c[0] = x;
-		c[1] = y;
-		return c;
+		return new int[] { x, y };
 	}
 
 	public byte getDirection() {
