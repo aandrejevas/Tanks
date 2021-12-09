@@ -1,6 +1,8 @@
 package Tank_Game.Patterns.Template;
 
+import Tank_Game.ClientInfo;
 import Tank_Game.Main;
+import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.Iterator;
@@ -191,7 +193,11 @@ public abstract class Bullet {
 					final ArenaBlock block = Main.map.map[enem.getY()][enem.getX()];
 					block.value = block.defValue;
 					block.obstacle = false;
-					Main.this_server.write(Utils.REMOVE_AI_TANK, enem.getIndex(), tank.getIndex());
+					final ClientInfo info = Main.indexes.get(
+						Main.clients.entrySet().stream().filter((final Map.Entry<Client, Invoker> entry)
+							-> entry.getValue().currentDecorator().getTank() == tank).findFirst().get().getKey());
+					++info.points;
+					Main.this_server.write(Utils.REMOVE_AI_TANK, enem.getIndex(), info.index);
 					if (++Main.enemies_dead == 3) {
 						Main.game = false;
 						Main.this_server.write(Utils.GAME_END);

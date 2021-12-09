@@ -38,6 +38,7 @@ public class Main extends PApplet {
 
 	public static final int D = 800;
 	public static final float Df = D;
+	public static final Map<Integer, Integer> points = new HashMap<>();
 	public static final Map<Integer, Tank> tanks = new HashMap<>();
 	public static final Map<Integer, Bullet> bullets = new HashMap<>();
 	public static final long move_timeout = 100_000_000, shoot_timeout = 500_000_000;
@@ -57,7 +58,7 @@ public class Main extends PApplet {
 		write_out = false, write_err = false, show_chat = false, save_image = false;
 	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
-		edge;
+		edge, this_index;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 	public static Tank this_tank;
 	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
@@ -145,9 +146,22 @@ public class Main extends PApplet {
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
 						break;
+					case Utils.REMOVE_CLIENT:
+						tanks.remove(Utils.rbuf.getInt());
+						points.remove(Utils.rbuf.getInt());
+						break;
 					case Utils.REMOVE_AI_TANK:
 						tanks.remove(Utils.rbuf.getInt());
-						++tanks.get(Utils.rbuf.getInt()).points;
+						final int key = Utils.rbuf.getInt();
+						points.put(key, points.get(key) + 1);
+						break;
+					case Utils.ADD_CLIENT:
+						if (points.isEmpty()) {
+							this_index = Utils.rbuf.getInt();
+							points.put(this_index, 0);
+						} else {
+							points.put(Utils.rbuf.getInt(), Utils.rbuf.getInt());
+						}
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE DROP <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP: {
@@ -288,13 +302,13 @@ public class Main extends PApplet {
 		} else if (this_tank != null) {
 			background(0);
 			text("Scores:", scale, scale);
-			text("	Your score: " + this_tank.points, scale, scale * 2);
+			text("	Your score: " + points.get(this_index), scale, scale * 2);
 			text("	Other scores:", scale, scale * 3);
 			translate(scale * 3, scale * 3);
-			tanks.values().forEach((final Tank tank) -> {
-				if (tank != this_tank && tank.player) {
+			points.entrySet().forEach((final Map.Entry<Integer, Integer> entry) -> {
+				if (entry.getKey() != this_index) {
 					translate(0, scale);
-					text(tank.points, 0, 0);
+					text(entry.getValue(), 0, 0);
 				}
 			});
 		}

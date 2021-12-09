@@ -21,7 +21,8 @@ public abstract class Utils {
 		ADD_BULLET = 34, REMOVE_BULLET = 35,
 		SET_HEALTH = 37, SET_ARMOR = 38,
 		MESSAGE = 39,
-		GAME_END = 40, GAME_START = 41;
+		GAME_END = 40, GAME_START = 41,
+		ADD_CLIENT = 43, REMOVE_CLIENT = 44;
 
 	public static final byte S_MOVE_LEFT = 0, S_MOVE_RIGHT = 1, S_MOVE_UP = 2, S_MOVE_DOWN = 3,
 		S_INIT_CLIENT = 4, S_SHOOT_NORMAL = 5, S_SHOOT_BLUE = 6, S_SHOOT_RED = 7,

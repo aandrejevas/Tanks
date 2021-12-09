@@ -3,15 +3,11 @@ package client;
 import processing.core.PShape;
 import utils.AbstractLogger;
 import utils.Drawable;
-import utils.Utils;
 
 public class Tank extends AbstractLogger implements Drawable {
 	public final PShape shape;
-	public int points = 0;
-	public final boolean player;
 
 	public Tank(final int ix, final int iy, final byte type) {
-		player = (type != Utils.MAP_TIGER);
 		shape = Facade.createShape(Main.images.getImage(type), ix, iy);
 	}
 

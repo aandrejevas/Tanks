@@ -24,6 +24,7 @@ import Tank_Game.Patterns.Template.Bullet;
 import Tank_Game.Patterns.Template.NormalBullet;
 import Tank_Game.Patterns.Template.RedBullet;
 import java.lang.invoke.MethodHandles;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class Main extends PApplet {
 	public static boolean game = true;
 
 	public static final ClientMap clients = new ClientMap();
+	public static final Map<Client, ClientInfo> indexes = new IdentityHashMap<>();
 	public static final EnemiesContainer enemies = new EnemiesContainer();
 
 	//public static boolean test = false;
@@ -100,7 +102,7 @@ public class Main extends PApplet {
 					final ArenaBlock block = map.map[tank.getY()][tank.getX()];
 					block.value = block.defValue;
 					block.obstacle = false;
-					this_server.write(Utils.REMOVE_TANK, tank.getIndex());
+					this_server.write(Utils.REMOVE_CLIENT, tank.getIndex(), indexes.get(entry.getKey()).index);
 					return true;
 				} else return false;
 			});
@@ -134,6 +136,11 @@ public class Main extends PApplet {
 				switch (Utils.rbuf.get()) {
 					case Utils.S_INIT_CLIENT:
 						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
+
+						final ClientInfo info = new ClientInfo();
+						this_server.write(Utils.ADD_CLIENT, info.index);
+						indexes.values().forEach((final ClientInfo i) -> this_server.write(Utils.ADD_CLIENT, i.index, i.points));
+						indexes.put(available_client, info);
 
 						 {
 							final Iterator<ArenaBlock> iterator = map.iterator();
