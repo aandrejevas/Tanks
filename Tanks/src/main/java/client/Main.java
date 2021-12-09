@@ -318,6 +318,7 @@ public class Main extends PApplet {
 					text(entry.getValue(), 0, 0);
 				}
 			});
+			text("Game ends when 3 AI tanks die.", 0, scale);
 		}
 	}
 
