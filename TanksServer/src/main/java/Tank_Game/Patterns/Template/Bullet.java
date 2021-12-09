@@ -192,7 +192,7 @@ public abstract class Bullet {
 					block.value = block.defValue;
 					block.obstacle = false;
 					Main.this_server.write(Utils.REMOVE_AI_TANK, enem.getIndex(), tank.getIndex());
-					if (++Main.enemies_dead != 3) {
+					if (++Main.enemies_dead == 3) {
 						Main.game = false;
 						Main.this_server.write(Utils.GAME_END);
 					}
