@@ -175,6 +175,9 @@ public class Main extends PApplet {
 						clients.add(available_client, invoker);
 
 						mediator.sendMessage(message);
+						if (!game) {
+							client_os.write(Utils.GAME_END);
+						}
 						break;
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.S_MOVE_LEFT:
