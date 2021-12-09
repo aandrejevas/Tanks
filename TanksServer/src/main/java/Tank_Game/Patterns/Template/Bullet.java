@@ -172,6 +172,7 @@ public abstract class Bullet {
 						block.value = block.defValue;
 						block.obstacle = false;
 						Main.this_server.write(Utils.REMOVE_TANK, decorator.getIndex());
+						Main.clients.remove(entry.getKey());
 					} else {
 						client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
 					}

@@ -17,6 +17,10 @@ public class ClientMap implements Iterable<Map.Entry<Client, Decorator>> {
 		clients.put(available_client, invoker);
 	}
 
+	public void remove(final Client client) {
+		clients.remove(client);
+	}
+
 	public boolean isMember(final Client client) {
 		return clients.containsKey(client);
 	}
