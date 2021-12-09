@@ -1,11 +1,13 @@
 package Tank_Game.Patterns.Template;
 
 import Tank_Game.Main;
+import static Tank_Game.Main.map;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.Iterator;
 import java.util.Map;
 import processing.net.Client;
+import utils.ArenaBlock;
 import utils.TWritable;
 import utils.Utils;
 
@@ -159,7 +161,7 @@ public abstract class Bullet {
 
 				final TWritable client = (TWritable)entry.getKey().output;
 				if (decorator.getArmor() > 0) {
-					decorator.setArmor(decorator.getArmor() - doDamageArmor());
+					decorator.setArmor(Math.max(decorator.getArmor() - doDamageArmor(), 0));
 					client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
 				} else {
 					decorator.setHealth(decorator.getHealth() - doDamage());
@@ -176,6 +178,9 @@ public abstract class Bullet {
 				enem.setHealth(enem.getHealth() - doDamage());
 				if (enem.getHealth() <= 0) {
 					inv.remove();
+					final ArenaBlock block = map.map[enem.getY()][enem.getX()];
+					block.value = block.defValue;
+					block.obstacle = false;
 					Main.this_server.write(Utils.REMOVE_TANK, enem.getIndex());
 				}
 				break;

@@ -453,8 +453,8 @@ public class Main extends PApplet {
 				save_image = true;
 				visitor = new TIFFSaver();
 				return;
-			case 's':
-			case 'S':
+			case 'g':
+			case 'G':
 				save_image = true;
 				visitor = new PNGSaver();
 				return;
