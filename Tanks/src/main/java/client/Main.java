@@ -61,7 +61,7 @@ public class Main extends PApplet {
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
 	public static Integer this_index;
-	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
+	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime()/*, start, end*/;
 	public static Tank this_tank;
 	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
 	public static ArenaMap map;
@@ -81,6 +81,8 @@ public class Main extends PApplet {
 
 	@Override
 	public void setup() {
+		//start = System.nanoTime();
+
 		hint(DISABLE_ASYNC_SAVEFRAME);
 		//hint(DISABLE_OPENGL_ERRORS);
 		surface.setResizable(false);
@@ -127,8 +129,12 @@ public class Main extends PApplet {
 						if (initialized) {
 							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
 						} else {
-							if (this_tank == null)
+							if (this_tank == null) {
 								initialized = true;
+								/*end = System.nanoTime();
+								println("Greitaveikos matavimas nanosekundėmis:", end - start);
+								println("Atminties matavimas baitais: ", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());*/
+							}
 							clientTankIndex = Utils.rbuf.getInt();
 							tanks.put(clientTankIndex, this_tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
 						}

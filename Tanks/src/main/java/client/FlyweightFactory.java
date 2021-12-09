@@ -4,7 +4,7 @@ import processing.core.PImage;
 import utils.Utils;
 
 public class FlyweightFactory {
-	/*private final PImage t34_tank, t34_tank_highlited, tiger_tank, sherman_tank,
+	private final PImage t34_tank, t34_tank_highlited, tiger_tank, sherman_tank,
 		bullet_blue, bullet_red, bullet_normal,
 		background_box, water_box, lava_box, metal_box, wood_box,
 		drop_sammo, drop_mammo, drop_lammo,
@@ -12,10 +12,10 @@ public class FlyweightFactory {
 		drop_shealth, drop_mhealth, drop_lhealth,
 		bar_health, bar_shield,
 		bullet_blue_big, bullet_red_big, bullet_normal_big,
-		bullet_blue_big_selected, bullet_red_big_selected, bullet_normal_big_selected;*/
+		bullet_blue_big_selected, bullet_red_big_selected, bullet_normal_big_selected;
 
 	public FlyweightFactory() {
-		/*t34_tank = new ProxyImage("t-34.png");
+		t34_tank = new ProxyImage("t-34.png");
 		tiger_tank = new ProxyImage("tiger-1.png");
 		sherman_tank = new ProxyImage("sherman.png");
 		bullet_blue = new ProxyImage("Bullet_Blue_3.png");
@@ -43,10 +43,10 @@ public class FlyweightFactory {
 		bullet_normal_big = new ProxyImage("Bullet_Green_2_Big.png");
 		bullet_blue_big_selected = new ProxyImage("Bullet_Blue_3_selected.png");
 		bullet_red_big_selected = new ProxyImage("Bullet_Red_2_selected.png");
-		bullet_normal_big_selected = new ProxyImage("Bullet_Green_2_selected.png");*/
+		bullet_normal_big_selected = new ProxyImage("Bullet_Green_2_selected.png");
 	}
 
-	/*public PImage getImage(final byte key) {
+	public PImage getImage(final byte key) {
 		switch (key) {
 			case Utils.MAP_EMPTY: return background_box.get();
 			case Utils.MAP_BORDER: return metal_box.get();
@@ -79,8 +79,9 @@ public class FlyweightFactory {
 			case Utils.SELECTED_SHOT_BLUE: return bullet_blue_big_selected.get();
 			default: throw new NullPointerException();
 		}
-	}*/
-	public PImage getImage(final byte key) {
+	}
+
+	/*public PImage getImage(final byte key) {
 		switch (key) {
 			case Utils.MAP_EMPTY: return Main.self.loadImage("t-34.png");
 			case Utils.MAP_BORDER: return Main.self.loadImage("tiger-1.png");
@@ -113,5 +114,5 @@ public class FlyweightFactory {
 			case Utils.SELECTED_SHOT_BLUE: return Main.self.loadImage("Bullet_Green_2_selected.png");
 			default: throw new NullPointerException();
 		}
-	}
+	}*/
 }
