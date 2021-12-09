@@ -54,7 +54,7 @@ public class Main extends PApplet {
 	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false, show_help = false, show_second_language = false,
-		write_out = false, write_err = false, show_chat = false, save_image = false, game_end = false;
+		write_out = false, write_err = false, show_chat = false, save_image = false;
 	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
@@ -124,7 +124,8 @@ public class Main extends PApplet {
 						if (initialized) {
 							tanks.put(Utils.rbuf.getInt(), new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34));
 						} else {
-							initialized = true;
+							if (this_tank == null)
+								initialized = true;
 							clientTankIndex = Utils.rbuf.getInt();
 							tanks.put(clientTankIndex, this_tank = new Tank(Utils.rbuf.getInt(), Utils.rbuf.getInt(), Utils.MAP_T34H));
 						}
