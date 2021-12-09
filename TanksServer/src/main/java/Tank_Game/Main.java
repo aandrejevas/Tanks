@@ -137,11 +137,12 @@ public class Main extends PApplet {
 					case Utils.S_INIT_CLIENT:
 						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-						final ClientInfo info = new ClientInfo();
-						this_server.write(Utils.ADD_CLIENT, info.index);
-						indexes.values().forEach((final ClientInfo i) -> this_server.write(Utils.ADD_CLIENT, i.index, i.points));
-						indexes.put(available_client, info);
-
+						 {
+							final ClientInfo info = new ClientInfo();
+							this_server.write(Utils.ADD_CLIENT, info.index, -1);
+							indexes.values().forEach((final ClientInfo i) -> this_server.write(Utils.ADD_CLIENT, i.index, i.points));
+							indexes.put(available_client, info);
+						}
 						 {
 							final Iterator<ArenaBlock> iterator = map.iterator();
 							while (iterator.hasNext()) {

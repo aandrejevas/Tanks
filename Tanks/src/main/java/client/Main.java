@@ -150,19 +150,23 @@ public class Main extends PApplet {
 						tanks.remove(Utils.rbuf.getInt());
 						points.remove(Utils.rbuf.getInt());
 						break;
-					case Utils.REMOVE_AI_TANK:
+					case Utils.REMOVE_AI_TANK: {
 						tanks.remove(Utils.rbuf.getInt());
 						final int key = Utils.rbuf.getInt();
 						points.put(key, points.get(key) + 1);
 						break;
-					case Utils.ADD_CLIENT:
-						if (points.isEmpty()) {
-							this_index = Utils.rbuf.getInt();
+					}
+					case Utils.ADD_CLIENT: {
+						final int key = Utils.rbuf.getInt();
+						final int value = Utils.rbuf.getInt();
+						if (value == -1) {
+							this_index = key;
 							points.put(this_index, 0);
 						} else {
-							points.put(Utils.rbuf.getInt(), Utils.rbuf.getInt());
+							points.put(key, value);
 						}
 						break;
+					}
 					// <><><><><><><><><><><><><><><> ADD/REMOVE DROP <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP: {
 						final int y = Utils.rbuf.getInt(), x = Utils.rbuf.getInt();
