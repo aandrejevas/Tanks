@@ -1,11 +1,12 @@
 package Tank_Game.Patterns.Template;
 
 import Tank_Game.Tank;
+import processing.net.Client;
 
 public class BlueBullet extends Bullet {
 
-	public BlueBullet(final Tank tank) {
-		super(tank);
+	public BlueBullet(final Tank tank, final Client c) {
+		super(tank, c);
 	}
 
 	@Override

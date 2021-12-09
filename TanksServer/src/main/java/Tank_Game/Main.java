@@ -103,6 +103,7 @@ public class Main extends PApplet {
 					block.value = block.defValue;
 					block.obstacle = false;
 					this_server.write(Utils.REMOVE_CLIENT, tank.getIndex(), indexes.get(entry.getKey()).index);
+					indexes.remove(entry.getKey());
 					return true;
 				} else return false;
 			});
@@ -209,19 +210,19 @@ public class Main extends PApplet {
 						});
 						break;
 					case Utils.S_SHOOT_NORMAL:
-						bullets.add(new NormalBullet(clients.get(available_client).undoTank()));
+						bullets.add(new NormalBullet(clients.get(available_client).undoTank(), available_client));
 						break;
 					case Utils.S_SHOOT_BLUE: {
 						final Tank tank = clients.get(available_client).currentDecorator();
 						if (tank.getShotType() == Utils.SHOT_BLUE) {
-							bullets.add(new BlueBullet(tank));
+							bullets.add(new BlueBullet(tank, available_client));
 						}
 						break;
 					}
 					case Utils.S_SHOOT_RED: {
 						final Tank tank = clients.get(available_client).currentDecorator();
 						if (tank.getShotType() == Utils.SHOT_RED) {
-							bullets.add(new RedBullet(tank));
+							bullets.add(new RedBullet(tank, available_client));
 						}
 						break;
 					}

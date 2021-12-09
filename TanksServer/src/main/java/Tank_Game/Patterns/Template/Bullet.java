@@ -2,7 +2,6 @@ package Tank_Game.Patterns.Template;
 
 import Tank_Game.ClientInfo;
 import Tank_Game.Main;
-import Tank_Game.Patterns.Command.Invoker;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.Iterator;
@@ -128,8 +127,10 @@ public abstract class Bullet {
 	protected int x, y;
 	private final Side _side;
 	public final Tank tank;
+	public final Client client;
 
-	public Bullet(final Tank t) {
+	public Bullet(final Tank t, final Client c) {
+		client = c;
 		tank = t;
 		index = count++;
 		switch (tank.getDirection()) {
@@ -179,7 +180,7 @@ public abstract class Bullet {
 						client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
 					}
 				}
-				break;
+				return;
 			}
 		}
 
@@ -193,9 +194,7 @@ public abstract class Bullet {
 					final ArenaBlock block = Main.map.map[enem.getY()][enem.getX()];
 					block.value = block.defValue;
 					block.obstacle = false;
-					final ClientInfo info = Main.indexes.get(
-						Main.clients.entrySet().stream().filter((final Map.Entry<Client, Invoker> entry)
-							-> entry.getValue().currentDecorator().getTank() == tank).findFirst().get().getKey());
+					final ClientInfo info = Main.indexes.get(client);
 					++info.points;
 					Main.this_server.write(Utils.REMOVE_AI_TANK, enem.getIndex(), info.index);
 					if (++Main.enemies_dead == 3) {
@@ -203,7 +202,7 @@ public abstract class Bullet {
 						Main.this_server.write(Utils.GAME_END);
 					}
 				}
-				break;
+				return;
 			}
 		}
 	}

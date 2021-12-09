@@ -1,11 +1,12 @@
 package Tank_Game.Patterns.Template;
 
 import Tank_Game.Tank;
+import processing.net.Client;
 
 public class NormalBullet extends Bullet {
 
-	public NormalBullet(final Tank tank) {
-		super(tank);
+	public NormalBullet(final Tank tank, final Client c) {
+		super(tank, c);
 	}
 
 	@Override
