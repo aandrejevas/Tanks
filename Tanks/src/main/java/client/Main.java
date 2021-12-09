@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.function.IntConsumer;
 import memento.Message;
@@ -58,7 +59,8 @@ public class Main extends PApplet {
 		write_out = false, write_err = false, show_chat = false, save_image = false;
 	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
-		edge, this_index;
+		edge;
+	public static Integer this_index;
 	public static long move_start = System.nanoTime(), shoot_start = System.nanoTime();
 	public static Tank this_tank;
 	public static byte shot_type = Utils.S_SHOOT_NORMAL, last_drop = Utils.DROP_SAMMO;
@@ -157,11 +159,12 @@ public class Main extends PApplet {
 						break;
 					}
 					case Utils.ADD_CLIENT: {
-						final int key = Utils.rbuf.getInt();
+						final Integer key = Utils.rbuf.getInt();
 						final int value = Utils.rbuf.getInt();
 						if (value == -1) {
-							this_index = key;
-							points.put(this_index, 0);
+							if (this_index == null)
+								this_index = key;
+							points.put(key, 0);
 						} else {
 							points.put(key, value);
 						}
@@ -310,7 +313,7 @@ public class Main extends PApplet {
 			text("	Other scores:", scale, scale * 3);
 			translate(scale * 3, scale * 3);
 			points.entrySet().forEach((final Map.Entry<Integer, Integer> entry) -> {
-				if (entry.getKey() != this_index) {
+				if (!Objects.equals(entry.getKey(), this_index)) {
 					translate(0, scale);
 					text(entry.getValue(), 0, 0);
 				}

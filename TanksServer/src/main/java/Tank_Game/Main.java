@@ -135,21 +135,21 @@ public class Main extends PApplet {
 			Utils.rbuf.rewind().limit(available_client.readBytes(Utils.rbuf.array()));
 			do {
 				switch (Utils.rbuf.get()) {
-					case Utils.S_INIT_CLIENT:
+					case Utils.S_INIT_CLIENT: {
 						client_os.write(Utils.INITIALIZE_GRID, edge, seed);
 
-						 {
+						{
 							final ClientInfo info = new ClientInfo();
 							this_server.write(Utils.ADD_CLIENT, info.index, -1);
-							indexes.values().forEach((final ClientInfo i) -> this_server.write(Utils.ADD_CLIENT, i.index, i.points));
+							indexes.values().forEach((final ClientInfo i) -> client_os.write(Utils.ADD_CLIENT, i.index, i.points));
 							indexes.put(available_client, info);
 						}
-						 {
+						{
 							final Iterator<ArenaBlock> iterator = map.iterator();
 							while (iterator.hasNext()) {
 								final ArenaBlock block = iterator.next();
 								if (block.drop != null) {
-									this_server.write(Utils.ADD_DROP, block.y, block.x, block.drop.getName(), block.drop.getValue());
+									client_os.write(Utils.ADD_DROP, block.y, block.x, block.drop.getName(), block.drop.getValue());
 								}
 							}
 						}
@@ -166,7 +166,7 @@ public class Main extends PApplet {
 							client_os.write(tank.currentDecorator().getDirection(), tank.currentDecorator().getIndex(), tank.currentDecorator().getX(), tank.currentDecorator().getY(), tank.currentDecorator().getType());
 						});
 
-						 {
+						{
 							final Iterator<Decorator> inv = enemies.iterator();
 							while (inv.hasNext()) {
 								final Decorator tank = inv.next();
@@ -188,6 +188,7 @@ public class Main extends PApplet {
 							client_os.write(Utils.GAME_END);
 						}
 						break;
+					}
 					// <><><><><><><><><><><><><><><> MOVE <><><><><><><><><><><><><><><>
 					case Utils.S_MOVE_LEFT:
 						handleMove((final Decorator tank) -> {
