@@ -308,17 +308,16 @@ public class Main extends PApplet {
 			}
 		} else if (this_tank != null) {
 			background(0);
-			text("Scores:", scale, scale);
-			text("	Your score: " + points.get(this_index), scale, scale * 2);
-			text("	Other scores:", scale, scale * 3);
-			translate(scale * 3, scale * 3);
+			text("Game ends when 3 AI tanks die.", scale, scale);
+			text("	Your score: " + points.get(this_index), scale, scale * 3);
+			text("	Other scores:", scale, scale * 4);
+			translate(scale * 4, scale * 4);
 			points.entrySet().forEach((final Map.Entry<Integer, Integer> entry) -> {
 				if (!Objects.equals(entry.getKey(), this_index)) {
 					translate(0, scale);
 					text(entry.getValue(), 0, 0);
 				}
 			});
-			text("Game ends when 3 AI tanks die.", 0, scale);
 		}
 	}
 
