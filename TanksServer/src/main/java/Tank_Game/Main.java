@@ -48,16 +48,17 @@ public class Main extends PApplet {
 	public static final List<Bullet> bullets = new LinkedList<>();
 	//public static final List<Invoker> enemies = new ArrayList<>();
 	public static final Creator ctr = new PlayerCreator();
-	public static final Mediator mediator = new Mediator(Game_Context.getInstance());
+	private static final Mediator mediator = new Mediator(Game_Context.getInstance());
 	private static final byte[] message = new byte[] { Utils.MESSAGE, 0x00, 0x00, 0x00, 0x13,
 		'[', 'S', 'E', 'R', 'V', 'E', 'R', ']', ' ', 'N', 'E', 'W', ' ', 'P', 'L', 'A', 'Y', 'E', 'R' };
 
 	public static ArenaMap map = new ArenaMap(edge, true);
 	public static Game_Context game_context;
-	public static int ndrops = 0;
+	public static int ndrops = 0, enemies_dead = 0;
 	public static TServer this_server;
 	public static Client available_client;
 	public static TWritable client_os;
+	public static boolean game = true;
 
 	public static final ClientMap clients = new ClientMap();
 	public static final EnemiesContainer enemies = new EnemiesContainer();
@@ -105,7 +106,7 @@ public class Main extends PApplet {
 			});
 		}
 
-		if (!enemies.isEmpty() && frameCount % 30 == 0) {
+		if (!enemies.isEmpty() && frameCount % 30 == 0 && game) {
 			final Iterator<Decorator> inv = enemies.iterator();
 			while (inv.hasNext()) {
 				((AI_Player)inv.next().getTank()).AIThink();
@@ -282,6 +283,13 @@ public class Main extends PApplet {
 			case 'm':
 			case 'M':
 				printMap();
+				return;
+			case 's':
+			case 'S':
+				if (!game) {
+					game = true;
+					this_server.write(Utils.GAME_START);
+				}
 				return;
 		}
 	}

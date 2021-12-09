@@ -1,7 +1,6 @@
 package Tank_Game.Patterns.Template;
 
 import Tank_Game.Main;
-import static Tank_Game.Main.map;
 import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.Iterator;
@@ -35,11 +34,11 @@ public abstract class Bullet {
 	}
 
 	public static class Left extends Side {
-		public Left(final Tank tank, final Bullet b) {
+		public Left(final Bullet b) {
 			super(b);
-			bullet.x = tank.getX() - 1;
-			bullet.y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
+			bullet.x = bullet.tank.getX() - 1;
+			bullet.y = bullet.tank.getY();
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
 		}
 
 		@Override
@@ -57,11 +56,11 @@ public abstract class Bullet {
 	}
 
 	public static class Right extends Side {
-		public Right(final Tank tank, final Bullet b) {
+		public Right(final Bullet b) {
 			super(b);
-			bullet.x = tank.getX() + 1;
-			bullet.y = tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
+			bullet.x = bullet.tank.getX() + 1;
+			bullet.y = bullet.tank.getY();
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
 		}
 
 		@Override
@@ -78,11 +77,11 @@ public abstract class Bullet {
 	}
 
 	public static class Up extends Side {
-		public Up(final Tank tank, final Bullet b) {
+		public Up(final Bullet b) {
 			super(b);
-			bullet.x = tank.getX();
-			bullet.y = tank.getY() - 1;
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
+			bullet.x = bullet.tank.getX();
+			bullet.y = bullet.tank.getY() - 1;
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
 		}
 
 		@Override
@@ -99,11 +98,11 @@ public abstract class Bullet {
 	}
 
 	public static class Down extends Side {
-		public Down(final Tank tank, final Bullet b) {
+		public Down(final Bullet b) {
 			super(b);
-			bullet.x = tank.getX();
-			bullet.y = tank.getY() + 1;
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, tank.getShotType());
+			bullet.x = bullet.tank.getX();
+			bullet.y = bullet.tank.getY() + 1;
+			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
 		}
 
 		@Override
@@ -126,21 +125,23 @@ public abstract class Bullet {
 	public final int index;
 	protected int x, y;
 	private final Side _side;
+	public final Tank tank;
 
-	public Bullet(final Tank tank) {
+	public Bullet(final Tank t) {
+		tank = t;
 		index = count++;
 		switch (tank.getDirection()) {
 			case Tank.LEFT:
-				_side = new Left(tank, this);
+				_side = new Left(this);
 				break;
 			case Tank.RIGHT:
-				_side = new Right(tank, this);
+				_side = new Right(this);
 				break;
 			case Tank.UP:
-				_side = new Up(tank, this);
+				_side = new Up(this);
 				break;
 			case Tank.DOWN:
-				_side = new Down(tank, this);
+				_side = new Down(this);
 				break;
 			default:
 				throw new RuntimeException();
@@ -160,12 +161,20 @@ public abstract class Bullet {
 			if (decorator.getX() == x && decorator.getY() == y) {
 
 				final TWritable client = (TWritable)entry.getKey().output;
-				if (decorator.getArmor() > 0) {
+				if (decorator.getArmor() != 0) {
 					decorator.setArmor(Math.max(decorator.getArmor() - doDamageArmor(), 0));
 					client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
 				} else {
 					decorator.setHealth(decorator.getHealth() - doDamage());
-					client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
+					if (decorator.getHealth() <= 0) {
+						client.write(Utils.GAME_END);
+						final ArenaBlock block = Main.map.map[decorator.getY()][decorator.getX()];
+						block.value = block.defValue;
+						block.obstacle = false;
+						Main.this_server.write(Utils.REMOVE_TANK, decorator.getIndex());
+					} else {
+						client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
+					}
 				}
 				break;
 			}
@@ -178,10 +187,14 @@ public abstract class Bullet {
 				enem.setHealth(enem.getHealth() - doDamage());
 				if (enem.getHealth() <= 0) {
 					inv.remove();
-					final ArenaBlock block = map.map[enem.getY()][enem.getX()];
+					final ArenaBlock block = Main.map.map[enem.getY()][enem.getX()];
 					block.value = block.defValue;
 					block.obstacle = false;
-					Main.this_server.write(Utils.REMOVE_TANK, enem.getIndex());
+					Main.this_server.write(Utils.REMOVE_AI_TANK, enem.getIndex(), tank.getIndex());
+					if (++Main.enemies_dead != 2) {
+						Main.game = false;
+						Main.this_server.write(Utils.GAME_END);
+					}
 				}
 				break;
 			}

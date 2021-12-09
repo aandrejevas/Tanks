@@ -54,7 +54,7 @@ public class Main extends PApplet {
 	public static FlyweightFactory images;
 	public static float scale;
 	public static boolean initialized = false, show_help = false, show_second_language = false,
-		write_out = false, write_err = false, show_chat = false, save_image = false;
+		write_out = false, write_err = false, show_chat = false, save_image = false, game_end = false;
 	public static int move_state = 0, language = 0, language2 = 0, memento_index = 0,
 		normal_shots = 20, blue_shots = 0, red_shots = 0, health_state = 100, armor_state = 100,
 		edge;
@@ -104,6 +104,12 @@ public class Main extends PApplet {
 			Utils.rbuf.rewind().limit(this_client.readBytes(Utils.rbuf.array()));
 			do {
 				switch (Utils.rbuf.get()) {
+					case Utils.GAME_END:
+						initialized = false;
+						break;
+					case Utils.GAME_START:
+						initialized = true;
+						break;
 					case Utils.INITIALIZE_GRID:
 						edge = Utils.rbuf.getInt();
 						scale = (float)D / edge;
@@ -137,6 +143,10 @@ public class Main extends PApplet {
 						break;
 					case Utils.REMOVE_TANK:
 						tanks.remove(Utils.rbuf.getInt());
+						break;
+					case Utils.REMOVE_AI_TANK:
+						tanks.remove(Utils.rbuf.getInt());
+						++tanks.get(Utils.rbuf.getInt()).points;
 						break;
 					// <><><><><><><><><><><><><><><> ADD/REMOVE DROP <><><><><><><><><><><><><><><>
 					case Utils.ADD_DROP: {
@@ -274,6 +284,18 @@ public class Main extends PApplet {
 			} else {
 				drawer.draw();
 			}
+		} else if (this_tank != null) {
+			background(0);
+			text("Scores:", scale, scale);
+			text("	Your score: " + this_tank.points, scale, scale * 2);
+			text("	Other scores:", scale, scale * 3);
+			translate(scale * 3, scale * 3);
+			tanks.values().forEach((final Tank tank) -> {
+				if (tank != this_tank && tank.player) {
+					translate(0, scale);
+					text(tank.points, 0, 0);
+				}
+			});
 		}
 	}
 
@@ -327,6 +349,8 @@ public class Main extends PApplet {
 
 	@Override
 	public void keyPressed() {
+		if (!initialized)
+			return;
 		if (show_chat) {
 			switch (keyCode) {
 				case ENTER:
