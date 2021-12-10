@@ -57,6 +57,16 @@ public interface MoveAlgorithm {
 								break;
 						}
 						break;
+					case Utils.DROP_LHEALTH:
+					case Utils.DROP_MHEALTH:
+					case Utils.DROP_SHEALTH:
+						tank.setHealth(Math.min(tank.getHealth() + next_block.drop.getValue(), 100));
+						break;
+					case Utils.DROP_LARMOR:
+					case Utils.DROP_MARMOR:
+					case Utils.DROP_SARMOR:
+						tank.setArmor(Math.min(tank.getArmor() + next_block.drop.getValue(), 100));
+						break;
 				}
 
 				--Main.ndrops;

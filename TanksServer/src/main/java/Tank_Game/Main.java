@@ -297,13 +297,13 @@ public class Main extends PApplet {
 			case 'M':
 				printMap();
 				return;
-			case 's':
+			/*case 's':
 			case 'S':
 				if (!game) {
 					game = true;
 					this_server.write(Utils.GAME_START);
 				}
-				return;
+				return;*/
 		}
 	}
 

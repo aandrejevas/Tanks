@@ -166,7 +166,7 @@ public abstract class Bullet {
 				final TWritable client = (TWritable)entry.getKey().output;
 				if (decorator.getArmor() != 0) {
 					decorator.setArmor(Math.max(decorator.getArmor() - doDamageArmor(), 0));
-					client.write(Utils.SET_ARMOR, decorator.getIndex(), decorator.getArmor());
+					client.write(Utils.SET_ARMOR, /*decorator.getIndex(), */ decorator.getArmor());
 				} else {
 					decorator.setHealth(decorator.getHealth() - doDamage());
 					if (decorator.getHealth() <= 0) {
@@ -177,7 +177,7 @@ public abstract class Bullet {
 						Main.this_server.write(Utils.REMOVE_TANK, decorator.getIndex());
 						Main.clients.remove(entry.getKey());
 					} else {
-						client.write(Utils.SET_HEALTH, decorator.getIndex(), decorator.getHealth());
+						client.write(Utils.SET_HEALTH, /*decorator.getIndex(), */ decorator.getHealth());
 					}
 				}
 				return;

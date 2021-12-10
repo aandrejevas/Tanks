@@ -198,6 +198,16 @@ public class Main extends PApplet {
 									red_shots += block.drop.getValue();
 									last_drop = Utils.DROP_LAMMO;
 									break;
+								case Utils.DROP_LHEALTH:
+								case Utils.DROP_MHEALTH:
+								case Utils.DROP_SHEALTH:
+									health_state = Math.min(health_state + block.drop.getValue(), 100);
+									break;
+								case Utils.DROP_LARMOR:
+								case Utils.DROP_MARMOR:
+								case Utils.DROP_SARMOR:
+									armor_state = Math.min(armor_state + block.drop.getValue(), 100);
+									break;
 							}
 							drawPanel();
 						}
@@ -264,13 +274,13 @@ public class Main extends PApplet {
 						break;
 					case Utils.SET_HEALTH:
 						//int temp = Utils.rbuf.getInt();
-						Utils.rbuf.getInt();
+						//Utils.rbuf.getInt();
 						health_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
 					case Utils.SET_ARMOR:
 						//int tem = Utils.rbuf.getInt();
-						Utils.rbuf.getInt();
+						//Utils.rbuf.getInt();
 						armor_state = Utils.rbuf.getInt();
 						drawPanel();
 						break;
