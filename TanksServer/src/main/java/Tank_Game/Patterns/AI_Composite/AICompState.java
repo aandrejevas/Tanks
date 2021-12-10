@@ -3,63 +3,53 @@ package Tank_Game.Patterns.AI_Composite;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AICompState extends Component {
+public class AICompState implements Component {
 
-    public static final int AI_NONE = 0, AI_PURSUING = 1, AI_TARGET_LOCKED = 2, AI_TARGET_FOUND = 3,
-            AI_ROAM_FOUND = 4, AI_AIMED = 5;
-    public static final int AI_SHOT_NORMAL = 0, AI_SHOT_CLOSE = 1;
+	public static final int AI_NONE = 0, AI_PURSUING = 1, AI_TARGET_LOCKED = 2, AI_TARGET_FOUND = 3,
+		AI_ROAM_FOUND = 4, AI_AIMED = 5;
+	public static final int AI_SHOT_NORMAL = 0, AI_SHOT_CLOSE = 1;
 
-    private int state;
-    private List<Component> states;
+	private final int state;
+	private final List<Component> states;
 
-    public AICompState(int state) {
-        this.state = state;
-        states = new ArrayList<Component>();
-    }
+	public AICompState(final int state) {
+		this.state = state;
+		states = new ArrayList<>();
+	}
 
-    public AICompState() {
-        this.state = AI_NONE;
-        states = new ArrayList<Component>();
-    }
+	public AICompState() {
+		this.state = AI_NONE;
+		states = new ArrayList<>();
+	}
 
-    public void addState(Component state) {
-        for (Component s : states) {
-            if (((AICompState)s).state == ((AICompState)state).state){
-                return;
-            }
-        }
-        states.add(state);
-    }
+	@Override
+	public void addState(final Component state) {
+		if (!hasState(state.getState()))
+			states.add(state);
+	}
 
-    public void removeState(Component state) {
-        ArrayList<Component> removables = new ArrayList<Component>();
-        for (Component s : states) {
-            if (((AICompState)s).state == ((AICompState)state).state){
-                removables.add(s);
-            }
-        }
-        states.removeAll(removables);
-    }
+	@Override
+	public void removeState(final Component state) {
+		states.removeIf((final Component s) -> s.getState() == state.getState());
+	}
 
-    public List<Component> getStates(){
-        return states;
-    }
+	@Override
+	public List<Component> getStates() {
+		return states;
+	}
 
-    public boolean hasState(int state) {
-        for (Component s : states) {
-            if (((AICompState)s).state == state){
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	public int getState() {
+		return state;
+	}
 
-    public Component getState(int state) {
-        for (Component s : states) {
-            if (((AICompState)s).state == state){
-                return s;
-            }
-        }
-        return null;
-    }
+	@Override
+	public boolean hasState(final int state) {
+		return states.stream().anyMatch((final Component s) -> (s.getState() == state));
+	}
+
+	@Override
+	public Component getState(final int state) {
+		return states.stream().filter((final Component s) -> s.getState() == state).findFirst().orElse(null);
+	}
 }

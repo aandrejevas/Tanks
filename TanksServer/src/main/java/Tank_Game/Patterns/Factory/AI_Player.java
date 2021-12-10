@@ -20,10 +20,10 @@ public class AI_Player extends Tank {
 
 	private int shots_shot = 0;
 
-	public Component state;
-	public int sightDist = 20;
-	public int shotChangeDist = 4;
-	public int scanDist = 7;
+	public final Component state;
+	public final int sightDist = 20;
+	public final int shotChangeDist = 4;
+	public final int scanDist = 7;
 
 	public int[] pursueTarget = new int[2];
 	public int[] fireTarget = new int[2];

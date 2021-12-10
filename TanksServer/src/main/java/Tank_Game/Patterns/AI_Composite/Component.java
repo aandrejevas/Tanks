@@ -2,17 +2,18 @@ package Tank_Game.Patterns.AI_Composite;
 
 import java.util.List;
 
-public abstract class Component {
+public interface Component {
 
-    public abstract void addState(Component state);
+	void addState(final Component state);
 
-    public abstract void removeState(Component state);
+	void removeState(final Component state);
 
-    public abstract List<Component> getStates();
+	List<Component> getStates();
 
-    public abstract boolean hasState(int state);
+	int getState();
 
-    public abstract Component getState(int state);
+	boolean hasState(final int state);
 
+	Component getState(final int state);
 
 }
