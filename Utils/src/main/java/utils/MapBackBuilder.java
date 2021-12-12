@@ -51,6 +51,7 @@ public class MapBackBuilder implements Builder {
 					prob = 0.5 / (dist * dist + 0.0001);
 					if (prob * 1000 > (double)(Utils.random.nextInt(1000))) {
 						map.map[j][i].value = Utils.MAP_LAVA;
+						map.map[j][i].defValue = Utils.MAP_LAVA;
 					}
 				}
 			}
@@ -75,6 +76,7 @@ public class MapBackBuilder implements Builder {
 					prob = 0.4 / (dist * dist + 0.0001);
 					if (prob * 1000 > (double)Utils.random.nextInt(1000)) {
 						map.map[j][i].value = Utils.MAP_WATER;
+						map.map[j][i].defValue = Utils.MAP_WATER;
 					}
 				}
 			}
