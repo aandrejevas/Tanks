@@ -6,6 +6,7 @@ import Tank_Game.Patterns.Decorator.Decorator;
 import Tank_Game.Tank;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 import processing.net.Client;
 import utils.ArenaBlock;
 import utils.TWritable;
@@ -13,111 +14,49 @@ import utils.Utils;
 
 public abstract class Bullet {
 
-	public static abstract class Side {
-		protected final Bullet bullet;
-
-		public Side(final Bullet b) {
-			bullet = b;
-		}
-
-		public boolean move() {
-			if (System.nanoTime() - bullet.start_time > bullet.timeout) {
-				final boolean state = moveImpl();
-				bullet.start_time = System.nanoTime();
-				if (state)
-					Main.this_server.write(Utils.REMOVE_BULLET, bullet.index);
-				return state;
-			}
+	private static final Predicate<Bullet> left = (final Bullet bullet) -> {
+		if (Main.map.map[bullet.y][bullet.x - 1].obstacle && (bullet.y != bullet.tank.getY() || bullet.x - 1 != bullet.tank.getX())) {
+			bullet.callDoDamage(bullet.x - 1, bullet.y);
+			return true;
+		} else {
+			--bullet.x;
+			Main.this_server.write(Utils.BULLET_LEFT, bullet.index);
 			return false;
 		}
+	};
 
-		protected abstract boolean moveImpl();
-	}
-
-	public static class Left extends Side {
-		public Left(final Bullet b) {
-			super(b);
-			bullet.x = bullet.tank.getX() - 1;
-			bullet.y = bullet.tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
+	private static final Predicate<Bullet> right = (final Bullet bullet) -> {
+		if (Main.map.map[bullet.y][bullet.x + 1].obstacle && (bullet.y != bullet.tank.getY() || bullet.x + 1 != bullet.tank.getX())) {
+			bullet.callDoDamage(bullet.x + 1, bullet.y);
+			return true;
+		} else {
+			++bullet.x;
+			Main.this_server.write(Utils.BULLET_RIGHT, bullet.index);
+			return false;
 		}
+	};
 
-		@Override
-		protected boolean moveImpl() {
-
-			if (Main.map.map[bullet.y][bullet.x - 1].obstacle) {
-				bullet.callDoDamage(bullet.x - 1, bullet.y);
-				return true;
-			} else {
-				--bullet.x;
-				Main.this_server.write(Utils.BULLET_LEFT, bullet.index);
-				return false;
-			}
+	private static final Predicate<Bullet> up = (final Bullet bullet) -> {
+		if (Main.map.map[bullet.y - 1][bullet.x].obstacle && (bullet.y - 1 != bullet.tank.getY() || bullet.x != bullet.tank.getX())) {
+			bullet.callDoDamage(bullet.x, bullet.y - 1);
+			return true;
+		} else {
+			--bullet.y;
+			Main.this_server.write(Utils.BULLET_UP, bullet.index);
+			return false;
 		}
-	}
+	};
 
-	public static class Right extends Side {
-		public Right(final Bullet b) {
-			super(b);
-			bullet.x = bullet.tank.getX() + 1;
-			bullet.y = bullet.tank.getY();
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
+	private static final Predicate<Bullet> down = (final Bullet bullet) -> {
+		if (Main.map.map[bullet.y + 1][bullet.x].obstacle && (bullet.y + 1 != bullet.tank.getY() || bullet.x != bullet.tank.getX())) {
+			bullet.callDoDamage(bullet.x, bullet.y + 1);
+			return true;
+		} else {
+			++bullet.y;
+			Main.this_server.write(Utils.BULLET_DOWN, bullet.index);
+			return false;
 		}
-
-		@Override
-		protected boolean moveImpl() {
-			if (Main.map.map[bullet.y][bullet.x + 1].obstacle) {
-				bullet.callDoDamage(bullet.x + 1, bullet.y);
-				return true;
-			} else {
-				++bullet.x;
-				Main.this_server.write(Utils.BULLET_RIGHT, bullet.index);
-				return false;
-			}
-		}
-	}
-
-	public static class Up extends Side {
-		public Up(final Bullet b) {
-			super(b);
-			bullet.x = bullet.tank.getX();
-			bullet.y = bullet.tank.getY() - 1;
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
-		}
-
-		@Override
-		protected boolean moveImpl() {
-			if (Main.map.map[bullet.y - 1][bullet.x].obstacle) {
-				bullet.callDoDamage(bullet.x, bullet.y - 1);
-				return true;
-			} else {
-				--bullet.y;
-				Main.this_server.write(Utils.BULLET_UP, bullet.index);
-				return false;
-			}
-		}
-	}
-
-	public static class Down extends Side {
-		public Down(final Bullet b) {
-			super(b);
-			bullet.x = bullet.tank.getX();
-			bullet.y = bullet.tank.getY() + 1;
-			Main.this_server.write(Utils.ADD_BULLET, bullet.index, bullet.x, bullet.y, bullet.tank.getShotType());
-		}
-
-		@Override
-		protected boolean moveImpl() {
-			if (Main.map.map[bullet.y + 1][bullet.x].obstacle) {
-				bullet.callDoDamage(bullet.x, bullet.y + 1);
-				return true;
-			} else {
-				++bullet.y;
-				Main.this_server.write(Utils.BULLET_DOWN, bullet.index);
-				return false;
-			}
-		}
-	}
+	};
 
 	private static int count = 0;
 
@@ -125,7 +64,7 @@ public abstract class Bullet {
 	protected long start_time;
 	public final int index;
 	protected int x, y;
-	private final Side _side;
+	private final Predicate<Bullet> side;
 	public final Tank tank;
 	public final Client client;
 
@@ -133,18 +72,21 @@ public abstract class Bullet {
 		client = c;
 		tank = t;
 		index = count++;
+		x = tank.getX();
+		y = tank.getY();
+		Main.this_server.write(Utils.ADD_BULLET, index, x, y, tank.getShotType());
 		switch (tank.getDirection()) {
 			case Tank.LEFT:
-				_side = new Left(this);
+				side = left;
 				break;
 			case Tank.RIGHT:
-				_side = new Right(this);
+				side = right;
 				break;
 			case Tank.UP:
-				_side = new Up(this);
+				side = up;
 				break;
 			case Tank.DOWN:
-				_side = new Down(this);
+				side = down;
 				break;
 			default:
 				throw new RuntimeException();
@@ -153,7 +95,14 @@ public abstract class Bullet {
 	}
 
 	public boolean move() {
-		return _side.move();
+		if (System.nanoTime() - start_time > timeout) {
+			final boolean state = side.test(this);
+			start_time = System.nanoTime();
+			if (state)
+				Main.this_server.write(Utils.REMOVE_BULLET, index);
+			return state;
+		}
+		return false;
 	}
 
 	public final void callDoDamage(final int x, final int y) {

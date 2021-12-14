@@ -8,8 +8,6 @@ import Tank_Game.Tank;
 import utils.ArenaBlock;
 import utils.Utils;
 
-import static processing.core.PApplet.println;
-
 public interface MoveAlgorithm {
 	default void move(final Tank tank) {
 		final ArenaBlock next_block = getNextBlock(tank);
@@ -24,9 +22,8 @@ public interface MoveAlgorithm {
 			moveUnblocked(tank);
 
 			if (tank.getType() != Utils.MAP_TIGER) {
-
 				if (next_block.defValue == Utils.MAP_LAVA) {
-					tank.setHealth(tank.getHealth() - 20);
+					tank.setHealth(tank.getHealth() - 10);
 					if (tank.getHealth() <= 0) {
 						Main.client_os.write(Utils.GAME_END);
 						next_block.value = next_block.defValue;
@@ -37,7 +34,7 @@ public interface MoveAlgorithm {
 						Main.client_os.write(Utils.SET_HEALTH, /*tank.getIndex(), */ tank.getHealth());
 					}
 				} else if (next_block.defValue == Utils.MAP_WATER && tank.getArmor() != 0) {
-					tank.setArmor(Math.max(tank.getArmor() - 20, 0));
+					tank.setArmor(Math.max(tank.getArmor() - 10, 0));
 					Main.client_os.write(Utils.SET_ARMOR, /*tank.getIndex(), */ tank.getArmor());
 				}
 			}
